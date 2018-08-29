@@ -1,0 +1,6 @@
+dashboard-go
+.vscode
+templates_orig/
+scripts/
+*.md
+models/

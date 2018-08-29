@@ -1,0 +1,17 @@
+listen: 0.0.0.0
+port: 1234
+
+key: 4DnNLIVWEBvBSgARHqZ9J6nKns6Y5ana
+salt: kuJrPEZ2
+secret: k54Yz5VOtHAuZ5Rl
+
+debug: true
+
+database:
+    host: 127.0.0.1
+    port: 3306
+    db: tickets
+    user: RW_TICKETS
+    pass: Chan9eme!bah
+    prefix: mm
+
