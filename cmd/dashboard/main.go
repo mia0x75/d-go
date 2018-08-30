@@ -59,6 +59,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = g.InitDB(viper.GetViper())
+	if err != nil {
+		log.Fatalf("db conn failed with error %s", err.Error())
+	}
 
 	// Initialize echo object
 	e := echo.New()

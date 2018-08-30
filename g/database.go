@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -17,17 +18,34 @@ type DBPool struct {
 	Alarm     *xorm.Engine
 }
 
+type DailInfo struct {
+	Host     string
+	User     string
+	Password string
+	Port     int
+	DbName   string
+	Options  string
+	Debug    bool
+}
+
 var (
-	dbp    DBPool
-	format string = `%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local`
+	dbp               DBPool
+	dailInfo          DailInfo
+	format            string = `%s:%s@tcp(%s:%d)/%s`
+	formatWithOptions string = `%s:%s@tcp(%s:%d)/%s?%s`
 )
 
 func Con() DBPool {
 	return dbp
 }
 
-func NewEngine(user string, password string, host string, port int, db string) (*xorm.Engine, error) {
-	dns := fmt.Sprintf(format, user, password, host, port, db)
+func NewEngine(d DailInfo) (*xorm.Engine, error) {
+	var dns string
+	if len(d.Options) > 0 {
+		dns = fmt.Sprintf(formatWithOptions, d.User, d.Password, d.Host, d.Port, d.DbName, d.Options)
+	} else {
+		dns = fmt.Sprintf(format, d.User, d.Password, d.Host, d.Port, d.DbName)
+	}
 	engine, err := xorm.NewEngine("mysql", dns)
 	if err != nil {
 		return nil, err
@@ -37,45 +55,41 @@ func NewEngine(user string, password string, host string, port int, db string) (
 	engine.Ping()
 	engine.SetMaxIdleConns(5)
 	engine.SetMaxOpenConns(10)
-	// if g.AppConfig().Debug {
-	// 	engine.ShowSQL(true)
-	// } else {
-	// 	engine.ShowSQL(false)
-	// }
+	engine.ShowSQL(d.Debug)
 	return engine, nil
 }
 
-func InitDB(loggerlevel bool, vip *viper.Viper) (err error) {
-	// var p *sql.DB
-	portal, err := NewEngine("", "", "", 3306, "")
+func InitDB(vip *viper.Viper) (err error) {
+	mapstructure.Decode(vip.GetStringMap("db.portal"), &dailInfo)
+	portal, err := NewEngine(dailInfo)
 	if err != nil {
 		return fmt.Errorf("connect to falcon_portal: %s", err.Error())
 	}
 	dbp.Falcon = portal
 
-	// var g *sql.DB
-	graphd, err := NewEngine("", "", "", 3306, "")
+	mapstructure.Decode(vip.GetStringMap("db.graph"), &dailInfo)
+	graphd, err := NewEngine(dailInfo)
 	if err != nil {
 		return fmt.Errorf("connect to graph: %s", err.Error())
 	}
 	dbp.Graph = graphd
 
-	// var u *sql.DB
-	uicd, err := NewEngine("", "", "", 3306, "")
+	mapstructure.Decode(vip.GetStringMap("db.uic"), &dailInfo)
+	uicd, err := NewEngine(dailInfo)
 	if err != nil {
 		return fmt.Errorf("connect to uic: %s", err.Error())
 	}
 	dbp.Uic = uicd
 
-	// var d *sql.DB
-	dashd, err := NewEngine("", "", "", 3306, "")
+	mapstructure.Decode(vip.GetStringMap("db.dashboard"), &dailInfo)
+	dashd, err := NewEngine(dailInfo)
 	if err != nil {
 		return fmt.Errorf("connect to dashboard: %s", err.Error())
 	}
 	dbp.Dashboard = dashd
 
-	// var alm *sql.DB
-	almd, err := NewEngine("", "", "", 3306, "")
+	mapstructure.Decode(vip.GetStringMap("db.alarms"), &dailInfo)
+	almd, err := NewEngine(dailInfo)
 	if err != nil {
 		return fmt.Errorf("connect to alarms: %s", err.Error())
 	}
