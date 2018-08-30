@@ -14,7 +14,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
@@ -22,7 +21,6 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/middleware"
-	"github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"
 
 	"github.com/mia0x75/dashboard-go/controllers/alerts"
@@ -32,8 +30,6 @@ import (
 )
 
 var (
-	lock      *sync.Mutex  = new(sync.Mutex)
-	caches    *cache.Cache = cache.New(5*time.Minute, 10*time.Minute)
 	path      string
 	templates map[string]*template.Template
 )
