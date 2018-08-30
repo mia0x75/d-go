@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"html/template"
@@ -10,7 +9,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -20,7 +18,6 @@ import (
 	"syscall"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
@@ -264,45 +261,5 @@ func main() {
 
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
-	}
-}
-
-func getOptionalSoleRequestValue(values url.Values, key string, initial string) (string, error) {
-	if value, found := values[key]; found {
-		if len(value) == 1 {
-			if len(value[0]) > 0 {
-				return value[0], nil
-			}
-		}
-	} else {
-		return initial, nil
-	}
-	return "", errors.New("Bad Request")
-}
-
-func getRequiredSoleRequestValue(values url.Values, key string) (string, error) {
-	if value, found := values[key]; found {
-		if len(value) == 1 {
-			if len(value[0]) > 0 {
-				return value[0], nil
-			}
-		}
-	}
-	return "", errors.New("Bad Request")
-}
-
-func getClaims(ts string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(ts, func(token *jwt.Token) (interface{}, error) {
-		return []byte(viper.GetString("secret")), nil
-	})
-	if err == nil {
-		if token.Valid {
-			claims := token.Claims.(jwt.MapClaims)
-			return claims, nil
-		} else {
-			return nil, errors.New(fmt.Sprintf("string %s is not a valid token.", ts))
-		}
-	} else {
-		return nil, err
 	}
 }
