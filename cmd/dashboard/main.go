@@ -39,9 +39,6 @@ var (
 )
 
 const (
-	JWT_ContextKey = "user"
-	JWT_AuthScheme = "Token"
-
 	PAGE_SIZE = 15
 )
 
@@ -229,8 +226,8 @@ func main() {
 	// Retreive context via c.GET("user")
 	r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: []byte(viper.GetString("secret")),
-		ContextKey: JWT_ContextKey,
-		AuthScheme: JWT_AuthScheme,
+		ContextKey: viper.GetString("jwt.context_key"),
+		AuthScheme: viper.GetString("jwt.auth_scheme"),
 		Skipper: func(c echo.Context) bool {
 			// Skip authentication for and signup login requests
 			if c.Path() == "/login.html" || c.Path() == "/register.html" {
