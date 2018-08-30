@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -21,24 +22,19 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/core"
-	"github.com/go-xorm/xorm"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/middleware"
-	"github.com/mia0x75/dashboard-go/config"
 	"github.com/mia0x75/dashboard-go/hack"
 	"github.com/mia0x75/dashboard-go/utils"
 	"github.com/patrickmn/go-cache"
+	"github.com/spf13/viper"
 )
 
 var (
-	engine    *xorm.Engine
-	cfg       *config.AppConfig
 	lock      *sync.Mutex  = new(sync.Mutex)
 	caches    *cache.Cache = cache.New(5*time.Minute, 10*time.Minute)
-	format    string       = `%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local`
 	path      string
 	templates map[string]*template.Template
 )
@@ -50,38 +46,51 @@ const (
 	PAGE_SIZE = 15
 )
 
+func parseFiles(t *template.Template, filenames ...string) (*template.Template, error) {
+	if len(filenames) == 0 {
+		// Not really a problem, but be consistent.
+		return nil, fmt.Errorf("html/template: no files named in call to ParseFiles")
+	}
+	for _, filename := range filenames {
+		b, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+		s := string(b)
+		name := filepath.Base(filename)
+		if strings.Index(filename, "views/docs") > 0 {
+			name = filename[len(path)+1+len("templates/views/"):] //
+		}
+		// First template becomes return value if not already defined,
+		// and we use that one for subsequent New calls to associate
+		// all the templates together. Also, if this file has the same name
+		// as t, this file becomes the contents of t, so
+		//  t, err := New(name).Funcs(xxx).ParseFiles(name)
+		// works. Otherwise we create a new template associated with t.
+		var tmpl *template.Template
+		if t == nil {
+			t = template.New(name)
+		}
+		if name == t.Name() {
+			tmpl = t
+		} else {
+			tmpl = t.New(name)
+		}
+		_, err = tmpl.Parse(s)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return t, nil
+}
+
 func init() {
-	p, err := utils.GetCurrentPath()
+	var err error
+	path, err = utils.GetCurrentPath()
 	if err != nil {
 		fmt.Printf("cannot startup project, error: %s\r\n", err.Error())
 		os.Exit(1)
-	} else {
-		path = p
-		c, err := config.ParseConfigFile(path + "/etc/config.yaml")
-		if err != nil {
-			fmt.Printf("config file error:%s\r\n", err.Error())
-			os.Exit(1)
-		}
-		cfg = c
 	}
-
-	dns := fmt.Sprintf(format, cfg.Database.User, cfg.Database.Password, cfg.Database.Host, cfg.Database.Port, cfg.Database.Db)
-	engine, err = xorm.NewEngine("mysql", dns)
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	engine.Logger().SetLevel(core.LOG_ERR)
-	engine.Ping()
-	engine.SetMaxIdleConns(5)
-	engine.SetMaxOpenConns(10)
-	if cfg.Debug {
-		engine.ShowSQL(true)
-	} else {
-		engine.ShowSQL(false)
-	}
-
 	if templates == nil {
 		templates = make(map[string]*template.Template)
 	}
@@ -119,7 +128,7 @@ func init() {
 	for _, page := range pages {
 		files := append(includes, page)
 		key := page[len(templatesDir+"views/"):len(page)]
-		templates[key] = template.Must(template.ParseFiles(files...))
+		templates[key] = template.Must(parseFiles(nil, files...))
 	}
 }
 
@@ -144,12 +153,25 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func main() {
-	// 初始化打开，主函数结束关闭
-	defer engine.Close()
+	cfgTmp := flag.String("c", "cfg.json", "configuration file")
+	flag.Parse()
+	cfg := *cfgTmp
 
 	fmt.Println(fmt.Sprintf("git commit: %s", hack.Version))
 	fmt.Println(fmt.Sprintf("build time: %s", hack.Compile))
 	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("/")
+	viper.AddConfigPath("./etc")
+	viper.SetConfigType("json")
+	cfg = strings.Replace(cfg, ".json", "", 1)
+	viper.SetConfigName(cfg)
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// 初始化服务器
 	e := echo.New()
@@ -207,7 +229,7 @@ func main() {
 	// Default ContextKey for JWT is user
 	// Retreive context via c.GET("user")
 	r.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey: []byte(cfg.Secret),
+		SigningKey: []byte(viper.GetString("secret")),
 		ContextKey: JWT_ContextKey,
 		AuthScheme: JWT_AuthScheme,
 		Skipper: func(c echo.Context) bool {
@@ -222,7 +244,7 @@ func main() {
 	Router(e)
 
 	// 启动服务
-	addr := fmt.Sprintf("%s:%d", cfg.Listen, cfg.Port)
+	addr := fmt.Sprintf("%s:%d", viper.GetString("listen"), viper.GetInt("port"))
 	go func() {
 		err := e.StartTLS(addr, fmt.Sprintf("%s/etc/cert.pem", path), fmt.Sprintf("%s/etc/key.pem", path))
 		if err != nil {
@@ -279,7 +301,7 @@ func getRequiredSoleRequestValue(values url.Values, key string) (string, error) 
 
 func getClaims(ts string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(ts, func(token *jwt.Token) (interface{}, error) {
-		return []byte(cfg.Secret), nil
+		return []byte(viper.GetString("secret")), nil
 	})
 	if err == nil {
 		if token.Valid {
@@ -464,7 +486,7 @@ func Router(e *echo.Echo) {
 		})
 	})
 	e.GET("/docs/form-components.html", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "docs/formcomponents.html", map[string]interface{}{
+		return c.Render(http.StatusOK, "docs/form-components.html", map[string]interface{}{
 			"name": "Dolly!",
 		})
 	})
