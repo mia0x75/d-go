@@ -21,7 +21,6 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
