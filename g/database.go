@@ -1,9 +1,7 @@
 package g
 
 import (
-	"database/sql"
 	"fmt"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
@@ -28,12 +26,11 @@ func Con() DBPool {
 	return dbp
 }
 
-func NewEngine(user string, password string, host string, port int, db string) *xorm.Engine {
+func NewEngine(user string, password string, host string, port int, db string) (*xorm.Engine, error) {
 	dns := fmt.Sprintf(format, user, password, host, port, db)
 	engine, err := xorm.NewEngine("mysql", dns)
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return nil, err
 	}
 
 	engine.Logger().SetLevel(core.LOG_ERR)
@@ -45,61 +42,45 @@ func NewEngine(user string, password string, host string, port int, db string) *
 	// } else {
 	// 	engine.ShowSQL(false)
 	// }
-	return engine
+	return engine, nil
 }
 
 func InitDB(loggerlevel bool, vip *viper.Viper) (err error) {
-	var p *sql.DB
+	// var p *sql.DB
 	portal, err := NewEngine("", "", "", 3306, "")
-	portal.Dialect().SetDB(p)
-	portal.LogMode(loggerlevel)
 	if err != nil {
 		return fmt.Errorf("connect to falcon_portal: %s", err.Error())
 	}
-	portal.SingularTable(true)
 	dbp.Falcon = portal
 
-	var g *sql.DB
+	// var g *sql.DB
 	graphd, err := NewEngine("", "", "", 3306, "")
-	graphd.Dialect().SetDB(g)
-	graphd.LogMode(loggerlevel)
 	if err != nil {
 		return fmt.Errorf("connect to graph: %s", err.Error())
 	}
-	graphd.SingularTable(true)
 	dbp.Graph = graphd
 
-	var u *sql.DB
+	// var u *sql.DB
 	uicd, err := NewEngine("", "", "", 3306, "")
-	uicd.Dialect().SetDB(u)
-	uicd.LogMode(loggerlevel)
 	if err != nil {
 		return fmt.Errorf("connect to uic: %s", err.Error())
 	}
-	uicd.SingularTable(true)
 	dbp.Uic = uicd
 
-	var d *sql.DB
+	// var d *sql.DB
 	dashd, err := NewEngine("", "", "", 3306, "")
-	dashd.Dialect().SetDB(d)
-	dashd.LogMode(loggerlevel)
 	if err != nil {
 		return fmt.Errorf("connect to dashboard: %s", err.Error())
 	}
-	dashd.SingularTable(true)
 	dbp.Dashboard = dashd
 
-	var alm *sql.DB
+	// var alm *sql.DB
 	almd, err := NewEngine("", "", "", 3306, "")
-	almd.Dialect().SetDB(alm)
-	almd.LogMode(loggerlevel)
 	if err != nil {
 		return fmt.Errorf("connect to alarms: %s", err.Error())
 	}
-	almd.SingularTable(true)
 	dbp.Alarm = almd
 
-	SetLogLevel(loggerlevel)
 	return
 }
 
