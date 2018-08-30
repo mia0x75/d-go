@@ -242,12 +242,7 @@ func main() {
 	// 启动服务
 	addr := fmt.Sprintf("%s:%d", viper.GetString("listen"), viper.GetInt("port"))
 	go func() {
-		err := e.StartTLS(addr, fmt.Sprintf("%s/etc/cert.pem", path), fmt.Sprintf("%s/etc/key.pem", path))
-		if err != nil {
-			e.Logger.Info("shutting down the server")
-		} else {
-			e.Logger.Info(fmt.Sprintf("The server is running on: %s.", addr))
-		}
+		e.StartTLS(addr, fmt.Sprintf("%s/etc/cert.pem", path), fmt.Sprintf("%s/etc/key.pem", path))
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
