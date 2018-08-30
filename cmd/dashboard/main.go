@@ -28,11 +28,6 @@ import (
 
 var (
 	path string
-	// templates map[string]*template.Template
-)
-
-const (
-	PAGE_SIZE = 15
 )
 
 func init() {
