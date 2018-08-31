@@ -1,121 +1,118 @@
-{{ template "default" }}
+{{ template "single" }}
+{{ . }}
 {{ define "content" }}
-{{ .name }} - {{ .title }}
-template data: {{ . }}
-<div class="container" style="padding:0px 10px; width:900px;">
-	<table class="table table-striped">
-		<tr>
-			<td>服务运行时间</td>
-			<td>{{ .stats.Uptime }}</td>
-		</tr>
-		<tr>
-			<td>当前 Goroutines 数量</td>
-			<td>{{ .stats.NumGoroutine }}</td>
-		</tr>
-		<tr>
-			<td>当前内存使用量</td>
-			<td>{{ .stats.MemAllocated }}</td>
-		</tr>
-		<tr>
-			<td>所有被分配的内存</td>
-			<td>{{ .stats.MemTotal }}</td>
-		</tr>
-		<tr>
-			<td>内存占用量</td>
-			<td>{{ .stats.MemSys }}</td>
-		</tr>
-		<tr>
-			<td>指针查找次数</td>
-			<td>{{ .stats.Lookups }}</td>
-		</tr>
-		<tr>
-			<td>内存分配次数</td>
-			<td>{{ .stats.MemMallocs }}</td>
-		</tr>
-		<tr>
-			<td>内存释放次数</td>
-			<td>{{ .stats.MemFrees }}</td>
-		</tr>
-		<tr>
-			<td>当前 Heap 内存使用量</td>
-			<td>{{ .stats.HeapAlloc }}</td>
-		</tr>
-		<tr>
-			<td>Heap 内存占用量</td>
-			<td>{{ .stats.HeapSys }}</td>
-		</tr>
-		<tr>
-			<td>Heap 内存空闲量</td>
-			<td>{{ .stats.HeapIdle }}</td>
-		</tr>
-		<tr>
-			<td>正在使用的 Heap 内存</td>
-			<td>{{ .stats.HeapInuse }}</td>
-		</tr>
-		<tr>
-			<td>被释放的 Heap 内存</td>
-			<td>{{ .stats.HeapReleased }}</td>
-		</tr>
-		<tr>
-			<td>Heap 对象数量</td>
-			<td>{{ .stats.HeapObjects }}</td>
-		</tr>
-		<tr>
-			<td>启动 Stack 使用量</td>
-			<td>{{ .stats.StackInuse }}</td>
-		</tr>
-		<tr>
-			<td>被分配的 Stack 内存</td>
-			<td>{{ .stats.StackSys }}</td>
-		</tr>
-		<tr>
-			<td>MSpan 结构内存使用量</td>
-			<td>{{ .stats.MSpanInuse }}</td>
-		</tr>
-		<tr>
-			<td>被分配的 MSpan 结构内存</td>
-			<td>{{ .stats.HeapSys }}</td>
-		</tr>
-		<tr>
-			<td>MCache 结构内存使用量</td>
-			<td>{{ .stats.MCacheInuse }}</td>
-		</tr>
-		<tr>
-			<td>被分配的 MCache 结构内存</td>
-			<td>{{ .stats.MCacheSys }}</td>
-		</tr>
-		<tr>
-			<td>被分配的剖析哈希表内存</td>
-			<td>{{ .stats.BuckHashSys }}</td>
-		</tr>
-		<tr>
-			<td>被分配的 GC 元数据内存</td>
-			<td>{{ .stats.GCSys }}</td>
-		</tr>
-		<tr>
-			<td>其它被分配的系统内存</td>
-			<td>{{ .stats.OtherSys }}</td>
-		</tr>
-		<tr>
-			<td>下次 GC 内存回收量</td>
-			<td>{{ .stats.NextGC }}</td>
-		</tr>
-		<tr>
-			<td>距离上次 GC 时间</td>
-			<td>{{ .stats.LastGC }}</td>
-		</tr>
-		<tr>
-			<td>GC 暂停时间总量</td>
-			<td>{{ .stats.PauseTotalNs }}</td>
-		</tr>
-		<tr>
-			<td>上次 GC 暂停时间</td>
-			<td>{{ .stats.PauseNs }}</td>
-		</tr>
-		<tr>
-			<td>GC 执行次数</td>
-			<td>{{ .stats.NumGC }}</td>
-		</tr>
-	</table>
-</div>
+<table class="table table-striped">
+	<tr>
+		<td>服务运行时间</td>
+		<td>{{ .stats.Uptime }}</td>
+	</tr>
+	<tr>
+		<td>当前 Goroutines 数量</td>
+		<td>{{ .stats.NumGoroutine }}</td>
+	</tr>
+	<tr>
+		<td>当前内存使用量</td>
+		<td>{{ .stats.MemAllocated }}</td>
+	</tr>
+	<tr>
+		<td>所有被分配的内存</td>
+		<td>{{ .stats.MemTotal }}</td>
+	</tr>
+	<tr>
+		<td>内存占用量</td>
+		<td>{{ .stats.MemSys }}</td>
+	</tr>
+	<tr>
+		<td>指针查找次数</td>
+		<td>{{ .stats.Lookups }}</td>
+	</tr>
+	<tr>
+		<td>内存分配次数</td>
+		<td>{{ .stats.MemMallocs }}</td>
+	</tr>
+	<tr>
+		<td>内存释放次数</td>
+		<td>{{ .stats.MemFrees }}</td>
+	</tr>
+	<tr>
+		<td>当前 Heap 内存使用量</td>
+		<td>{{ .stats.HeapAlloc }}</td>
+	</tr>
+	<tr>
+		<td>Heap 内存占用量</td>
+		<td>{{ .stats.HeapSys }}</td>
+	</tr>
+	<tr>
+		<td>Heap 内存空闲量</td>
+		<td>{{ .stats.HeapIdle }}</td>
+	</tr>
+	<tr>
+		<td>正在使用的 Heap 内存</td>
+		<td>{{ .stats.HeapInuse }}</td>
+	</tr>
+	<tr>
+		<td>被释放的 Heap 内存</td>
+		<td>{{ .stats.HeapReleased }}</td>
+	</tr>
+	<tr>
+		<td>Heap 对象数量</td>
+		<td>{{ .stats.HeapObjects }}</td>
+	</tr>
+	<tr>
+		<td>启动 Stack 使用量</td>
+		<td>{{ .stats.StackInuse }}</td>
+	</tr>
+	<tr>
+		<td>被分配的 Stack 内存</td>
+		<td>{{ .stats.StackSys }}</td>
+	</tr>
+	<tr>
+		<td>MSpan 结构内存使用量</td>
+		<td>{{ .stats.MSpanInuse }}</td>
+	</tr>
+	<tr>
+		<td>被分配的 MSpan 结构内存</td>
+		<td>{{ .stats.HeapSys }}</td>
+	</tr>
+	<tr>
+		<td>MCache 结构内存使用量</td>
+		<td>{{ .stats.MCacheInuse }}</td>
+	</tr>
+	<tr>
+		<td>被分配的 MCache 结构内存</td>
+		<td>{{ .stats.MCacheSys }}</td>
+	</tr>
+	<tr>
+		<td>被分配的剖析哈希表内存</td>
+		<td>{{ .stats.BuckHashSys }}</td>
+	</tr>
+	<tr>
+		<td>被分配的 GC 元数据内存</td>
+		<td>{{ .stats.GCSys }}</td>
+	</tr>
+	<tr>
+		<td>其它被分配的系统内存</td>
+		<td>{{ .stats.OtherSys }}</td>
+	</tr>
+	<tr>
+		<td>下次 GC 内存回收量</td>
+		<td>{{ .stats.NextGC }}</td>
+	</tr>
+	<tr>
+		<td>距离上次 GC 时间</td>
+		<td>{{ .stats.LastGC }}</td>
+	</tr>
+	<tr>
+		<td>GC 暂停时间总量</td>
+		<td>{{ .stats.PauseTotalNs }}</td>
+	</tr>
+	<tr>
+		<td>上次 GC 暂停时间</td>
+		<td>{{ .stats.PauseNs }}</td>
+	</tr>
+	<tr>
+		<td>GC 执行次数</td>
+		<td>{{ .stats.NumGC }}</td>
+	</tr>
+</table>
 {{ end }}
