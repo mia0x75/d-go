@@ -4,8 +4,18 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 )
+
+func GetCurrentPath() (string, error) {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		return "", err
+	}
+	return strings.Replace(dir, "\\", "/", -1), nil
+}
 
 // IsTextFile returns true if file content format is plain text or empty.
 func IsTextFile(data []byte) bool {

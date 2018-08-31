@@ -68,7 +68,7 @@ func main() {
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
-	e.Debug = false
+	e.Debug = viper.GetBool("debug")
 	e.Renderer = &g.Template{}
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		var code = http.StatusInternalServerError
