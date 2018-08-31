@@ -1,0 +1,26 @@
+{{ define "single" }}
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+	{{ template "head" }}
+</head>
+<body class="">
+
+<div class="page">
+	<div class="page-single">
+		<div class="container">
+			<div class="row">
+				<div class="col col-login mx-auto">
+					<div class="text-center mb-6">
+						<img src="./demo/brand/tabler.svg" class="h-6" alt="">
+					</div>
+					 {{ template "content" .}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
+{{ end }}

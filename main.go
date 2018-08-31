@@ -20,10 +20,12 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/spf13/viper"
 
-	"github.com/mia0x75/dashboard-go/controllers/alerts"
-	"github.com/mia0x75/dashboard-go/controllers/hosts"
 	"github.com/mia0x75/dashboard-go/g"
 	"github.com/mia0x75/dashboard-go/hack"
+	"github.com/mia0x75/dashboard-go/modules/alerts"
+	"github.com/mia0x75/dashboard-go/modules/docs"
+	"github.com/mia0x75/dashboard-go/modules/hosts"
+	"github.com/mia0x75/dashboard-go/modules/various"
 )
 
 var (
@@ -80,18 +82,18 @@ func main() {
 		}
 	}
 
-	// Static files
 	e.Static("/assets", "public/assets")
 	e.Static("/demo", "public/demo")
-	// Favicon
 	e.File("/favicon.ico", "public/assets/images/favicon.ico")
 
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(middleware.Recover())
 	e.Pre(middleware.Rewrite(map[string]string{
 		"/":   "/index.html",
 		"/*/": "/$1/index.html",
 	}))
+	e.Use(middleware.SecureWithConfig(middleware.DefaultSecureConfig))
+	e.Use(middleware.MethodOverride())
+	e.Use(middleware.Recover())
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: 5,
 	}))
@@ -107,28 +109,38 @@ func main() {
 		TokenLookup: "header:X-XSRF-TOKEN",
 	}))
 
-	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey: []byte(viper.GetString("secret")),
-		ContextKey: viper.GetString("jwt.context_key"),
-		AuthScheme: viper.GetString("jwt.auth_scheme"),
-		Skipper: func(c echo.Context) bool {
-			// Skip authentication for and signup login requests
-			for _, p := range UnrestrictedResources {
-				if p.MatchString(c.Path()) {
-					return true
+	if !viper.GetBool("debug") {
+		e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+			SigningKey: []byte(viper.GetString("secret")),
+			ContextKey: viper.GetString("jwt.context_key"),
+			AuthScheme: viper.GetString("jwt.auth_scheme"),
+			Skipper: func(c echo.Context) bool {
+				// Skip authentication for and signup login requests
+				for _, p := range UnrestrictedResources {
+					if p.MatchString(c.Path()) {
+						return true
+					}
 				}
-			}
-			return false
-		},
-		ErrorHandler: func(c echo.Context, err error) error {
-			// Redirect to login.html
-			c.Redirect(http.StatusSeeOther, "/login.html")
-			return nil
-		},
-	}))
+				return false
+			},
+			BeforeFunc: func(c echo.Context) {
+				c.Set("Authorized", false)
+			},
+			SuccessHandler: func(c echo.Context) {
+				c.Set("Authorized", true)
+			},
+			ErrorHandler: func(c echo.Context, err error) error {
+				// Redirect to login.html
+				c.Redirect(http.StatusSeeOther, "/login.html")
+				return nil
+			},
+		}))
+	}
 
-	hosts.Routes(e)
 	alerts.Routes(e)
+	docs.Routes(e)
+	hosts.Routes(e)
+	various.Routes(e)
 
 	// Startup http service
 	addr := fmt.Sprintf("%s:%d", viper.GetString("listen"), viper.GetInt("port"))
