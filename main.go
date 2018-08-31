@@ -65,13 +65,11 @@ func main() {
 		log.Fatalf("db conn failed with error %s", err.Error())
 	}
 
-	// Initialize echo object
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
 	e.Debug = false
-	renderer := &g.Template{}
-	e.Renderer = renderer
+	e.Renderer = &g.Template{}
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		var code = http.StatusInternalServerError
 		if he, ok := err.(*echo.HTTPError); ok {
@@ -103,12 +101,9 @@ func main() {
 			`method:${method} uri:${uri} status:${status} bytes_in:${bytes_in} ` +
 			`bytes_out:${bytes_out}` + "\n",
 	}))
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-
 	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup: "header:X-XSRF-TOKEN",
 	}))
-
 	if !viper.GetBool("debug") {
 		e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 			SigningKey: []byte(viper.GetString("secret")),
@@ -136,6 +131,8 @@ func main() {
 			},
 		}))
 	}
+
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	alerts.Routes(e)
 	docs.Routes(e)
