@@ -14,13 +14,73 @@ var (
 	startTime = time.Now()
 )
 
-func Dashboard(c echo.Context) error {
+func dashboard(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
 		"name": "Dolly!",
 	})
 }
 
-func About(c echo.Context) error {
+func login(c echo.Context) error {
+	return c.Render(http.StatusOK, "login.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func register(c echo.Context) error {
+	return c.Render(http.StatusOK, "register.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func forgot(c echo.Context) error {
+	return c.Render(http.StatusOK, "forgot-password.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error400(c echo.Context) error {
+	return c.Render(http.StatusOK, "400.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error401(c echo.Context) error {
+	return c.Render(http.StatusOK, "401.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error402(c echo.Context) error {
+	return c.Render(http.StatusOK, "402.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error403(c echo.Context) error {
+	return c.Render(http.StatusOK, "403.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error404(c echo.Context) error {
+	return c.Render(http.StatusOK, "404.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error500(c echo.Context) error {
+	return c.Render(http.StatusOK, "500.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func error503(c echo.Context) error {
+	return c.Render(http.StatusOK, "503.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func about(c echo.Context) error {
 	updateSystemStatus()
 	return c.Render(http.StatusOK, "about.html", map[string]interface{}{
 		"name":  "Dolly!",

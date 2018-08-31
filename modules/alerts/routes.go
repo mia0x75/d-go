@@ -49,7 +49,4 @@ func Routes(e *echo.Echo) {
 	e.GET("/form-elements.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return form
 	})
-
-	// r := e.Group("/alerts")
-	// r.GET("/", List)
 }
