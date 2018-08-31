@@ -1,8 +1,6 @@
 package various
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo"
 )
 
@@ -16,7 +14,6 @@ func Routes(e *echo.Echo) {
 		return about
 	})
 	e.Any("/login.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		fmt.Println("--.--")
 		return login
 	})
 	e.GET("/register.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
