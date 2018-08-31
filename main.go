@@ -100,36 +100,35 @@ func main() {
 			`method:${method} uri:${uri} status:${status} bytes_in:${bytes_in} ` +
 			`bytes_out:${bytes_out}` + "\n",
 	}))
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-		TokenLookup: "header:X-XSRF-TOKEN",
-	}))
-	if !viper.GetBool("debug") {
-		e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-			SigningKey: []byte(viper.GetString("secret")),
-			ContextKey: viper.GetString("jwt.context_key"),
-			AuthScheme: viper.GetString("jwt.auth_scheme"),
-			Skipper: func(c echo.Context) bool {
-				// Skip authentication for and signup login requests
-				for _, p := range UnrestrictedResources {
-					if p.MatchString(c.Path()) {
-						return true
-					}
+	// TODO: 403
+	// e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+	// 	TokenLookup: "header:X-XSRF-TOKEN",
+	// }))
+	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey: []byte(viper.GetString("secret")),
+		ContextKey: viper.GetString("jwt.context_key"),
+		AuthScheme: viper.GetString("jwt.auth_scheme"),
+		Skipper: func(c echo.Context) bool {
+			// Skip authentication for and signup login requests
+			for _, p := range UnrestrictedResources {
+				if p.MatchString(c.Path()) {
+					return true
 				}
-				return false
-			},
-			BeforeFunc: func(c echo.Context) {
-				c.Set("Authorized", false)
-			},
-			SuccessHandler: func(c echo.Context) {
-				c.Set("Authorized", true)
-			},
-			ErrorHandler: func(c echo.Context, err error) error {
-				// Redirect to login.html
-				c.Redirect(http.StatusSeeOther, "/login.html")
-				return nil
-			},
-		}))
-	}
+			}
+			return false
+		},
+		BeforeFunc: func(c echo.Context) {
+			c.Set("Authorized", false)
+		},
+		SuccessHandler: func(c echo.Context) {
+			c.Set("Authorized", true)
+		},
+		ErrorHandler: func(c echo.Context, err error) error {
+			// Redirect to login.html
+			c.Redirect(http.StatusSeeOther, "/login.html")
+			return nil
+		},
+	}))
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
@@ -140,7 +139,9 @@ func main() {
 
 	// Startup http service
 	go func() {
-		e.StartTLS(viper.GetString("addr"), "etc/cert.pem", "etc/key.pem")
+		addr := viper.GetString("addr")
+		e.StartTLS(addr, "etc/cert.pem", "etc/key.pem")
+
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with

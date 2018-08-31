@@ -54,6 +54,11 @@ func login(c echo.Context) error {
 			if err != nil {
 				return err
 			}
+			cookie := new(http.Cookie)
+			cookie.Name = "token"
+			cookie.Value = cipher
+			cookie.Expires = time.Now().Add(24 * time.Hour)
+			c.SetCookie(cookie)
 			return c.JSON(http.StatusOK, map[string]interface{}{
 				"token": cipher,
 				"id":    0,
