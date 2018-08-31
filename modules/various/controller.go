@@ -1,11 +1,16 @@
 package various
 
 import (
+	"bytes"
+	"crypto/sha512"
 	"fmt"
 	"net/http"
 	"runtime"
 	"time"
 
+	"github.com/spf13/viper"
+
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/mia0x75/dashboard-go/utils"
 )
@@ -21,9 +26,42 @@ func dashboard(c echo.Context) error {
 }
 
 func login(c echo.Context) error {
-	return c.Render(http.StatusOK, "login.html", map[string]interface{}{
-		"name": "Dolly!",
-	})
+	if c.Request().Method == "GET" {
+		return c.Render(http.StatusOK, "login.html", map[string]interface{}{
+			"name": "Dolly!",
+		})
+	}
+	if c.Request().Method == "POST" {
+		email := c.FormValue("exampleInputEmail1")
+		password := c.FormValue("exampleInputPassword1")
+		salt := []byte(viper.GetString("salt"))
+		h := sha512.New384()
+		h.Write([]byte(password))
+		h.Write(salt)
+		// TODO:
+		if bytes.Compare(h.Sum(nil), h.Sum(nil)) == 0 {
+			// Create token
+			token := jwt.New(jwt.SigningMethodHS256)
+
+			// Set claims
+			claims := token.Claims.(jwt.MapClaims)
+			claims["id"] = 0
+			claims["email"] = email
+			claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+			// Generate encoded token and send it as response.
+			cipher, err := token.SignedString([]byte(viper.GetString("secret")))
+			if err != nil {
+				return err
+			}
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"token": cipher,
+				"id":    0,
+				"email": email,
+			})
+		}
+	}
+	return echo.NewHTTPError(http.StatusBadRequest, "Method not allowed.")
 }
 
 func register(c echo.Context) error {

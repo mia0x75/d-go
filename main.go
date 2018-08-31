@@ -95,7 +95,6 @@ func main() {
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Level: 5,
 	}))
-	e.Use(middleware.CSRF())
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `time:${time_unix} remote_ip:${remote_ip} host:${host} ` +
 			`method:${method} uri:${uri} status:${status} bytes_in:${bytes_in} ` +
@@ -140,9 +139,8 @@ func main() {
 	various.Routes(e)
 
 	// Startup http service
-	addr := fmt.Sprintf("%s:%d", viper.GetString("listen"), viper.GetInt("port"))
 	go func() {
-		e.StartTLS(addr, "etc/cert.pem", "etc/key.pem")
+		e.StartTLS(viper.GetString("addr"), "etc/cert.pem", "etc/key.pem")
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
