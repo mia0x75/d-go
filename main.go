@@ -13,7 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
@@ -29,6 +28,7 @@ import (
 )
 
 func main() {
+	var err error
 	cfgTmp := flag.String("c", "cfg.json", "configuration file")
 	flag.Parse()
 	cfg := *cfgTmp
@@ -44,10 +44,11 @@ func main() {
 	cfg = strings.Replace(cfg, ".json", "", 1)
 	viper.SetConfigName(cfg)
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	err = g.InitDB(viper.GetViper())
 	if err != nil {
 		log.Fatalf("db conn failed with error %s", err.Error())
@@ -88,6 +89,10 @@ func main() {
 			`method:${method} uri:${uri} status:${status} bytes_in:${bytes_in} ` +
 			`bytes_out:${bytes_out}` + "\n",
 	}))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+	}))
 	// TODO: 403
 	// e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 	// 	TokenLookup: "header:X-XSRF-TOKEN",
@@ -125,31 +130,5 @@ func main() {
 
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
-	}
-}
-
-func getClaims(cipher string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(cipher, func(token *jwt.Token) (interface{}, error) {
-		return []byte(viper.GetString("secret")), nil
-	})
-	if err == nil {
-		if token.Valid {
-			claims := token.Claims.(jwt.MapClaims)
-			return claims, nil
-		} else {
-			return nil, fmt.Errorf("string: %s is not a valid token, err: %v", cipher, err)
-		}
-	} else {
-		return nil, err
-	}
-}
-
-func tokenValidation(c echo.Context) bool {
-	_, err := getClaims(c.FormValue("token"))
-	if err == nil {
-		// id := uint(claims["id"].(float64))
-		return true
-	} else {
-		return false
 	}
 }
