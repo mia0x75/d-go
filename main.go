@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"regexp"
 	"runtime"
 	"strings"
 	"syscall"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
@@ -26,18 +26,6 @@ import (
 	"github.com/mia0x75/dashboard-go/modules/docs"
 	"github.com/mia0x75/dashboard-go/modules/hosts"
 	"github.com/mia0x75/dashboard-go/modules/various"
-)
-
-var (
-	UnrestrictedResources = [...]*regexp.Regexp{
-		regexp.MustCompile("^/login\\.html$"),
-		regexp.MustCompile("^/register\\.html$"),
-		regexp.MustCompile("^/forgot-password\\.html$"),
-		regexp.MustCompile("^/terms\\.html$"),
-		regexp.MustCompile("^/assets/.+$"),
-		regexp.MustCompile("^/demo/.+$"),
-		regexp.MustCompile("^/favicon.ico$"),
-	}
 )
 
 func main() {
@@ -104,31 +92,6 @@ func main() {
 	// e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 	// 	TokenLookup: "header:X-XSRF-TOKEN",
 	// }))
-	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey: []byte(viper.GetString("secret")),
-		ContextKey: viper.GetString("jwt.context_key"),
-		AuthScheme: viper.GetString("jwt.auth_scheme"),
-		Skipper: func(c echo.Context) bool {
-			// Skip authentication for and signup login requests
-			for _, p := range UnrestrictedResources {
-				if p.MatchString(c.Path()) {
-					return true
-				}
-			}
-			return false
-		},
-		BeforeFunc: func(c echo.Context) {
-			c.Set("Authorized", false)
-		},
-		SuccessHandler: func(c echo.Context) {
-			c.Set("Authorized", true)
-		},
-		ErrorHandler: func(c echo.Context, err error) error {
-			// Redirect to login.html
-			c.Redirect(http.StatusSeeOther, "/login.html")
-			return nil
-		},
-	}))
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
@@ -162,5 +125,31 @@ func main() {
 
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
+	}
+}
+
+func getClaims(cipher string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(cipher, func(token *jwt.Token) (interface{}, error) {
+		return []byte(viper.GetString("secret")), nil
+	})
+	if err == nil {
+		if token.Valid {
+			claims := token.Claims.(jwt.MapClaims)
+			return claims, nil
+		} else {
+			return nil, fmt.Errorf("string: %s is not a valid token, err: %v", cipher, err)
+		}
+	} else {
+		return nil, err
+	}
+}
+
+func tokenValidation(c echo.Context) bool {
+	_, err := getClaims(c.FormValue("token"))
+	if err == nil {
+		// id := uint(claims["id"].(float64))
+		return true
+	} else {
+		return false
 	}
 }

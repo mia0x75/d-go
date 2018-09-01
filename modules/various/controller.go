@@ -10,7 +10,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/mia0x75/dashboard-go/utils"
 )
@@ -38,7 +38,7 @@ func login(c echo.Context) error {
 		h := sha512.New384()
 		h.Write([]byte(password))
 		h.Write(salt)
-		// TODO:
+		// TODO: Retrieve password hash value from database
 		if bytes.Compare(h.Sum(nil), h.Sum(nil)) == 0 {
 			// Create token
 			token := jwt.New(jwt.SigningMethodHS256)
@@ -59,11 +59,7 @@ func login(c echo.Context) error {
 			cookie.Value = cipher
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
-			return c.JSON(http.StatusOK, map[string]interface{}{
-				"token": cipher,
-				"id":    0,
-				"email": email,
-			})
+			return c.Redirect(http.StatusSeeOther, "/index.html")
 		}
 	}
 	return echo.NewHTTPError(http.StatusBadRequest, "Method not allowed.")
