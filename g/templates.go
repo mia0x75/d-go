@@ -32,15 +32,15 @@ func init() {
 
 	templatesDir := path + "/templates/"
 	pages := []string{}
-	err = filepath.Walk(templatesDir+"views/", func(path string, f os.FileInfo, err error) error {
-		if !f.IsDir() && strings.HasSuffix(path, ".html") {
+	err = filepath.Walk(templatesDir+"views/", func(page string, f os.FileInfo, err error) error {
+		if !f.IsDir() && strings.HasSuffix(page, ".html") {
 			if err != nil {
 				return err
 			}
-			if _, err := ioutil.ReadFile(path); err != nil {
+			if _, err := ioutil.ReadFile(page); err != nil {
 				return err
 			}
-			pages = append(pages, path)
+			pages = append(pages, page)
 		}
 		return nil
 	})
@@ -70,13 +70,12 @@ func init() {
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	// Ensure the template exists in the map.
-	key := name
-	tmpl, ok := templates[key]
+	tmpl, ok := templates[name]
 	if !ok {
 		return fmt.Errorf("The template %s does not exist.", name)
 	}
 
-	err := tmpl.ExecuteTemplate(w, key, data) // Raise an error
+	err := tmpl.ExecuteTemplate(w, name, data) // Raise an error
 	if err != nil {
 		return err
 	} else {
