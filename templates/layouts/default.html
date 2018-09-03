@@ -1,11 +1,8 @@
 {{ define "default" }}
-<!doctype html>
-<html lang="en" dir="ltr">
-<head>
-{{ template "head" }}
-</head>
-<body class="">
-	<div class="page">
+{{ template "layout" }}
+{{ end }}
+
+{{ define "page" }}
 		{{ template "aside" }}
 		<div class="flex-fill">
 			{{ template "header" }}
@@ -14,13 +11,10 @@
 					<div class="page-header">
 						<h1 class="page-title">{{ .pagetitle }}</h1>
 					</div>
+					{{ template "content" . }}
 				</div>
-				{{ template "content" . }}
 			</div>
 		</div>
 		{{ template "footer-sub" }}
 		{{ template "footer" }}
-	</div>
-</body>
-</html>
 {{ end }}

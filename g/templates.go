@@ -75,7 +75,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 		return fmt.Errorf("The template %s does not exist.", name)
 	}
 
-	err := tmpl.ExecuteTemplate(w, name, data) // Raise an error
+	err := tmpl.ExecuteTemplate(w, "layout", data)
 	if err != nil {
 		return err
 	} else {
@@ -99,9 +99,11 @@ func parseFiles(path string, t *template.Template, filenames ...string) (*templa
 		}
 		s := string(b)
 		name := filepath.Base(filename)
-		if strings.Index(filename, "views/docs") > 0 {
+		// TODO: Remove hardcode
+		if strings.Index(filename, "/templates/views/docs/") > 0 {
 			name = filename[len(path)+1+len("templates/views/"):] //
 		}
+		fmt.Printf("filename: %-90s -> name: %s\n", filename, name)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
 		// all the templates together. Also, if this file has the same name
