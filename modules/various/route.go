@@ -4,43 +4,20 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Routes
 func Routes(e *echo.Echo) {
-	h := func(echo.Context) error { return nil }
+	e.GET("/about.html", about) // template test purpose
+	e.Any("/login.html", login)
+	e.GET("/index.html", dashboard)
+	e.GET("/register.html", register)
+	e.GET("/forgot-password.html", forgot)
+	e.GET("/400.html", error400)
+	e.GET("/401.html", error401)
+	e.GET("/402.html", error402)
+	e.GET("/403.html", error403)
+	e.GET("/404.html", error404)
+	e.GET("/500.html", error500)
+	e.GET("/503.html", error503)
 
-	e.GET("/index.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return dashboard
-	})
-	e.GET("/about.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return about
-	})
-	e.Any("/login.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return login
-	})
-	e.GET("/register.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return register
-	})
-	e.GET("/forgot-password.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return forgot
-	})
-	e.GET("/400.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error400
-	})
-	e.GET("/401.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error401
-	})
-	e.GET("/402.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error402
-	})
-	e.GET("/403.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error403
-	})
-	e.GET("/404.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error404
-	})
-	e.GET("/500.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error500
-	})
-	e.GET("/503.html", h, func(next echo.HandlerFunc) echo.HandlerFunc {
-		return error503
-	})
+	// e.GET("/captcha", captcha.Server(captcha.StdWidth, captcha.StdHeight))
 }

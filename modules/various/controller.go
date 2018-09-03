@@ -27,8 +27,10 @@ func dashboard(c echo.Context) error {
 
 func login(c echo.Context) error {
 	if c.Request().Method == "GET" {
+		token := c.Get(viper.GetString("csrf.context_key")).(string)
 		return c.Render(http.StatusOK, "login.html", map[string]interface{}{
 			"name": "Dolly!",
+			"csrf": token,
 		})
 	}
 	if c.Request().Method == "POST" {

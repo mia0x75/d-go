@@ -4,3 +4,4 @@ templates_orig/
 scripts/
 *.md
 models/
+session/

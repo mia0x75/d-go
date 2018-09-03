@@ -25,6 +25,7 @@ import (
 	"github.com/mia0x75/dashboard-go/modules/docs"
 	"github.com/mia0x75/dashboard-go/modules/hosts"
 	"github.com/mia0x75/dashboard-go/modules/various"
+	"github.com/mia0x75/dashboard-go/utils"
 )
 
 func main() {
@@ -78,6 +79,18 @@ func main() {
 		"/":   "/index.html",
 		"/*/": "/$1/index.html",
 	}))
+
+	// Stats
+	s := utils.NewStats()
+	e.Use(s.Process)
+	e.GET("/stats", s.Handle) // Endpoint to get stats
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set(echo.HeaderServer, "Echo/3.0")
+			return next(c)
+		}
+	})
 	e.Use(middleware.SecureWithConfig(middleware.DefaultSecureConfig))
 	e.Use(middleware.MethodOverride())
 	e.Use(middleware.Recover())
@@ -93,10 +106,11 @@ func main() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
-	// TODO: 403
-	// e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-	// 	TokenLookup: "header:X-XSRF-TOKEN",
-	// }))
+	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+		TokenLookup: viper.GetString("csrf.token_lookup"),
+		ContextKey:  viper.GetString("csrf.context_key"),
+		CookieName:  viper.GetString("csrf.cookie_name"),
+	}))
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
