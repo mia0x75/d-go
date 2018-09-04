@@ -14,7 +14,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/mia0x75/dashboard-go/g"
-	"github.com/mia0x75/dashboard-go/models"
+	"github.com/mia0x75/dashboard-go/models/uic"
 	"github.com/mia0x75/dashboard-go/utils"
 )
 
@@ -39,7 +39,7 @@ func login(c echo.Context) error {
 	if c.Request().Method == "POST" {
 		user := c.FormValue("user")
 		password := c.FormValue("password")
-		u := &models.User{
+		u := &uic.User{
 			Login: user,
 		}
 		g.Con().Uic.Ping()
