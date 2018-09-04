@@ -53,10 +53,6 @@
 		"port": 6040
 	},
 	"addr": "0.0.0.0:1234",
-	"jwt": {
-		"context_key": "user",
-		"auth_scsheme": "token"
-	},
 	"access_control": true,
 	"signup_enabled": false,
 	"salt": "kuJrPEZ2",

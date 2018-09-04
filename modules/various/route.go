@@ -2,11 +2,12 @@ package various
 
 import (
 	"github.com/labstack/echo"
+	"github.com/mia0x75/dashboard-go/utils"
 )
 
 // Routes
 func Routes(e *echo.Echo) {
-	e.GET("/index.html", dashboard)
+	e.GET("/index.html", dashboard, utils.MiddlewareAuth)
 	e.GET("/about.html", about) // template test purpose
 	e.Any("/login.html", login)
 	e.GET("/register.html", register)

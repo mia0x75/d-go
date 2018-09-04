@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/labstack/echo/middleware"
+
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 
@@ -28,8 +30,7 @@ func dashboard(c echo.Context) error {
 
 func login(c echo.Context) error {
 	if c.Request().Method == "GET" {
-		token := c.Get(viper.GetString("csrf.context_key")).(string)
-		fmt.Println(token)
+		token := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)
 		return c.Render(http.StatusOK, "login.html", map[string]interface{}{
 			"name": "Dolly!",
 			"csrf": token,
@@ -38,54 +39,39 @@ func login(c echo.Context) error {
 	if c.Request().Method == "POST" {
 		user := c.FormValue("user")
 		password := c.FormValue("password")
-		// if h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost); err != nil {
-		// } else {
-		// 	fmt.Println(string(h))
-		// }
 		u := &models.User{
 			Login: user,
 		}
+		g.Con().Uic.Ping()
+		if has, err := g.Con().Uic.Get(u); err == nil && has {
+			if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)); err == nil {
+				// Create token
+				token := jwt.New(jwt.SigningMethodHS256)
 
-		if err := g.Con().Uic.Ping(); err != nil {
-			fmt.Printf("ping database server failed, error: %v", err)
-		}
-		has, err := g.Con().Uic.Get(u)
-		if err != nil {
+				// Set claims
+				claims := token.Claims.(jwt.MapClaims)
+				claims["id"] = u.Id
+				claims["user"] = u.Login
+				claims["name"] = u.Name
+				claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+				// Generate encoded token and send it as response.
+				cipher, err := token.SignedString([]byte(viper.GetString("secret")))
+				if err != nil {
+					return err
+				}
+
+				cookie := new(http.Cookie)
+				cookie.Name = "token"
+				cookie.Value = cipher
+				cookie.Expires = time.Now().Add(24 * time.Hour)
+				c.SetCookie(cookie)
+
+				return c.JSON(http.StatusOK, nil)
+			}
+		} else if err != nil {
 			// Unexpected error occured
 			fmt.Printf("%v", err)
-		}
-		if !has {
-			// Invalid user
-			c.JSON(http.StatusBadRequest, nil)
-		}
-
-		if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)); err == nil {
-			// Create token
-			token := jwt.New(jwt.SigningMethodHS256)
-
-			// Set claims
-			claims := token.Claims.(jwt.MapClaims)
-			claims["id"] = u.Id
-			claims["user"] = u.Login
-			claims["name"] = u.Name
-			claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
-
-			// Generate encoded token and send it as response.
-			cipher, err := token.SignedString([]byte(viper.GetString("secret")))
-			if err != nil {
-				return err
-			}
-
-			cookie := new(http.Cookie)
-			cookie.Name = "token"
-			cookie.Value = cipher
-			cookie.Expires = time.Now().Add(24 * time.Hour)
-			c.SetCookie(cookie)
-
-			return c.JSON(http.StatusOK, nil)
-		} else {
-			// Wrong password
-			c.JSON(http.StatusBadRequest, nil)
 		}
 	}
 	return echo.NewHTTPError(http.StatusBadRequest, "Method not allowed.")
