@@ -1,5 +1,7 @@
 package portal
 
+import "time"
+
 /*
 DESC variable;
 +-------------+------------------+------+-----+---------------------+----------------+
@@ -14,3 +16,12 @@ DESC variable;
 | create_at   | timestamp        | NO   |     | current_timestamp() |                |
 +-------------+------------------+------+-----+---------------------+----------------+
 */
+type Variable struct {
+	Id      uint      `xorm:"id notnull int pk autoincr"`
+	GrpId   uint      `xorm:"grp_id notnull int"`
+	Name    string    `xorm:"name notnull varchar(255)"`
+	Content string    `xorm:"content notnull varchar(1024)"`
+	Note    string    `xorm:"note notnull varchar(1024)"`
+	Creator string    `xorm:"create_user notnull varchar(64)"`
+	Created time.Time `xorm:"create_at notnull datetime created"`
+}

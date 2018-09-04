@@ -1,5 +1,7 @@
 package portal
 
+import "time"
+
 /*
 DESC host;
 +----------------+------------------+------+-----+---------------------+-------------------------------+
@@ -15,3 +17,13 @@ DESC host;
 | update_at      | timestamp        | NO   |     | current_timestamp() | on update current_timestamp() |
 +----------------+------------------+------+-----+---------------------+-------------------------------+
 */
+type Host struct {
+	Id            uint      `xorm:"id notnull int pk autoincr"`
+	Hostname      string    `xorm:"hostname notnull varchar(1024)"`
+	Ip            string    `xorm:"ip notnull varchar(16)"`
+	AgentVersion  string    `xorm:"agent_version notnull varchar(8)"`
+	PluginVersion string    `xorm:"plugin_version notnull varchar(16)"`
+	MaintainBegin int       `xorm:"maintain_begin notnull int"`
+	MaintainEnd   int       `xorm:"maintain_end notnull int"`
+	Updated       time.Time `xorm:"update_at notnull datetime updated"`
+}

@@ -1,5 +1,7 @@
 package dashboard
 
+import "time"
+
 /*
 DESC dashboard_screen;
 +-------+------------------+------+-----+---------------------+-------------------------------+
@@ -11,3 +13,9 @@ DESC dashboard_screen;
 | time  | timestamp        | NO   |     | current_timestamp() | on update current_timestamp() |
 +-------+------------------+------+-----+---------------------+-------------------------------+
 */
+type Screen struct {
+	Id   uint      `xorm:"id notnull int pk autoincr"`
+	PId  uint      `xorm:"pid notnull int"`
+	Name string    `xorm:"name notnull char(128)"`
+	Time time.Time `xorm:"time notnull datetime updated"`
+}

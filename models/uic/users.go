@@ -24,7 +24,6 @@ DESC user;
 | created | timestamp        | NO   |     | current_timestamp() |                |
 +---------+------------------+------+-----+---------------------+----------------+
 */
-//varchar(25) notnull unique 'usr_name'
 type User struct {
 	Id        uint      `xorm:"id notnull int pk autoincr"`
 	Login     string    `xorm:"name notnull varchar(64) unique"`
@@ -36,7 +35,7 @@ type User struct {
 	Tim       string    `xorm:"qq notnull varchar(16)"`
 	Role      int8      `xorm:"role notnull int"`
 	CreatedBy uint      `xorm:"creator notnull int"`
-	Created   time.Time `xorm:"created notnull datetime created"`
+	Created   time.Time `xorm:"'created' notnull datetime created"`
 }
 
 func (u *User) TableName() string {

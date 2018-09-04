@@ -9,3 +9,7 @@ DESC grp_host;
 | host_id | int(10) unsigned | NO   | MUL | NULL    |       |
 +---------+------------------+------+-----+---------+-------+
 */
+type GrpHost struct {
+	GrpId  uint `xorm:"grp_id notnull int"`
+	HostId uint `xorm:"host_id notnull int"`
+}

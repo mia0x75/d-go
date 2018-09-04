@@ -1,5 +1,7 @@
 package portal
 
+import "time"
+
 /*
 DESC tag;
 +-----------+------------------+------+-----+---------------------+----------------+
@@ -10,3 +12,8 @@ DESC tag;
 | update_at | timestamp        | NO   |     | current_timestamp() |                |
 +-----------+------------------+------+-----+---------------------+----------------+
 */
+type Tag struct {
+	Id      uint      `xorm:"id notnull int pk autoincr"`
+	Name    string    `xorm:"name notnull varchar(255)"`
+	Updated time.Time `xorm:"update_at notnull datetime updated"`
+}

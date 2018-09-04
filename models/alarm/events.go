@@ -1,5 +1,7 @@
 package alarm
 
+import "time"
+
 /*
 DESC events;
 +--------------+------------------+------+-----+---------+----------------+
@@ -13,3 +15,11 @@ DESC events;
 | timestamp    | timestamp        | YES  |     | NULL    |                |
 +--------------+------------------+------+-----+---------+----------------+
 */
+type Events struct {
+	Id          uint      `xorm:"id notnull int pk autoincr"`
+	EventCaseId string    `xorm:"event_caseId null varchar(50)"`
+	Step        uint      `xorm:"step null int"`
+	Cond        string    `xorm:"cond notnull varchar(200)"`
+	Status      uint      `xorm:"status null int"`
+	Time        time.Time `xorm:"timestamp null datetime created"`
+}

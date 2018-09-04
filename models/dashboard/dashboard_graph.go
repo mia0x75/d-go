@@ -17,3 +17,15 @@ DESC dashboard_graph;
 | falcon_tags | varchar(512)     | NO   |     |         |                |
 +-------------+------------------+------+-----+---------+----------------+
 */
+type Graph struct {
+	Id       uint   `xorm:"id notnull int pk autoincr"`
+	Title    string `xorm:"title notnull char(128)"`
+	Hosts    string `xorm:"hosts notnull varchar(10240)"`
+	Counters string `xorm:"counters notnull varchar(1024)"`
+	ScreenId uint   `xorm:"screen_id notnull int"`
+	Timespan uint   `xorm:"timespan notnull int"`
+	Type     string `xorm:"graph_type notnull char(2)"`
+	Method   string `xorm:"method notnull char(8)"`
+	Position uint   `xorm:"position notnull int"`
+	Tags     string `xorm:"falcon_tags notnull varchar(512)"`
+}

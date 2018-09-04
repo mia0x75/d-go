@@ -1,5 +1,7 @@
 package portal
 
+import "time"
+
 /*
 DESC plugin_dir;
 +-------------+------------------+------+-----+---------------------+----------------+
@@ -9,3 +11,7 @@ DESC plugin_dir;
 | create_at   | timestamp        | NO   |     | current_timestamp() |                |
 +-------------+------------------+------+-----+---------------------+----------------+
 */
+type PluginDir struct {
+	Creator string    `xorm:"create_user notnull varchar(64)"`
+	Created time.Time `xorm:"create_at notnull datetime created"`
+}

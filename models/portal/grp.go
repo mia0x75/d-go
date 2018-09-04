@@ -1,5 +1,7 @@
 package portal
 
+import "time"
+
 /*
 DESC grp;
 +-------------+------------------+------+-----+---------------------+----------------+
@@ -12,3 +14,10 @@ DESC grp;
 | come_from   | tinyint(4)       | NO   |     | 0                   |                |
 +-------------+------------------+------+-----+---------------------+----------------+
 */
+type Grp struct {
+	Id      uint      `xorm:"id notnull int pk autoincr"`
+	Name    string    `xorm:"grp_name notnull varchar(255)"`
+	Creator string    `xorm:"create_user notnull varchar(64)"`
+	Created time.Time `xorm:"create_at notnull datetime created"`
+	From    int8      `xorm:"come_from notnull int"`
+}

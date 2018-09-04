@@ -11,3 +11,10 @@ DESC session;
 | expired | int(10) unsigned | NO   |     | NULL    |                |
 +---------+------------------+------+-----+---------+----------------+
 */
+
+type Session struct {
+	Id      uint   `xorm:"id notnull int pk autoincr"`
+	UserId  uint   `xorm:"uid notnull int"`
+	Sig     string `xorm:"sig notnull varchar(32)"`
+	Expired uint   `xorm:"expired notnull int"`
+}

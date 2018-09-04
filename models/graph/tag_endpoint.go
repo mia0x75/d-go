@@ -1,5 +1,7 @@
 package graph
 
+import "time"
+
 /*
 DESC tag_endpoint;
 +-------------+------------------+------+-----+---------------------+-------------------------------+
@@ -13,3 +15,11 @@ DESC tag_endpoint;
 | t_modify    | timestamp        | NO   |     | current_timestamp() | on update current_timestamp() |
 +-------------+------------------+------+-----+---------------------+-------------------------------+
 */
+type EndpointTag struct {
+	Id         uint      `xorm:"id notnull int pk autoincr"`
+	Tag        string    `xorm:"tag notnull varchar(255)"`
+	EndpointId uint      `xorm:"endpoint_id notnull int"`
+	Timestamp  int       `xorm:"ts notnull int"`
+	Created    time.Time `xorm:"t_create notnull datetime created"`
+	Updated    time.Time `xorm:"t_modify notnull datetime updated"`
+}

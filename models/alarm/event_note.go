@@ -1,5 +1,7 @@
 package alarm
 
+import "time"
+
 /*
 DESC event_note;
 +--------------+------------------+------+-----+---------+----------------+
@@ -14,3 +16,12 @@ DESC event_note;
 | user_id      | int(10) unsigned | YES  | MUL | NULL    |                |
 +--------------+------------------+------+-----+---------+----------------+
 */
+type EventNote struct {
+	Id          uint      `xorm:"id notnull int pk autoincr"`
+	EventCaseId string    `xorm:"event_caseId null varchar(50)"`
+	Note        string    `xorm:"note notnull varchar(300)"`
+	CaseId      uint      `xorm:"case_id null int"`
+	Status      string    `xorm:"status null varchar(15)"`
+	Time        time.Time `xorm:"timestamp null datetime"`
+	UserId      uint      `xorm:"user_id null int"`
+}
