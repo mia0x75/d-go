@@ -3,5 +3,4 @@ dashboard-go
 templates_orig/
 scripts/
 *.md
-models/
 session/
