@@ -10,6 +10,6 @@ DESC grp_host;
 +---------+------------------+------+-----+---------+-------+
 */
 type GrpHost struct {
-	GrpId  uint `xorm:"grp_id notnull int"`
-	HostId uint `xorm:"host_id notnull int"`
+	GrpId  uint `xorm:"'grp_id' notnull int"`
+	HostId uint `xorm:"'host_id' notnull int"`
 }

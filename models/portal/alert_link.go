@@ -14,8 +14,8 @@ DESC alert_link;
 +-----------+------------------+------+-----+---------------------+----------------+
 */
 type AlertLink struct {
-	Id      uint      `xorm:"id notnull int pk autoincr"`
-	Path    string    `xorm:"path notnull varchar(16) unique"`
-	Content string    `xorm:"content notnull text"`
-	Created time.Time `xorm:"create_at notnull datetime created"`
+	Id      uint      `xorm:"'id' notnull int pk autoincr"`
+	Path    string    `xorm:"'path' notnull varchar(16) unique"`
+	Content string    `xorm:"'content' notnull text"`
+	Created time.Time `xorm:"'create_at' notnull datetime created"`
 }

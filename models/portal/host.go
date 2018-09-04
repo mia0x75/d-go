@@ -18,12 +18,12 @@ DESC host;
 +----------------+------------------+------+-----+---------------------+-------------------------------+
 */
 type Host struct {
-	Id            uint      `xorm:"id notnull int pk autoincr"`
-	Hostname      string    `xorm:"hostname notnull varchar(1024) unique"`
-	Ip            string    `xorm:"ip notnull varchar(16)"`
-	AgentVersion  string    `xorm:"agent_version notnull varchar(8)"`
-	PluginVersion string    `xorm:"plugin_version notnull varchar(16)"`
-	MaintainBegin int       `xorm:"maintain_begin notnull int default 0"`
-	MaintainEnd   int       `xorm:"maintain_end notnull int default 0"`
-	Updated       time.Time `xorm:"update_at notnull datetime updated"`
+	Id            uint      `xorm:"'id' notnull int pk autoincr"`
+	Hostname      string    `xorm:"'hostname' notnull varchar(1024) unique"`
+	Ip            string    `xorm:"'ip' notnull varchar(16)"`
+	AgentVersion  string    `xorm:"'agent_version' notnull varchar(8)"`
+	PluginVersion string    `xorm:"'plugin_version' notnull varchar(16)"`
+	MaintainBegin int       `xorm:"'maintain_begin' notnull int default 0"`
+	MaintainEnd   int       `xorm:"'maintain_end' notnull int default 0"`
+	Updated       time.Time `xorm:"'update_at' notnull datetime updated"`
 }

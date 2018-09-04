@@ -20,16 +20,16 @@ DESC strategy;
 +-------------+------------------+------+-----+---------+----------------+
 */
 type Strategy struct {
-	Id         uint   `xorm:"id notnull int pk autoincr"`
-	Metric     string `xorm:"metric notnull varchar(128)"`
-	Tags       string `xorm:"tags notnull varchar(256)"`
-	MaxStep    int    `xorm:"max_step notnull int default 1"`
-	Priority   int8   `xorm:"priority notnull tinyint default 0"`
-	Func       string `xorm:"func notnull varchar(16) default 'all(#1)'"`
-	Op         string `xorm:"op notnull varchar(8)"`
-	RightValue string `xorm:"right_value notnull varchar(64)"`
-	Note       string `xorm:"note notnull varchar(128)"`
-	RunBegin   string `xorm:"run_begin notnull varchar(16)"`
-	RunEnd     string `xorm:"run_end notnull varchar(16)"`
-	TplId      uint   `xorm:"tpl_id notnull int default 0"`
+	Id         uint   `xorm:"'id' notnull int pk autoincr"`
+	Metric     string `xorm:"'metric' notnull varchar(128)"`
+	Tags       string `xorm:"'tags' notnull varchar(256)"`
+	MaxStep    int    `xorm:"'max_step' notnull int default 1"`
+	Priority   int8   `xorm:"'priority' notnull tinyint default 0"`
+	Func       string `xorm:"'func' notnull varchar(16) default 'all(#1)'"`
+	Op         string `xorm:"'op' notnull varchar(8)"`
+	RightValue string `xorm:"'right_value' notnull varchar(64)"`
+	Note       string `xorm:"'note' notnull varchar(128)"`
+	RunBegin   string `xorm:"'run_begin' notnull varchar(16)"`
+	RunEnd     string `xorm:"'run_end' notnull varchar(16)"`
+	TplId      uint   `xorm:"'tpl_id' notnull int default 0"`
 }

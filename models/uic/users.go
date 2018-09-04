@@ -25,16 +25,16 @@ DESC user;
 +---------+------------------+------+-----+---------------------+----------------+
 */
 type User struct {
-	Id        uint      `xorm:"id notnull int pk autoincr"`
-	Login     string    `xorm:"name notnull varchar(64) unique"`
-	Password  string    `xorm:"passwd notnull varchar(64)"` // fixed-length
-	Name      string    `xorm:"cnname notnull varchar(128)"`
-	Email     string    `xorm:"email notnull varchar(255)"`
-	Phone     string    `xorm:"phone notnull varchar(16)"`
-	Im        string    `xorm:"im notnull varchar(32)"`
-	Tim       string    `xorm:"qq notnull varchar(16)"`
-	Role      int8      `xorm:"role notnull int default 0"`
-	CreatedBy uint      `xorm:"creator notnull int default 0"`
+	Id        uint      `xorm:"'id' notnull int pk autoincr"`
+	Login     string    `xorm:"'name' notnull varchar(64) unique"`
+	Password  string    `xorm:"'passwd' notnull varchar(64)"` // fixed-length
+	Name      string    `xorm:"'cnname' notnull varchar(128)"`
+	Email     string    `xorm:"'email' notnull varchar(255)"`
+	Phone     string    `xorm:"'phone' notnull varchar(16)"`
+	Im        string    `xorm:"'im' notnull varchar(32)"`
+	Tim       string    `xorm:"'qq' notnull varchar(16)"`
+	Role      int8      `xorm:"'role' notnull int default 0"`
+	CreatedBy uint      `xorm:"'creator' notnull int default 0"`
 	Created   time.Time `xorm:"'created' notnull datetime created"`
 }
 

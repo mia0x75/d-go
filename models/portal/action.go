@@ -16,12 +16,12 @@ DESC action;
 +----------------------+------------------+------+-----+---------+----------------+
 */
 type Action struct {
-	Id                 uint   `xorm:"id notnull int pk autoincr"`
-	Uic                string `xorm:"uic notnull varchar(255)"`
-	Url                string `xorm:"url notnull varchar(255)"`
-	Callback           int8   `xorm:"callback notnull tinyint default 0"`
-	BeforeCallbackSMS  int8   `xorm:"before_callback_sms notnull tinyint default 0"`
-	BeforeCallbackMail int8   `xorm:"before_callback_mail notnull tinyint default 0"`
-	AfterCallbackSMS   int8   `xorm:"after_callback_sms notnull tinyint default 0"`
-	AfterCallbackMail  int8   `xorm:"after_callback_mail notnull tinyint default 0"`
+	Id                 uint   `xorm:"'id' notnull int pk autoincr"`
+	Uic                string `xorm:"'uic' notnull varchar(255)"`
+	Url                string `xorm:"'url' notnull varchar(255)"`
+	Callback           int8   `xorm:"'callback' notnull tinyint default 0"`
+	BeforeCallbackSMS  int8   `xorm:"'before_callback_sms' notnull tinyint default 0"`
+	BeforeCallbackMail int8   `xorm:"'before_callback_mail' notnull tinyint default 0"`
+	AfterCallbackSMS   int8   `xorm:"'after_callback_sms' notnull tinyint default 0"`
+	AfterCallbackMail  int8   `xorm:"'after_callback_mail' notnull tinyint default 0"`
 }

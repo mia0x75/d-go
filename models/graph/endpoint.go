@@ -15,9 +15,9 @@ DESC endpoint;
 +----------+------------------+------+-----+---------------------+-------------------------------+
 */
 type Endpoint struct {
-	Id        uint      `xorm:"id notnull int pk autoincr"`
-	Endpoint  string    `xorm:"endpoint notnull varchar(255) unique"`
-	Timestamp int       `xorm:"ts notnull int"`
-	Created   time.Time `xorm:"t_create notnull datetime created"`
-	Updated   time.Time `xorm:"t_modify notnull datetime updated"`
+	Id        uint      `xorm:"'id' notnull int pk autoincr"`
+	Endpoint  string    `xorm:"'endpoint' notnull varchar(255) unique"`
+	Timestamp int       `xorm:"'ts' notnull int"`
+	Created   time.Time `xorm:"'t_create' notnull datetime created"`
+	Updated   time.Time `xorm:"'t_modify' notnull datetime updated"`
 }

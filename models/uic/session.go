@@ -13,8 +13,8 @@ DESC session;
 */
 
 type Session struct {
-	Id      uint   `xorm:"id notnull int pk autoincr"`
-	UserId  uint   `xorm:"uid notnull int"`
-	Sig     string `xorm:"sig notnull varchar(32)"`
-	Expired uint   `xorm:"expired notnull int"`
+	Id      uint   `xorm:"'id' notnull int pk autoincr"`
+	UserId  uint   `xorm:"'uid' notnull int"`
+	Sig     string `xorm:"'sig' notnull varchar(32)"`
+	Expired uint   `xorm:"'expired' notnull int"`
 }

@@ -14,8 +14,8 @@ DESC dashboard_screen;
 +-------+------------------+------+-----+---------------------+-------------------------------+
 */
 type Screen struct {
-	Id   uint      `xorm:"id notnull int pk autoincr"`
-	PId  uint      `xorm:"pid notnull int default 0"`
-	Name string    `xorm:"name notnull char(128)"`
-	Time time.Time `xorm:"time notnull datetime updated"`
+	Id   uint      `xorm:"'id' notnull int pk autoincr"`
+	PId  uint      `xorm:"'pid' notnull int default 0"`
+	Name string    `xorm:"'name' notnull char(128)"`
+	Time time.Time `xorm:"'time' notnull datetime updated"`
 }

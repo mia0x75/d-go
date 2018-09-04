@@ -11,7 +11,7 @@ DESC rel_team_user;
 +-------+------------------+------+-----+---------+----------------+
 */
 type RelationTeamUser struct {
-	Id     uint `xorm:"id notnull int pk autoincr"`
-	TeamId uint `xorm:"tid notnull int"`
-	UserId uint `xorm:"uid notnull int"`
+	Id     uint `xorm:"'id' notnull int pk autoincr"`
+	TeamId uint `xorm:"'tid' notnull int"`
+	UserId uint `xorm:"'uid' notnull int"`
 }

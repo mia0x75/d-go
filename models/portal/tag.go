@@ -13,7 +13,7 @@ DESC tag;
 +-----------+------------------+------+-----+---------------------+----------------+
 */
 type Tag struct {
-	Id      uint      `xorm:"id notnull int pk autoincr"`
-	Name    string    `xorm:"name notnull varchar(255) unique"`
-	Updated time.Time `xorm:"update_at notnull datetime updated"`
+	Id      uint      `xorm:"'id' notnull int pk autoincr"`
+	Name    string    `xorm:"'name' notnull varchar(255) unique"`
+	Updated time.Time `xorm:"'update_at' notnull datetime updated"`
 }

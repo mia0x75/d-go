@@ -12,6 +12,6 @@ DESC plugin_dir;
 +-------------+------------------+------+-----+---------------------+----------------+
 */
 type PluginDir struct {
-	Creator string    `xorm:"create_user notnull varchar(64)"`
-	Created time.Time `xorm:"create_at notnull datetime created"`
+	Creator string    `xorm:"'create_user' notnull varchar(64)"`
+	Created time.Time `xorm:"'create_at' notnull datetime created"`
 }

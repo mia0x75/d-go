@@ -16,10 +16,10 @@ DESC events;
 +--------------+------------------+------+-----+---------+----------------+
 */
 type Events struct {
-	Id          uint      `xorm:"id notnull int pk autoincr"`
-	EventCaseId string    `xorm:"event_caseId null varchar(50)"`
-	Step        uint      `xorm:"step null int"`
-	Cond        string    `xorm:"cond notnull varchar(200)"`
-	Status      uint      `xorm:"status null int default 0"`
-	Time        time.Time `xorm:"timestamp null datetime created"`
+	Id          uint      `xorm:"'id' notnull int pk autoincr"`
+	EventCaseId string    `xorm:"'event_caseId' null varchar(50)"`
+	Step        uint      `xorm:"'step' null int"`
+	Cond        string    `xorm:"'cond' notnull varchar(200)"`
+	Status      uint      `xorm:"'status' null int default 0"`
+	Time        time.Time `xorm:"'timestamp' null datetime created"`
 }

@@ -16,10 +16,10 @@ DESC tag_endpoint;
 +-------------+------------------+------+-----+---------------------+-------------------------------+
 */
 type EndpointTag struct {
-	Id         uint      `xorm:"id notnull int pk autoincr"`
-	Tag        string    `xorm:"tag notnull varchar(255)"`
-	EndpointId uint      `xorm:"endpoint_id notnull int"`
-	Timestamp  int       `xorm:"ts notnull int"`
-	Created    time.Time `xorm:"t_create notnull datetime created"`
-	Updated    time.Time `xorm:"t_modify notnull datetime updated"`
+	Id         uint      `xorm:"'id' notnull int pk autoincr"`
+	Tag        string    `xorm:"'tag' notnull varchar(255)"`
+	EndpointId uint      `xorm:"'endpoint_id' notnull int"`
+	Timestamp  int       `xorm:"'ts' notnull int"`
+	Created    time.Time `xorm:"'t_create' notnull datetime created"`
+	Updated    time.Time `xorm:"'t_modify' notnull datetime updated"`
 }
