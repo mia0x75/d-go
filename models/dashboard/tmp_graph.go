@@ -18,6 +18,6 @@ type TmpGraph struct {
 	Id        uint      `xorm:"id notnull int pk autoincr"`
 	Endpoints string    `xorm:"endpoints notnull varchar(10240)"`
 	Counters  string    `xorm:"counters notnull varchar(10240)"`
-	Type      string    `xorm:"ck notnull varchar(32)"`
+	Ck        string    `xorm:"ck notnull varchar(32) unique"`
 	Time      time.Time `xorm:"time_ notnull datetime created"`
 }

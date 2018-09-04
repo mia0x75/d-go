@@ -16,8 +16,8 @@ DESC grp;
 */
 type Grp struct {
 	Id      uint      `xorm:"id notnull int pk autoincr"`
-	Name    string    `xorm:"grp_name notnull varchar(255)"`
+	Name    string    `xorm:"grp_name notnull varchar(255) unique"`
 	Creator string    `xorm:"create_user notnull varchar(64)"`
 	Created time.Time `xorm:"create_at notnull datetime created"`
-	From    int8      `xorm:"come_from notnull int"`
+	From    int8      `xorm:"come_from notnull int default 0"`
 }

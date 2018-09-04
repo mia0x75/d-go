@@ -23,9 +23,9 @@ type Graph struct {
 	Hosts    string `xorm:"hosts notnull varchar(10240)"`
 	Counters string `xorm:"counters notnull varchar(1024)"`
 	ScreenId uint   `xorm:"screen_id notnull int"`
-	Timespan uint   `xorm:"timespan notnull int"`
-	Type     string `xorm:"graph_type notnull char(2)"`
+	Timespan uint   `xorm:"timespan notnull int default 3600"`
+	Type     string `xorm:"graph_type notnull char(2) default 'h'"`
 	Method   string `xorm:"method notnull char(8)"`
-	Position uint   `xorm:"position notnull int"`
+	Position uint   `xorm:"position notnull int default 0"`
 	Tags     string `xorm:"falcon_tags notnull varchar(512)"`
 }

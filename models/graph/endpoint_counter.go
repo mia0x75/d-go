@@ -24,7 +24,7 @@ type EndpointCounter struct {
 	Id         uint      `xorm:"id notnull int pk autoincr"`
 	EndpointId uint      `xorm:"endpoint_id notnull int"`
 	Counter    string    `xorm:"counter notnull varchar(255)"`
-	Step       uint      `xorm:"step notnull int"`
+	Step       uint      `xorm:"step notnull int default 60"`
 	Type       string    `xorm:"type notnull varchar(255)"`
 	Timestamp  int       `xorm:"ts notnull int"`
 	Created    time.Time `xorm:"t_create notnull datetime created"`

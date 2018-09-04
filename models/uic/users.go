@@ -33,8 +33,8 @@ type User struct {
 	Phone     string    `xorm:"phone notnull varchar(16)"`
 	Im        string    `xorm:"im notnull varchar(32)"`
 	Tim       string    `xorm:"qq notnull varchar(16)"`
-	Role      int8      `xorm:"role notnull int"`
-	CreatedBy uint      `xorm:"creator notnull int"`
+	Role      int8      `xorm:"role notnull int default 0"`
+	CreatedBy uint      `xorm:"creator notnull int default 0"`
 	Created   time.Time `xorm:"'created' notnull datetime created"`
 }
 

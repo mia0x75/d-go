@@ -48,7 +48,7 @@ type EventCases struct {
 	StrategyId     uint      `xorm:"strategy_id null int"`
 	TemplateId     uint      `xorm:"template_id null int"`
 	ProcessNote    uint      `xorm:"process_note null mediumint"`
-	ProcessStatus  string    `xorm:"hosts null varchar(20)"`
+	ProcessStatus  string    `xorm:"hosts null varchar(20) default 'unresolved'"`
 	Timestamp      time.Time `xorm:"timestamp notnull datetime updated"`
 	Updated        time.Time `xorm:"update_at notnull datetime updated"`
 	Closed         time.Time `xorm:"closed_at notnull datetime"`

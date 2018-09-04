@@ -17,7 +17,7 @@ DESC tpl;
 */
 type Tpl struct {
 	Id       uint      `xorm:"id notnull int pk autoincr"`
-	Name     string    `xorm:"tpl_name notnull varchar(255)"`
+	Name     string    `xorm:"tpl_name notnull varchar(255) unique"`
 	ParentId uint      `xorm:"parent_id notnull int default 0"`
 	ActionId uint      `xorm:"action_id notnull int default 0"`
 	Creator  string    `xorm:"create_user notnull varchar(64)"`
