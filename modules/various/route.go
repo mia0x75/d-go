@@ -6,9 +6,9 @@ import (
 
 // Routes
 func Routes(e *echo.Echo) {
+	e.GET("/index.html", dashboard)
 	e.GET("/about.html", about) // template test purpose
 	e.Any("/login.html", login)
-	e.GET("/index.html", dashboard)
 	e.GET("/register.html", register)
 	e.GET("/forgot-password.html", forgot)
 	e.GET("/400.html", error400)

@@ -57,11 +57,6 @@
 		"context_key": "user",
 		"auth_scsheme": "token"
 	},
-	"csrf": {
-		"context_key": "csrf",
-		"cookie_name": "csrf",
-		"token_lookup": "form:csrf"
-	},
 	"access_control": true,
 	"signup_enabled": false,
 	"salt": "kuJrPEZ2",

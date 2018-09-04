@@ -1,17 +1,18 @@
 package various
 
 import (
-	"bytes"
-	"crypto/sha512"
 	"fmt"
 	"net/http"
 	"runtime"
 	"time"
 
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"github.com/mia0x75/dashboard-go/g"
+	"github.com/mia0x75/dashboard-go/models"
 	"github.com/mia0x75/dashboard-go/utils"
 )
 
@@ -28,27 +29,45 @@ func dashboard(c echo.Context) error {
 func login(c echo.Context) error {
 	if c.Request().Method == "GET" {
 		token := c.Get(viper.GetString("csrf.context_key")).(string)
+		fmt.Println(token)
 		return c.Render(http.StatusOK, "login.html", map[string]interface{}{
 			"name": "Dolly!",
 			"csrf": token,
 		})
 	}
 	if c.Request().Method == "POST" {
-		email := c.FormValue("exampleInputEmail1")
-		password := c.FormValue("exampleInputPassword1")
-		salt := []byte(viper.GetString("salt"))
-		h := sha512.New384()
-		h.Write([]byte(password))
-		h.Write(salt)
-		// TODO: Retrieve password hash value from database
-		if bytes.Compare(h.Sum(nil), h.Sum(nil)) == 0 {
+		user := c.FormValue("user")
+		password := c.FormValue("password")
+		// if h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost); err != nil {
+		// } else {
+		// 	fmt.Println(string(h))
+		// }
+		u := &models.User{
+			Login: user,
+		}
+
+		if err := g.Con().Uic.Ping(); err != nil {
+			fmt.Printf("ping database server failed, error: %v", err)
+		}
+		has, err := g.Con().Uic.Get(u)
+		if err != nil {
+			// Unexpected error occured
+			fmt.Printf("%v", err)
+		}
+		if !has {
+			// Invalid user
+			c.JSON(http.StatusBadRequest, nil)
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)); err == nil {
 			// Create token
 			token := jwt.New(jwt.SigningMethodHS256)
 
 			// Set claims
 			claims := token.Claims.(jwt.MapClaims)
-			claims["id"] = 0
-			claims["email"] = email
+			claims["id"] = u.Id
+			claims["user"] = u.Login
+			claims["name"] = u.Name
 			claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 			// Generate encoded token and send it as response.
@@ -56,12 +75,17 @@ func login(c echo.Context) error {
 			if err != nil {
 				return err
 			}
+
 			cookie := new(http.Cookie)
 			cookie.Name = "token"
 			cookie.Value = cipher
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
-			return c.Redirect(http.StatusSeeOther, "/index.html")
+
+			return c.JSON(http.StatusOK, nil)
+		} else {
+			// Wrong password
+			c.JSON(http.StatusBadRequest, nil)
 		}
 	}
 	return echo.NewHTTPError(http.StatusBadRequest, "Method not allowed.")

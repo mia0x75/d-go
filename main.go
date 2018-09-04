@@ -75,15 +75,11 @@ func main() {
 	e.File("/favicon.ico", "public/assets/images/favicon.ico")
 
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Pre(middleware.Rewrite(map[string]string{
-		"/":   "/index.html",
-		"/*/": "/$1/index.html",
-	}))
 
 	// Stats
 	s := utils.NewStats()
 	e.Use(s.Process)
-	e.GET("/stats", s.Handle) // Endpoint to get stats
+	e.GET("/stats.html", s.Handle) // Endpoint to get stats
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -106,11 +102,7 @@ func main() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-		TokenLookup: viper.GetString("csrf.token_lookup"),
-		ContextKey:  viper.GetString("csrf.context_key"),
-		CookieName:  viper.GetString("csrf.cookie_name"),
-	}))
+	e.Use(middleware.CSRF())
 
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 

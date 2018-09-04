@@ -75,9 +75,15 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 		return fmt.Errorf("The template %s does not exist.", name)
 	}
 
-	err := tmpl.ExecuteTemplate(w, "layout", data)
+	var err error
+	if name == "login.html" {
+		err = tmpl.ExecuteTemplate(w, "single", data)
+	} else {
+		err = tmpl.ExecuteTemplate(w, "default", data)
+	}
 	if err != nil {
-		return err
+		log.Fatal(err)
+		return nil
 	} else {
 		return nil
 	}
@@ -103,7 +109,6 @@ func parseFiles(path string, t *template.Template, filenames ...string) (*templa
 		if strings.Index(filename, "/templates/views/docs/") > 0 {
 			name = filename[len(path)+1+len("templates/views/"):] //
 		}
-		fmt.Printf("filename: %-90s -> name: %s\n", filename, name)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
 		// all the templates together. Also, if this file has the same name
