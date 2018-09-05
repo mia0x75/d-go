@@ -1,9 +1,14 @@
 {{ define "default" }}
-{{ template "layout" . }}
-{{ end }}
+<!doctype html>
+<html lang="en" dir="ltr">
 
-{{ define "page" }}
-		{{ template "aside" . }}
+<head>
+	{{ template "head" . }}
+</head>
+
+<body class="">
+	<div class="page">
+		 {{ template "aside" . }}
 		<div class="flex-fill">
 			{{ template "header" . }}
 			<div class="my-3 my-md-5">
@@ -15,6 +20,9 @@
 				</div>
 			</div>
 		</div>
-		{{ template "footer-sub" . }}
-		{{ template "footer" . }}
+		{{ template "footer-sub" . }} {{ template "footer" . }}
+	</div>
+</body>
+
+</html>
 {{ end }}

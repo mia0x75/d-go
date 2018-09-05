@@ -1,7 +1,6 @@
 package g
 
 import (
-	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -9,7 +8,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 
 	"github.com/labstack/echo"
@@ -65,32 +63,8 @@ func init() {
 	for _, page := range pages {
 		files := append(includes, page)
 		name := page[len(templatesDir+"views/"):len(page)]
-		// TODO:
-		if name == "index.html" {
-			for i, v := range files {
-				if strings.HasSuffix(v, "/layouts/single.html") {
-					DeleteSlice(files, i)
-				}
-			}
-		}
-		templates[name] = template.Must(parseFiles(path, nil, files...))
+		templates[name] = template.Must(parse(path, name, files...))
 	}
-
-}
-
-// DeleteSlice
-func DeleteSlice(slice interface{}, index int) (interface{}, error) {
-	sliceValue := reflect.ValueOf(slice)
-	length := sliceValue.Len()
-	if slice == nil || length == 0 || (length-1) < index {
-		return nil, errors.New("error")
-	}
-	if length-1 == index {
-		return sliceValue.Slice(0, index).Interface(), nil
-	} else if (length - 1) >= index {
-		return reflect.AppendSlice(sliceValue.Slice(0, index), sliceValue.Slice(index+1, length)).Interface(), nil
-	}
-	return nil, errors.New("error")
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
@@ -108,45 +82,20 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	}
 }
 
-func (t *Template) Templates() map[string]*template.Template {
-	return templates
-}
-
-func parseFiles(path string, t *template.Template, filenames ...string) (*template.Template, error) {
-	if len(filenames) == 0 {
+func parse(path string, name string, files ...string) (*template.Template, error) {
+	if len(files) == 0 {
 		// Not really a problem, but be consistent.
-		return nil, fmt.Errorf("html/template: no files named in call to ParseFiles")
+		return nil, fmt.Errorf("html/template: no files named in call to parse")
 	}
-	for _, filename := range filenames {
-		b, err := ioutil.ReadFile(filename)
+	tmpl := template.New(name)
+	for _, file := range files {
+		b, err := ioutil.ReadFile(file)
 		if err != nil {
 			return nil, err
 		}
-		s := string(b)
-		name := filepath.Base(filename)
-		// TODO: Remove hardcode
-		if strings.Index(filename, "/templates/views/docs/") > 0 {
-			name = filename[len(path)+1+len("templates/views/"):] //
-		}
-		// First template becomes return value if not already defined,
-		// and we use that one for subsequent New calls to associate
-		// all the templates together. Also, if this file has the same name
-		// as t, this file becomes the contents of t, so
-		//  t, err := New(name).Funcs(xxx).ParseFiles(name)
-		// works. Otherwise we create a new template associated with t.
-		var tmpl *template.Template
-		if t == nil {
-			t = template.New(name)
-		}
-		if name == t.Name() {
-			tmpl = t
-		} else {
-			tmpl = t.New(name)
-		}
-		_, err = tmpl.Parse(s)
-		if err != nil {
+		if _, err := tmpl.Parse(string(b)); err != nil {
 			return nil, err
 		}
 	}
-	return t, nil
+	return tmpl, nil
 }
