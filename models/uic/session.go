@@ -18,3 +18,7 @@ type Session struct {
 	Sig     string `xorm:"'sig' notnull varchar(32)"`
 	Expired uint   `xorm:"'expired' notnull int"`
 }
+
+func (s *Session) TableName() string {
+	return "session"
+}

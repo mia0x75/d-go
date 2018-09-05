@@ -21,3 +21,7 @@ type Endpoint struct {
 	Created   time.Time `xorm:"'t_create' notnull datetime created"`
 	Updated   time.Time `xorm:"'t_modify' notnull datetime updated"`
 }
+
+func (s *Endpoint) TableName() string {
+	return "endpoint"
+}

@@ -23,7 +23,7 @@ DESC mockcfg;
 */
 type Mockcfg struct {
 	Id         uint      `xorm:"'id' notnull int pk autoincr"`
-	Name       string    `xorm:"'name' notnull uniqe varchar(255) unique"`
+	Name       string    `xorm:"'name' notnull varchar(255) unique"`
 	Object     string    `xorm:"'obj' notnull varchar(10240)"`
 	ObjectType string    `xorm:"'obj_type' notnull varchar(255)"`
 	Metric     string    `xorm:"'metric' notnull varchar(128)"`
@@ -34,4 +34,8 @@ type Mockcfg struct {
 	Creator    string    `xorm:"'creator' notnull varchar(64)"`
 	Created    time.Time `xorm:"'t_create' notnull datetime created"`
 	Updated    time.Time `xorm:"'t_modify' notnull datetime updated"`
+}
+
+func (s *Mockcfg) TableName() string {
+	return "mockcfg"
 }

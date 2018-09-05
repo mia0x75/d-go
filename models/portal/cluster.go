@@ -33,3 +33,7 @@ type Cluster struct {
 	Creator     string    `xorm:"'creator' notnull varchar(255)"`
 	Updated     time.Time `xorm:"'last_update' notnull datetime updated"`
 }
+
+func (s *Cluster) TableName() string {
+	return "cluster"
+}

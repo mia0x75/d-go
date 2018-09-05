@@ -25,3 +25,7 @@ type Action struct {
 	AfterCallbackSMS   int8   `xorm:"'after_callback_sms' notnull tinyint default 0"`
 	AfterCallbackMail  int8   `xorm:"'after_callback_mail' notnull tinyint default 0"`
 }
+
+func (s *Action) TableName() string {
+	return "action"
+}

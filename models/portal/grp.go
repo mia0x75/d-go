@@ -21,3 +21,7 @@ type Grp struct {
 	Created time.Time `xorm:"'create_at' notnull datetime created"`
 	From    int8      `xorm:"'come_from' notnull int default 0"`
 }
+
+func (s *Grp) TableName() string {
+	return "grp"
+}

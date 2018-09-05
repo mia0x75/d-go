@@ -15,3 +15,7 @@ type GrpTpl struct {
 	TplId    uint   `xorm:"'tpl_id' notnull int"`
 	BindUser string `xorm:"'bind_user' notnull varchar(64)"`
 }
+
+func (s *GrpTpl) TableName() string {
+	return "grp_tpl"
+}

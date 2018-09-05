@@ -31,7 +31,7 @@ DESC event_cases;
 +----------------+------------------+------+-----+------------+-------+
 */
 type EventCases struct {
-	Id             uint      `xorm:"'id' notnull int pk autoincr"`
+	Id             string    `xorm:"'id' notnull pk varchar(50)"`
 	Endpoint       string    `xorm:"'endpoint' notnull varchar(100)"`
 	Metric         string    `xorm:"'metric' notnull varchar(200)"`
 	Func           string    `xorm:"'func' null varchar(50)"`
@@ -48,8 +48,12 @@ type EventCases struct {
 	StrategyId     uint      `xorm:"'strategy_id' null int"`
 	TemplateId     uint      `xorm:"'template_id' null int"`
 	ProcessNote    uint      `xorm:"'process_note' null mediumint"`
-	ProcessStatus  string    `xorm:"'hosts' null varchar(20) default 'unresolved'"`
+	ProcessStatus  string    `xorm:"'process_status' null varchar(20) default('unresolved')"`
 	Timestamp      time.Time `xorm:"'timestamp' notnull datetime updated"`
-	Updated        time.Time `xorm:"'update_at' notnull datetime updated"`
-	Closed         time.Time `xorm:"'closed_at' notnull datetime"`
+	Updated        time.Time `xorm:"'update_at' null datetime updated"`
+	Closed         time.Time `xorm:"'closed_at' null datetime"`
+}
+
+func (s *EventCases) TableName() string {
+	return "event_cases"
 }

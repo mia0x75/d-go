@@ -15,3 +15,7 @@ type RelationTeamUser struct {
 	TeamId uint `xorm:"'tid' notnull int"`
 	UserId uint `xorm:"'uid' notnull int"`
 }
+
+func (s *RelationTeamUser) TableName() string {
+	return "rel_team_user"
+}

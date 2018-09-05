@@ -14,6 +14,10 @@ DESC metric;
 */
 type Metric struct {
 	Id      uint      `xorm:"'id' notnull int pk autoincr"`
-	Name    string    `xorm:"'path' notnull varchar(255) unique"`
+	Name    string    `xorm:"'name' notnull varchar(255) unique"`
 	Created time.Time `xorm:"'update_at' notnull datetime created"`
+}
+
+func (s *Metric) TableName() string {
+	return "metric"
 }

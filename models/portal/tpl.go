@@ -23,3 +23,7 @@ type Tpl struct {
 	Creator  string    `xorm:"'create_user' notnull varchar(64)"`
 	Created  time.Time `xorm:"'create_at' notnull datetime created"`
 }
+
+func (s *Tpl) TableName() string {
+	return "tpl"
+}

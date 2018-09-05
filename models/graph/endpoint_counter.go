@@ -30,3 +30,7 @@ type EndpointCounter struct {
 	Created    time.Time `xorm:"'t_create' notnull datetime created"`
 	Updated    time.Time `xorm:"'t_modify' notnull datetime updated"`
 }
+
+func (s *EndpointCounter) TableName() string {
+	return "endpoint_counter"
+}

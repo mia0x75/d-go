@@ -13,3 +13,7 @@ type GrpHost struct {
 	GrpId  uint `xorm:"'grp_id' notnull int"`
 	HostId uint `xorm:"'host_id' notnull int"`
 }
+
+func (s *GrpHost) TableName() string {
+	return "grp_host"
+}

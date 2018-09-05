@@ -27,3 +27,7 @@ type Host struct {
 	MaintainEnd   int       `xorm:"'maintain_end' notnull int default 0"`
 	Updated       time.Time `xorm:"'update_at' notnull datetime updated"`
 }
+
+func (s *Host) TableName() string {
+	return "host"
+}

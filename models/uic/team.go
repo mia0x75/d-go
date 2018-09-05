@@ -17,7 +17,11 @@ DESC team;
 type Team struct {
 	Id        uint      `xorm:"'id' notnull int pk autoincr"`
 	Name      string    `xorm:"'name' notnull varchar(64) unique"`
-	Resume    string    `xorm:"'passwd' notnull varchar(255)"`
+	Resume    string    `xorm:"'resume' notnull varchar(255)"`
 	CreatedBy uint      `xorm:"'creator' notnull int default 0"`
 	Created   time.Time `xorm:"'created' notnull datetime created"`
+}
+
+func (s *Team) TableName() string {
+	return "team"
 }

@@ -33,3 +33,7 @@ type Strategy struct {
 	RunEnd     string `xorm:"'run_end' notnull varchar(16)"`
 	TplId      uint   `xorm:"'tpl_id' notnull int default 0"`
 }
+
+func (s *Strategy) TableName() string {
+	return "strategy"
+}

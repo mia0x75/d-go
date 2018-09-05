@@ -23,3 +23,7 @@ type Events struct {
 	Status      uint      `xorm:"'status' null int default 0"`
 	Time        time.Time `xorm:"'timestamp' null datetime created"`
 }
+
+func (s *Events) TableName() string {
+	return "events"
+}

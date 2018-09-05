@@ -31,3 +31,7 @@ type Expression struct {
 	Creator    string `xorm:"'create_user' notnull varchar(64)"`
 	Pause      int8   `xorm:"'pause' notnull tinyint default 0"`
 }
+
+func (s *Expression) TableName() string {
+	return "expression"
+}

@@ -19,3 +19,7 @@ type Screen struct {
 	Name string    `xorm:"'name' notnull char(128)"`
 	Time time.Time `xorm:"'time' notnull datetime updated"`
 }
+
+func (s *Screen) TableName() string {
+	return "dashboard_screen"
+}

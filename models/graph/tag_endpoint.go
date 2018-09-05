@@ -23,3 +23,7 @@ type EndpointTag struct {
 	Created    time.Time `xorm:"'t_create' notnull datetime created"`
 	Updated    time.Time `xorm:"'t_modify' notnull datetime updated"`
 }
+
+func (s *EndpointTag) TableName() string {
+	return "tag_endpoint"
+}

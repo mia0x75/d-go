@@ -19,3 +19,7 @@ type AlertLink struct {
 	Content string    `xorm:"'content' notnull text"`
 	Created time.Time `xorm:"'create_at' notnull datetime created"`
 }
+
+func (s *AlertLink) TableName() string {
+	return "alert_link"
+}

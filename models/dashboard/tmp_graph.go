@@ -21,3 +21,7 @@ type TmpGraph struct {
 	Ck        string    `xorm:"'ck' notnull varchar(32) unique"`
 	Time      time.Time `xorm:"'time_' notnull datetime created"`
 }
+
+func (s *TmpGraph) TableName() string {
+	return "tmp_graph"
+}

@@ -29,3 +29,7 @@ type Graph struct {
 	Position uint   `xorm:"'position' notnull int default 0"`
 	Tags     string `xorm:"'falcon_tags' notnull varchar(512)"`
 }
+
+func (s *Graph) TableName() string {
+	return "dashboard_graph"
+}

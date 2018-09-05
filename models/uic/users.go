@@ -38,24 +38,24 @@ type User struct {
 	Created   time.Time `xorm:"'created' notnull datetime created"`
 }
 
-func (u *User) TableName() string {
+func (s *User) TableName() string {
 	return "user"
 }
 
-func (u *User) BeforeInsert() {
-	// u.CreationDate = time.Now().Local()
-	// u.UpdatedUnix = u.CreatedUnix
+func (s *User) BeforeInsert() {
+	// s.CreationDate = time.Now().Local()
+	// s.UpdatedUnix = s.CreatedUnix
 }
 
-func (u *User) BeforeUpdate() {
-	// u.UpdatedUnix = time.Now().Unix()
+func (s *User) BeforeUpdate() {
+	// s.UpdatedUnix = time.Now().Unix()
 }
 
-func (u *User) AfterSet(colName string, _ xorm.Cell) {
+func (s *User) AfterSet(colName string, _ xorm.Cell) {
 	// switch colName {
 	// case "created_unix":
-	// 	u.Created = time.Unix(u.CreatedUnix, 0).Local()
+	// 	s.Created = time.Unix(s.CreatedUnix, 0).Local()
 	// case "updated_unix":
-	// 	u.Updated = time.Unix(u.UpdatedUnix, 0).Local()
+	// 	s.Updated = time.Unix(s.UpdatedUnix, 0).Local()
 	// }
 }

@@ -25,3 +25,7 @@ type EventNote struct {
 	Time        time.Time `xorm:"'timestamp' null datetime"`
 	UserId      uint      `xorm:"'user_id' null int"`
 }
+
+func (s *EventNote) TableName() string {
+	return "event_note"
+}
