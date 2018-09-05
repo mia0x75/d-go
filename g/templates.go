@@ -1,6 +1,7 @@
 package g
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/labstack/echo"
@@ -62,10 +64,33 @@ func init() {
 	// Generate our templates map from our layouts/ and partials/ directories
 	for _, page := range pages {
 		files := append(includes, page)
-		key := page[len(templatesDir+"views/"):len(page)]
-		templates[key] = template.Must(parseFiles(path, nil, files...))
+		name := page[len(templatesDir+"views/"):len(page)]
+		// TODO:
+		if name == "index.html" {
+			for i, v := range files {
+				if strings.HasSuffix(v, "/layouts/single.html") {
+					DeleteSlice(files, i)
+				}
+			}
+		}
+		templates[name] = template.Must(parseFiles(path, nil, files...))
 	}
 
+}
+
+// DeleteSlice
+func DeleteSlice(slice interface{}, index int) (interface{}, error) {
+	sliceValue := reflect.ValueOf(slice)
+	length := sliceValue.Len()
+	if slice == nil || length == 0 || (length-1) < index {
+		return nil, errors.New("error")
+	}
+	if length-1 == index {
+		return sliceValue.Slice(0, index).Interface(), nil
+	} else if (length - 1) >= index {
+		return reflect.AppendSlice(sliceValue.Slice(0, index), sliceValue.Slice(index+1, length)).Interface(), nil
+	}
+	return nil, errors.New("error")
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
@@ -75,13 +100,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 		return fmt.Errorf("The template %s does not exist.", name)
 	}
 
-	var err error
-	if name == "login.html" {
-		err = tmpl.ExecuteTemplate(w, "single", data)
-	} else {
-		err = tmpl.ExecuteTemplate(w, "default", data)
-	}
-	if err != nil {
+	if err := tmpl.ExecuteTemplate(w, name, data); err != nil {
 		log.Fatal(err)
 		return nil
 	} else {

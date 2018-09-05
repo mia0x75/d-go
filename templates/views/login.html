@@ -1,4 +1,4 @@
-{{ template "single" }}
+{{ template "single" . }}
 {{ define "special" }}
 	<!-- Dashboard Core -->
 	<link href="./assets/css/dashboard.css" rel="stylesheet" />
@@ -37,7 +37,7 @@
 		</div>
 
 		<div class="form-footer">
-			<input type="input" id="fcsrf" value="{{ .csrf }}">
+			<input type="hidden" id="fcsrf" value="{{ .csrf }}">
 			<button type="button" id="submit" class="btn btn-primary btn-block">Sign in</button>
 		</div>
 	</div>
@@ -65,6 +65,7 @@ requirejs(['jquery'], function ($) {
 				window.location.href = "/index.html";
 			},
 			error: function (xhr, status, text) {
+				// TODO:
 				alert("Wrong login name or password.");
 			}
 		});

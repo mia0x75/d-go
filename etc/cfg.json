@@ -53,12 +53,8 @@
 		"port": 6040
 	},
 	"addr": "0.0.0.0:1234",
-	"access_control": true,
-	"signup_enabled": false,
 	"salt": "kuJrPEZ2",
-	"secret":"k54Yz5VOtHAuZ5Rl",
-	"key":"4DnNLIVWEBvBSgARHqZ9J6nKns6Y5ana",
-	"debug":true,
-	"skip_auth": false,
-	"default_token": "default-token-used-in-server-side"
+	"secret": "k54Yz5VOtHAuZ5Rl",
+	"key": "4DnNLIVWEBvBSgARHqZ9J6nKns6Y5ana",
+	"debug": true
 }

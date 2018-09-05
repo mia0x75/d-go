@@ -1,11 +1,11 @@
 {{ define "default" }}
-{{ template "layout" }}
+{{ template "layout" . }}
 {{ end }}
 
 {{ define "page" }}
-		{{ template "aside" }}
+		{{ template "aside" . }}
 		<div class="flex-fill">
-			{{ template "header" }}
+			{{ template "header" . }}
 			<div class="my-3 my-md-5">
 				<div class="container">
 					<div class="page-header">
@@ -15,6 +15,6 @@
 				</div>
 			</div>
 		</div>
-		{{ template "footer-sub" }}
-		{{ template "footer" }}
+		{{ template "footer-sub" . }}
+		{{ template "footer" . }}
 {{ end }}
