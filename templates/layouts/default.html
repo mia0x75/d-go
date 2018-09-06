@@ -8,14 +8,11 @@
 
 <body class="">
 	<div class="page">
-		 {{ template "aside" . }}
 		<div class="flex-fill">
 			{{ template "header" . }}
 			<div class="my-3 my-md-5">
 				<div class="container">
-					<div class="page-header">
-						<h1 class="page-title">{{ .pagetitle }}</h1>
-					</div>
+					{{ block "page-title" . }}{{ end }}
 					{{ template "content" . }}
 				</div>
 			</div>
