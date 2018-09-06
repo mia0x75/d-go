@@ -28,6 +28,36 @@ func dashboard(c echo.Context) error {
 	})
 }
 
+func users(c echo.Context) error {
+	return c.Render(http.StatusOK, "users-list.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func currencies(c echo.Context) error {
+	return c.Render(http.StatusOK, "crypto-currencies.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func pagination(c echo.Context) error {
+	return c.Render(http.StatusOK, "pagination.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func lookup(c echo.Context) error {
+	return c.Render(http.StatusOK, "lookup.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
+func invoice(c echo.Context) error {
+	return c.Render(http.StatusOK, "invoice.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
 func login(c echo.Context) error {
 	if c.Request().Method == "GET" {
 		token := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)

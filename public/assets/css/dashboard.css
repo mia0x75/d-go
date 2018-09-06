@@ -14516,6 +14516,7 @@ a.chip:hover {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  margin: 4px 2px;
 }
 
 a.tag {
