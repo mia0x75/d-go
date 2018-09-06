@@ -58,6 +58,12 @@ func invoice(c echo.Context) error {
 	})
 }
 
+func sample(c echo.Context) error {
+	return c.Render(http.StatusOK, "sample-cards.html", map[string]interface{}{
+		"name": "Dolly!",
+	})
+}
+
 func login(c echo.Context) error {
 	if c.Request().Method == "GET" {
 		token := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)

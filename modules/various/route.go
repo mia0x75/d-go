@@ -17,6 +17,7 @@ func Routes(e *echo.Echo) {
 	e.GET("/pagination.html", pagination)
 	e.GET("/lookup.html", lookup)
 	e.GET("/invoice.html", invoice)
+	e.GET("/sample-cards.html", sample)
 	e.GET("/400.html", error400)
 	e.GET("/401.html", error401)
 	e.GET("/402.html", error402)

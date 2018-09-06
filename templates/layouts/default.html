@@ -13,11 +13,12 @@
 			<div class="my-3 my-md-5">
 				<div class="container">
 					{{ block "page-title" . }}{{ end }}
-					{{ template "content" . }}
+					{{ block "content" . }}{{ end }}
 				</div>
 			</div>
 		</div>
-		{{ template "footer-sub" . }} {{ template "footer" . }}
+		{{ template "footer-sub" . }}
+		{{ template "footer" . }}
 	</div>
 </body>
 
