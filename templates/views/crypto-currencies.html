@@ -1245,8 +1245,11 @@
 									return this;
 								};
 								$.connect = function() {
+									/*
 									var protocol = (window.location.protocol == 'http:') ? 'ws:' : 'wss:';
 									this.host = protocol + this.config.url;
+									*/
+									this.host = this.config.url;
 									window.WebSocket = window.WebSocket || window.MozWebSocket;
 									if(!window.WebSocket) { // 检测浏览器支持
 										this.error('Error: WebSocket is not supported .');
