@@ -1618,4 +1618,16 @@
 							</div>
 						</div>
 					</div>
+					<script>
+						requirejs(['jquery'], function ($) {
+							$(function () {
+								var ws = new WebSocket('ws://127.0.0.1:8000/ws');
+								ws.onmessage = function (e) {
+									$('<li>').text(event.data).appendTo($ul);
+								};
+								var $ul = $('#msg-list');
+							});
+						})
+					</script>
+					<ul id="msg-list"></ul>
 {{ end }}
