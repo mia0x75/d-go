@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/labstack/echo"
 	"github.com/mia0x75/dashboard-go/utils"
@@ -16,11 +17,19 @@ import (
 
 var (
 	templates map[string]*template.Template
+	renderer  *Renderer
+	lock      = new(sync.Mutex)
 )
 
-type Template struct{}
+type Renderer struct{}
 
-func init() {
+func NewRenderer() *Renderer {
+	lock.Lock()
+	defer lock.Unlock()
+	if renderer != nil {
+		return renderer
+	}
+	renderer = &Renderer{}
 	path, err := utils.GetCurrentPath()
 	if err != nil {
 		fmt.Printf("cannot startup project, error: %s\r\n", err.Error())
@@ -65,9 +74,10 @@ func init() {
 		name := page[len(templatesDir+"views/"):len(page)]
 		templates[name] = template.Must(parse(path, name, files...))
 	}
+	return renderer
 }
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	// Ensure the template exists in the map.
 	tmpl, ok := templates[name]
 	if !ok {
@@ -80,6 +90,13 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	} else {
 		return nil
 	}
+}
+
+func (t *Renderer) GetTemplate(name string) (*template.Template, error) {
+	if tmpl, ok := templates[name]; ok {
+		return tmpl, nil
+	}
+	return nil, fmt.Errorf("specified template: %s does not exist.", name)
 }
 
 func parse(path string, name string, files ...string) (*template.Template, error) {

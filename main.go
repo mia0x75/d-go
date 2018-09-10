@@ -59,14 +59,20 @@ func main() {
 	e.HideBanner = true
 	e.HidePort = true
 	e.Debug = viper.GetBool("debug")
-	e.Renderer = &g.Template{}
+	renderer := g.NewRenderer()
+	e.Renderer = renderer
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		var code = http.StatusInternalServerError
 		if he, ok := err.(*echo.HTTPError); ok {
 			code = he.Code
 		}
 		if !c.Response().Committed {
-			err = c.NoContent(code)
+			page := fmt.Sprintf("%d.html", code)
+			if _, err := renderer.GetTemplate(page); err != nil {
+				c.NoContent(code)
+			} else {
+				c.Render(code, page, nil)
+			}
 		}
 	}
 

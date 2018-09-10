@@ -13531,7 +13531,6 @@ Card alert
 
 .list-group-transparent .list-group-item.active {
   background: rgba(70, 127, 207, 0.06);
-  font-weight: 600;
 }
 
 .avatar {
