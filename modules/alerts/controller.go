@@ -72,12 +72,6 @@ func empty(c echo.Context) error {
 	})
 }
 
-func rtl(c echo.Context) error {
-	return c.Render(http.StatusOK, "rtl.html", map[string]interface{}{
-		"name": "Dolly!",
-	})
-}
-
 func gallery(c echo.Context) error {
 	return c.Render(http.StatusOK, "gallery.html", map[string]interface{}{
 		"name": "Dolly!",

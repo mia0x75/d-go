@@ -16,7 +16,6 @@ func Routes(e *echo.Echo) {
 	e.GET("/profile.html", profile)
 	e.GET("/email.html", email)
 	e.GET("/empty.html", empty)
-	e.GET("/rtl.html", rtl)
 	e.GET("/gallery.html", gallery)
 	e.GET("/form-elements.html", form)
 }
