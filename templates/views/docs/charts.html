@@ -54,50 +54,48 @@
 												<div class="example-column example-column-2">
 													<div class="card">
 														<div class="card-header">
-															<h3 class="card-title">Chart name</h3>
+															<h3 class="card-title">Line chart</h3>
 														</div>
 														<div class="card-body">
-															<div id="chart-wrapper" style="height: 16rem"></div>
+															<div id="chart-wrapper" style="height: auto"></div>
 														</div>
 													</div>
 													<script>
-														require(['c3', 'jquery'], function (c3, $) {
-															$(document).ready(function () {
-																var chart = c3.generate({
-																	bindto: '#chart-wrapper', // id of chart wrapper
-																	data: {
-																		columns: [
-																			// each columns data
-																			['data1', 7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-																			['data2', 3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-																		],
-																		labels: true,
-																		type: 'line', // default type of chart
-																		colors: {
-																			'data1': tabler.colors["blue"],
-																			'data2': tabler.colors["green"]
-																		},
-																		names: {
-																			// name of each serie
-																			'data1': 'Tokyo',
-																			'data2': 'London'
-																		}
+														require(['c3'], function (c3) {
+															var chart = c3.generate({
+																bindto: '#chart-wrapper', // id of chart wrapper
+																data: {
+																	columns: [
+																		// each columns data
+																		['data1', 7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+																		['data2', 3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+																	],
+																	labels: true,
+																	type: 'line', // default type of chart
+																	colors: {
+																		'data1': tabler.colors["blue"],
+																		'data2': tabler.colors["green"]
 																	},
-																	axis: {
-																		x: {
-																			type: 'category',
-																			// name of each category
-																			categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-																		},
+																	names: {
+																		// name of each serie
+																		'data1': 'Tokyo',
+																		'data2': 'London'
+																	}
+																},
+																axis: {
+																	x: {
+																		type: 'category',
+																		// name of each category
+																		categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
 																	},
-																	legend: {
-																		show: false, //hide legend
-																	},
-																	padding: {
-																		bottom: 0,
-																		top: 0
-																	},
-																});
+																},
+																legend: {
+																	show: false, //hide legend
+																},
+																padding: {
+																	bottom: 0,
+																	top: 0
+																},
 															});
 														});
 													</script>
@@ -158,6 +156,1495 @@
 													</code>
 												</pre>
 											</div>
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* https://stackoverflow.com/questions/44164912/d3-gauge-chart-with-labels-and-percentages */}}
+															<h3 class="card-title">Gauge chart with labels and percentages</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper2" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['d3', 'c3'], function (d3, c3) {
+															var data = [45, 33, 66, 50, 90]
+															var svg = d3.select('#chart-wrapper2').append('svg')
+																.attr('width', 420)
+																.attr('height', 420)
+															var arcs = data.map((v, i) => {
+																return d3.arc().innerRadius(i * 20 + 60).outerRadius((i + 1) * 20 - 5 + 60)
+															});
+															var pieData = data.map((v, i) => {
+																return [{ value: v * 0.75, arc: arcs[i] }, { value: (100 - v) * 0.75, arc: arcs[i] }, { value: 100 * 0.25, arc: arcs[i] }]
+															})
+															var pie = d3.pie()
+																.sort(null)
+																.value(d => d.value)
+															var g = svg.selectAll('g').data(pieData).enter().append('g').attr('transform', 'translate(250,250) rotate(180)').attr('fill-opacity', (d, i) => 2 / (i + 1))
+															// progress
+															g.selectAll('path').data(d => { return pie(d) }).enter().append('path').attr('d', d => { return d.data.arc(d) })
+																.attr('fill', (d, i) => i == 0 ? 'blue' : 'none')
+															svg.selectAll('g').each(function (d) {
+																var el = d3.select(this);
+																el.selectAll('path').each((r, i) => {
+																	if (i == 1) {
+																		var centroid = r.data.arc.centroid({ startAngle: r.startAngle + 0.05, endAngle: r.startAngle + 0.001 + 0.05 })
+																		g.append('text').text(100 - Math.floor(r.value) + '%').attr('transform', `translate(${centroid[0]},${centroid[1]}) rotate(${180 / Math.PI * (r.startAngle) + 7})`).attr('alignment-baseline', 'middle')
+																	}
+																})
+															})
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* https://stackoverflow.com/questions/44164912/d3-gauge-chart-with-labels-and-percentages */}}
+															<h3 class="card-title">Gauge chart with labels and percentages</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper3" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['d3', 'c3'], function (d3, c3) {
+															var width = 300;
+															var arcSize = (6 * width / 100);
+															var innerRadius = arcSize * 3;
+															var data = [
+																{ value: 45, label: "label_1", color: '#ff0000' },
+																{ value: 33, label: "label_2", color: '#00ff00' },
+																{ value: 66, label: "label_3", color: '#0000ff' },
+																{ value: 50, label: "label_4", color: '#ffff00' },
+																{ value: 90, label: "label_5", color: '#ff0099' }
+															];
+															function render() {
+																var svg = d3.select('#chart-wrapper3').append('svg').attr('width', width).attr('height', width);
+																var arcs = data.map(function (obj, i) {
+																	return d3.arc().innerRadius(i * arcSize + innerRadius).outerRadius((i + 1) * arcSize - (width / 100) + innerRadius);
+																});
+																var arcsGrey = data.map(function (obj, i) {
+																	return d3.arc().innerRadius(i * arcSize + (innerRadius + ((arcSize / 2) - 2))).outerRadius((i + 1) * arcSize - ((arcSize / 2)) + (innerRadius));
+																});
+																var pieData = data.map(function (obj, i) {
+																	return [
+																		{ value: obj.value * 0.75, arc: arcs[i], object: obj },
+																		{ value: (100 - obj.value) * 0.75, arc: arcsGrey[i], object: obj },
+																		{ value: 100 * 0.25, arc: arcs[i], object: obj }];
+																});
+																var pie = d3.pie().sort(null).value(function (d) {
+																	return d.value;
+																});
+																var g = svg.selectAll('g').data(pieData).enter()
+																	.append('g')
+																	.attr('transform', 'translate(' + width / 2 + ',' + width / 2 + ') rotate(180)');
+																var gText = svg.selectAll('g.textClass').data([{}]).enter()
+																	.append('g')
+																	.classed('textClass', true)
+																	.attr('transform', 'translate(' + width / 2 + ',' + width / 2 + ') rotate(180)');
+																g.selectAll('path').data(function (d) {
+																	return pie(d);
+																}).enter().append('path')
+																	.attr('id', function (d, i) {
+																		if (i == 1) {
+																			return "Text" + d.data.object.label
+																		}
+																	})
+																	.attr('d', function (d) {
+																		return d.data.arc(d);
+																	}).attr('fill', function (d, i) {
+																		return i == 0 ? d.data.object.color : i == 1 ? '#D3D3D3' : 'none';
+																	});
+																svg.selectAll('g').each(function (d, index) {
+																	var el = d3.select(this);
+																	var path = el.selectAll('path').each(function (r, i) {
+																		if (i === 1) {
+																			var centroid = r.data.arc.centroid({
+																				startAngle: r.startAngle + 0.05,
+																				endAngle: r.startAngle + 0.001 + 0.05
+																			});
+																			var lableObj = r.data.object;
+																			g.append('text')
+																				.attr('font-size', ((5 * width) / 100))
+																				.attr('dominant-baseline', 'central')
+																				/*.attr('transform', "translate(" + centroid[0] + "," + (centroid[1] + 10) + ") rotate(" + (180 / Math.PI * r.startAngle + 7) + ")")
+																				 .attr('alignment-baseline', 'middle')*/
+																				.append("textPath")
+																				.attr("textLength", function (d, i) {
+																					return 0;
+																				})
+																				.attr("xlink:href", "#Text" + r.data.object.label)
+																				.attr("startOffset", '5')
+																				.attr("dy", '-3em')
+																				.text(lableObj.value + '%');
+																		}
+																		if (i === 0) {
+																			var centroidText = r.data.arc.centroid({
+																				startAngle: r.startAngle,
+																				endAngle: r.startAngle
+																			});
+																			var lableObj = r.data.object;
+																			gText.append('text')
+																				.attr('font-size', ((5 * width) / 100))
+																				.text(lableObj.label)
+																				.attr('transform', "translate(" + (centroidText[0] - ((1.5 * width) / 100)) + "," + (centroidText[1] + ") rotate(" + (180) + ")"))
+																				.attr('dominant-baseline', 'central');
+																		}
+																	});
+																});
+															}
+															render()
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6 */}}
+															<h3 class="card-title">Liquid Fill Gauge</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper4" style="height: auto">
+																<svg id="fillgauge1" width="97%" height="250" onclick="gauge1.update(NewValue());"></svg>
+																<svg id="fillgauge2" width="19%" height="200" onclick="gauge2.update(NewValue());"></svg>
+																<svg id="fillgauge3" width="19%" height="200" onclick="gauge3.update(NewValue());"></svg>
+																<svg id="fillgauge4" width="19%" height="200" onclick="gauge4.update(NewValue());"></svg>
+																<svg id="fillgauge5" width="19%" height="200" onclick="gauge5.update(NewValue());"></svg>
+																<svg id="fillgauge6" width="19%" height="200" onclick="gauge6.update(NewValue());"></svg>
+															</div>
+														</div>
+													</div>
+													<script>
+														require(['d3', 'c3'], function (d3, c3) {
+															// var gauge1 = loadLiquidFillGauge("fillgauge1", 55);
+															// var config1 = liquidFillGaugeDefaultSettings();
+															// config1.circleColor = "#FF7777";
+															// config1.textColor = "#FF4444";
+															// config1.waveTextColor = "#FFAAAA";
+															// config1.waveColor = "#FFDDDD";
+															// config1.circleThickness = 0.2;
+															// config1.textVertPosition = 0.2;
+															// config1.waveAnimateTime = 1000;
+															// var gauge2 = loadLiquidFillGauge("fillgauge2", 28, config1);
+															// var config2 = liquidFillGaugeDefaultSettings();
+															// config2.circleColor = "#D4AB6A";
+															// config2.textColor = "#553300";
+															// config2.waveTextColor = "#805615";
+															// config2.waveColor = "#AA7D39";
+															// config2.circleThickness = 0.1;
+															// config2.circleFillGap = 0.2;
+															// config2.textVertPosition = 0.8;
+															// config2.waveAnimateTime = 2000;
+															// config2.waveHeight = 0.3;
+															// config2.waveCount = 1;
+															// var gauge3 = loadLiquidFillGauge("fillgauge3", 60.1, config2);
+															// var config3 = liquidFillGaugeDefaultSettings();
+															// config3.textVertPosition = 0.8;
+															// config3.waveAnimateTime = 5000;
+															// config3.waveHeight = 0.15;
+															// config3.waveAnimate = false;
+															// config3.waveOffset = 0.25;
+															// config3.valueCountUp = false;
+															// config3.displayPercent = false;
+															// var gauge4 = loadLiquidFillGauge("fillgauge4", 50, config3);
+															// var config4 = liquidFillGaugeDefaultSettings();
+															// config4.circleThickness = 0.15;
+															// config4.circleColor = "#808015";
+															// config4.textColor = "#555500";
+															// config4.waveTextColor = "#FFFFAA";
+															// config4.waveColor = "#AAAA39";
+															// config4.textVertPosition = 0.8;
+															// config4.waveAnimateTime = 1000;
+															// config4.waveHeight = 0.05;
+															// config4.waveAnimate = true;
+															// config4.waveRise = false;
+															// config4.waveHeightScaling = false;
+															// config4.waveOffset = 0.25;
+															// config4.textSize = 0.75;
+															// config4.waveCount = 3;
+															// var gauge5 = loadLiquidFillGauge("fillgauge5", 60.44, config4);
+															// var config5 = liquidFillGaugeDefaultSettings();
+															// config5.circleThickness = 0.4;
+															// config5.circleColor = "#6DA398";
+															// config5.textColor = "#0E5144";
+															// config5.waveTextColor = "#6DA398";
+															// config5.waveColor = "#246D5F";
+															// config5.textVertPosition = 0.52;
+															// config5.waveAnimateTime = 5000;
+															// config5.waveHeight = 0;
+															// config5.waveAnimate = false;
+															// config5.waveCount = 2;
+															// config5.waveOffset = 0.25;
+															// config5.textSize = 1.2;
+															// config5.minValue = 30;
+															// config5.maxValue = 150
+															// config5.displayPercent = false;
+															// var gauge6 = loadLiquidFillGauge("fillgauge6", 120, config5);
+
+															// function NewValue() {
+															// 	if (Math.random() > .5) {
+															// 		return Math.round(Math.random() * 100);
+															// 	} else {
+															// 		return (Math.random() * 100).toFixed(1);
+															// 	}
+															// }
+															// function liquidFillGaugeDefaultSettings() {
+															// 	return {
+															// 		minValue: 0, // The gauge minimum value.
+															// 		maxValue: 100, // The gauge maximum value.
+															// 		circleThickness: 0.05, // The outer circle thickness as a percentage of it's radius.
+															// 		circleFillGap: 0.05, // The size of the gap between the outer circle and wave circle as a percentage of the outer circles radius.
+															// 		circleColor: "#178BCA", // The color of the outer circle.
+															// 		waveHeight: 0.05, // The wave height as a percentage of the radius of the wave circle.
+															// 		waveCount: 1, // The number of full waves per width of the wave circle.
+															// 		waveRiseTime: 1000, // The amount of time in milliseconds for the wave to rise from 0 to it's final height.
+															// 		waveAnimateTime: 18000, // The amount of time in milliseconds for a full wave to enter the wave circle.
+															// 		waveRise: true, // Control if the wave should rise from 0 to it's full height, or start at it's full height.
+															// 		waveHeightScaling: true, // Controls wave size scaling at low and high fill percentages. When true, wave height reaches it's maximum at 50% fill, and minimum at 0% and 100% fill. This helps to prevent the wave from making the wave circle from appear totally full or empty when near it's minimum or maximum fill.
+															// 		waveAnimate: true, // Controls if the wave scrolls or is static.
+															// 		waveColor: "#178BCA", // The color of the fill wave.
+															// 		waveOffset: 0, // The amount to initially offset the wave. 0 = no offset. 1 = offset of one full wave.
+															// 		textVertPosition: .5, // The height at which to display the percentage text withing the wave circle. 0 = bottom, 1 = top.
+															// 		textSize: 1, // The relative height of the text to display in the wave circle. 1 = 50%
+															// 		valueCountUp: true, // If true, the displayed value counts up from 0 to it's final value upon loading. If false, the final value is displayed.
+															// 		displayPercent: true, // If true, a % symbol is displayed after the value.
+															// 		textColor: "#045681", // The color of the value text when the wave does not overlap it.
+															// 		waveTextColor: "#A4DBf8" // The color of the value text when the wave overlaps it.
+															// 	};
+															// }
+
+															// function loadLiquidFillGauge(elementId, value, config) {
+															// 	if (config == null) config = liquidFillGaugeDefaultSettings();
+
+															// 	var gauge = d3.select("#" + elementId);
+															// 	var radius = Math.min(parseInt(gauge.style("width")), parseInt(gauge.style("height"))) / 2;
+															// 	var locationX = parseInt(gauge.style("width")) / 2 - radius;
+															// 	var locationY = parseInt(gauge.style("height")) / 2 - radius;
+															// 	var fillPercent = Math.max(config.minValue, Math.min(config.maxValue, value)) / config.maxValue;
+
+															// 	var waveHeightScale;
+															// 	if (config.waveHeightScaling) {
+															// 		waveHeightScale = d3.scaleLinear()
+															// 			.range([0, config.waveHeight, 0])
+															// 			.domain([0, 50, 100]);
+															// 	} else {
+															// 		waveHeightScale = d3.scaleLinear()
+															// 			.range([config.waveHeight, config.waveHeight])
+															// 			.domain([0, 100]);
+															// 	}
+
+															// 	var textPixels = (config.textSize * radius / 2);
+															// 	var textFinalValue = parseFloat(value).toFixed(2);
+															// 	var textStartValue = config.valueCountUp ? config.minValue : textFinalValue;
+															// 	var percentText = config.displayPercent ? "%" : "";
+															// 	var circleThickness = config.circleThickness * radius;
+															// 	var circleFillGap = config.circleFillGap * radius;
+															// 	var fillCircleMargin = circleThickness + circleFillGap;
+															// 	var fillCircleRadius = radius - fillCircleMargin;
+															// 	var waveHeight = fillCircleRadius * waveHeightScale(fillPercent * 100);
+
+															// 	var waveLength = fillCircleRadius * 2 / config.waveCount;
+															// 	var waveClipCount = 1 + config.waveCount;
+															// 	var waveClipWidth = waveLength * waveClipCount;
+
+															// 	// Rounding functions so that the correct number of decimal places is always displayed as the value counts up.
+															// 	var textRounder = function (value) { return Math.round(value); };
+															// 	if (parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))) {
+															// 		textRounder = function (value) { return parseFloat(value).toFixed(1); };
+															// 	}
+															// 	if (parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))) {
+															// 		textRounder = function (value) { return parseFloat(value).toFixed(2); };
+															// 	}
+
+															// 	// Data for building the clip wave area.
+															// 	var data = [];
+															// 	for (var i = 0; i <= 40 * waveClipCount; i++) {
+															// 		data.push({ x: i / (40 * waveClipCount), y: (i / (40)) });
+															// 	}
+
+															// 	// Scales for drawing the outer circle.
+															// 	var gaugeCircleX = d3.scaleLinear().range([0, 2 * Math.PI]).domain([0, 1]);
+															// 	var gaugeCircleY = d3.scaleLinear().range([0, radius]).domain([0, radius]);
+
+															// 	// Scales for controlling the size of the clipping path.
+															// 	var waveScaleX = d3.scaleLinear().range([0, waveClipWidth]).domain([0, 1]);
+															// 	var waveScaleY = d3.scaleLinear().range([0, waveHeight]).domain([0, 1]);
+
+															// 	// Scales for controlling the position of the clipping path.
+															// 	var waveRiseScale = d3.scaleLinear()
+															// 		// The clipping area size is the height of the fill circle + the wave height, so we position the clip wave
+															// 		// such that the it will overlap the fill circle at all when at 0%, and will totally cover the fill
+															// 		// circle at 100%.
+															// 		.range([(fillCircleMargin + fillCircleRadius * 2 + waveHeight), (fillCircleMargin - waveHeight)])
+															// 		.domain([0, 1]);
+															// 	var waveAnimateScale = d3.scaleLinear()
+															// 		.range([0, waveClipWidth - fillCircleRadius * 2]) // Push the clip area one full wave then snap back.
+															// 		.domain([0, 1]);
+
+															// 	// Scale for controlling the position of the text within the gauge.
+															// 	var textRiseScaleY = d3.scaleLinear()
+															// 		.range([fillCircleMargin + fillCircleRadius * 2, (fillCircleMargin + textPixels * 0.7)])
+															// 		.domain([0, 1]);
+
+															// 	// Center the gauge within the parent SVG.
+															// 	var gaugeGroup = gauge.append("g")
+															// 		.attr('transform', 'translate(' + locationX + ',' + locationY + ')');
+
+															// 	// Draw the outer circle.
+															// 	var gaugeCircleArc = d3.arc()
+															// 		.startAngle(gaugeCircleX(0))
+															// 		.endAngle(gaugeCircleX(1))
+															// 		.outerRadius(gaugeCircleY(radius))
+															// 		.innerRadius(gaugeCircleY(radius - circleThickness));
+															// 	gaugeGroup.append("path")
+															// 		.attr("d", gaugeCircleArc)
+															// 		.style("fill", config.circleColor)
+															// 		.attr('transform', 'translate(' + radius + ',' + radius + ')');
+
+															// 	// Text where the wave does not overlap.
+															// 	var text1 = gaugeGroup.append("text")
+															// 		.text(textRounder(textStartValue) + percentText)
+															// 		.attr("class", "liquidFillGaugeText")
+															// 		.attr("text-anchor", "middle")
+															// 		.attr("font-size", textPixels + "px")
+															// 		.style("fill", config.textColor)
+															// 		.attr('transform', 'translate(' + radius + ',' + textRiseScaleY(config.textVertPosition) + ')');
+
+															// 	// The clipping wave area.
+															// 	var clipArea = d3.area()
+															// 		.x(function (d) { return waveScaleX(d.x); })
+															// 		.y0(function (d) { return waveScaleY(Math.sin(Math.PI * 2 * config.waveOffset * -1 + Math.PI * 2 * (1 - config.waveCount) + d.y * 2 * Math.PI)); })
+															// 		.y1(function (d) { return (fillCircleRadius * 2 + waveHeight); });
+															// 	var waveGroup = gaugeGroup.append("defs")
+															// 		.append("clipPath")
+															// 		.attr("id", "clipWave" + elementId);
+															// 	// TODO:
+															// 	console.log(waveGroup)
+															// 	var wave = waveGroup.append("path")
+															// 		.datum(data)
+															// 		.attr("d", clipArea)
+															// 		.attr("T", 0);
+
+															// 	// The inner circle with the clipping wave attached.
+															// 	var fillCircleGroup = gaugeGroup.append("g")
+															// 		.attr("clip-path", "url(#clipWave" + elementId + ")");
+															// 	fillCircleGroup.append("circle")
+															// 		.attr("cx", radius)
+															// 		.attr("cy", radius)
+															// 		.attr("r", fillCircleRadius)
+															// 		.style("fill", config.waveColor);
+
+															// 	// Text where the wave does overlap.
+															// 	var text2 = fillCircleGroup.append("text")
+															// 		.text(textRounder(textStartValue) + percentText)
+															// 		.attr("class", "liquidFillGaugeText")
+															// 		.attr("text-anchor", "middle")
+															// 		.attr("font-size", textPixels + "px")
+															// 		.style("fill", config.waveTextColor)
+															// 		.attr('transform', 'translate(' + radius + ',' + textRiseScaleY(config.textVertPosition) + ')');
+
+															// 	// Make the value count up.
+															// 	if (config.valueCountUp) {
+															// 		var textTween = function () {
+															// 			var i = d3.interpolate(this.textContent, textFinalValue);
+															// 			return function (t) { this.textContent = textRounder(i(t)) + percentText; }
+															// 		};
+															// 		text1.transition()
+															// 			.duration(config.waveRiseTime)
+															// 			.tween("text", textTween);
+															// 		text2.transition()
+															// 			.duration(config.waveRiseTime)
+															// 			.tween("text", textTween);
+															// 	}
+
+															// 	// Make the wave rise. wave and waveGroup are separate so that horizontal and vertical movement can be controlled independently.
+															// 	var waveGroupXPosition = fillCircleMargin + fillCircleRadius * 2 - waveClipWidth;
+															// 	if (config.waveRise) {
+															// 		waveGroup.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(0) + ')')
+															// 			.transition()
+															// 			.duration(config.waveRiseTime)
+															// 			.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(fillPercent) + ')')
+															// 			.each("start", function () { wave.attr('transform', 'translate(1,0)'); }); // This transform is necessary to get the clip wave positioned correctly when waveRise=true and waveAnimate=false. The wave will not position correctly without this, but it's not clear why this is actually necessary.
+															// 	} else {
+															// 		waveGroup.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(fillPercent) + ')');
+															// 	}
+
+															// 	if (config.waveAnimate) animateWave();
+
+															// 	function animateWave() {
+															// 		wave.attr('transform', 'translate(' + waveAnimateScale(wave.attr('T')) + ',0)');
+															// 		wave.transition()
+															// 			.duration(config.waveAnimateTime * (1 - wave.attr('T')))
+															// 			.ease('linear')
+															// 			.attr('transform', 'translate(' + waveAnimateScale(1) + ',0)')
+															// 			.attr('T', 1)
+															// 			.each('end', function () {
+															// 				wave.attr('T', 0);
+															// 				animateWave(config.waveAnimateTime);
+															// 			});
+															// 	}
+
+															// 	function GaugeUpdater() {
+															// 		this.update = function (value) {
+															// 			var newFinalValue = parseFloat(value).toFixed(2);
+															// 			var textRounderUpdater = function (value) { return Math.round(value); };
+															// 			if (parseFloat(newFinalValue) != parseFloat(textRounderUpdater(newFinalValue))) {
+															// 				textRounderUpdater = function (value) { return parseFloat(value).toFixed(1); };
+															// 			}
+															// 			if (parseFloat(newFinalValue) != parseFloat(textRounderUpdater(newFinalValue))) {
+															// 				textRounderUpdater = function (value) { return parseFloat(value).toFixed(2); };
+															// 			}
+
+															// 			var textTween = function () {
+															// 				var i = d3.interpolate(this.textContent, parseFloat(value).toFixed(2));
+															// 				return function (t) { this.textContent = textRounderUpdater(i(t)) + percentText; }
+															// 			};
+
+															// 			text1.transition()
+															// 				.duration(config.waveRiseTime)
+															// 				.tween("text", textTween);
+															// 			text2.transition()
+															// 				.duration(config.waveRiseTime)
+															// 				.tween("text", textTween);
+
+															// 			var fillPercent = Math.max(config.minValue, Math.min(config.maxValue, value)) / config.maxValue;
+															// 			var waveHeight = fillCircleRadius * waveHeightScale(fillPercent * 100);
+															// 			var waveRiseScale = d3.scaleLinear()
+															// 				// The clipping area size is the height of the fill circle + the wave height, so we position the clip wave
+															// 				// such that the it will overlap the fill circle at all when at 0%, and will totally cover the fill
+															// 				// circle at 100%.
+															// 				.range([(fillCircleMargin + fillCircleRadius * 2 + waveHeight), (fillCircleMargin - waveHeight)])
+															// 				.domain([0, 1]);
+															// 			var newHeight = waveRiseScale(fillPercent);
+															// 			var waveScaleX = d3.scaleLinear().range([0, waveClipWidth]).domain([0, 1]);
+															// 			var waveScaleY = d3.scaleLinear().range([0, waveHeight]).domain([0, 1]);
+															// 			var newClipArea;
+															// 			if (config.waveHeightScaling) {
+															// 				newClipArea = d3.area()
+															// 					.x(function (d) { return waveScaleX(d.x); })
+															// 					.y0(function (d) { return waveScaleY(Math.sin(Math.PI * 2 * config.waveOffset * -1 + Math.PI * 2 * (1 - config.waveCount) + d.y * 2 * Math.PI)); })
+															// 					.y1(function (d) { return (fillCircleRadius * 2 + waveHeight); });
+															// 			} else {
+															// 				newClipArea = clipArea;
+															// 			}
+
+															// 			var newWavePosition = config.waveAnimate ? waveAnimateScale(1) : 0;
+															// 			wave.transition()
+															// 				.duration(0)
+															// 				.transition()
+															// 				.duration(config.waveAnimate ? (config.waveAnimateTime * (1 - wave.attr('T'))) : (config.waveRiseTime))
+															// 				.ease('linear')
+															// 				.attr('d', newClipArea)
+															// 				.attr('transform', 'translate(' + newWavePosition + ',0)')
+															// 				.attr('T', '1')
+															// 				.each("end", function () {
+															// 					if (config.waveAnimate) {
+															// 						wave.attr('transform', 'translate(' + waveAnimateScale(0) + ',0)');
+															// 						animateWave(config.waveAnimateTime);
+															// 					}
+															// 				});
+															// 			waveGroup.transition()
+															// 				.duration(config.waveRiseTime)
+															// 				.attr('transform', 'translate(' + waveGroupXPosition + ',' + newHeight + ')')
+															// 		}
+															// 	}
+
+															// 	return new GaugeUpdater();
+															// }
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* https://c3js.org/samples/chart_gauge.html */}}
+															<h3 class="card-title">Gauge chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper5" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['c3'], function (c3) {
+															c3.generate({
+																bindto: "#chart-wrapper5",
+																data: {
+																	columns: [
+																		['data', 91.4]
+																	],
+																	type: 'gauge',
+																},
+																color : {
+																	pattern: ['#1ab394', '#BABABA']
+																},
+																gauge: {
+																	label: {
+																		format: function (value, ratio) {
+																			return value; //returning here the value and not the ratio
+																		},
+																	}
+																}
+															});
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* http://bl.ocks.org/nitaku/833632f23c308ae2d58b */}}
+															<h3 class="card-title">Isometric treemap</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper6" style="height: 16rem"></div>
+														</div>
+													</div>
+													<style>
+													.iso.outline {
+													stroke: #333;
+													fill: none;
+													vector-effect: non-scaling-stroke;
+													}
+
+													.label {
+													pointer-events: none;
+													text-anchor: middle;
+													font-family: Impact;
+													}
+
+													.pipedon:hover .label {
+													fill: black;
+													}
+													.pipedon:hover .face {
+													fill: yellow;
+													}
+
+													.hidden {
+													display: none;
+													}
+													</style>
+													<script>
+														require(['d3', 'c3'], function (d3, c3) {
+															var DH, PAD, color, correct_x, correct_y, height, iso_layout, isometric, ordering, parallelepipedon, path_generator, svg, treemap, vis, width, zoom, zoomable_layer;
+
+															svg = d3.select("#chart-wrapper6").append("svg");
+
+															width = svg.node().getBoundingClientRect().width;
+
+															height = svg.node().getBoundingClientRect().height;
+
+															zoomable_layer = svg.append('g');
+
+															zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', function () {
+																return zoomable_layer.attr({
+																	transform: "translate(" + (zoom.translate()) + ")scale(" + (zoom.scale()) + ")"
+																});
+															});
+
+															svg.call(zoom);
+
+															vis = zoomable_layer.append('g').attr({
+																"class": 'vis',
+																transform: "translate(" + (width / 2) + "," + (height / 3 - 112) + ")"
+															});
+
+															isometric = function (_3d_p) {
+																return [-Math.sqrt(3) / 2 * _3d_p[0] + Math.sqrt(3) / 2 * _3d_p[1], +0.5 * _3d_p[0] + 0.5 * _3d_p[1] - _3d_p[2]];
+															};
+
+															parallelepipedon = function (d) {
+																var fb, ft, mlb, mlt, mrb, mrt, nb, nt;
+																if (!(d.x != null)) {
+																	d.x = 0;
+																}
+																if (!(d.y != null)) {
+																	d.y = 0;
+																}
+																if (!(d.h != null)) {
+																	d.h = 0;
+																}
+																if (!(d.dx != null)) {
+																	d.dx = 10;
+																}
+																if (!(d.dy != null)) {
+																	d.dy = 10;
+																}
+																if (!(d.dh != null)) {
+																	d.dh = 10;
+																}
+																fb = isometric([d.x, d.y, d.h], mlb = isometric([d.x + d.dx, d.y, d.h], nb = isometric([d.x + d.dx, d.y + d.dy, d.h], mrb = isometric([d.x, d.y + d.dy, d.h], ft = isometric([d.x, d.y, d.h + d.dh], mlt = isometric([d.x + d.dx, d.y, d.h + d.dh], nt = isometric([d.x + d.dx, d.y + d.dy, d.h + d.dh], mrt = isometric([d.x, d.y + d.dy, d.h + d.dh]))))))));
+																d.iso = {
+																	face_bottom: [fb, mrb, nb, mlb],
+																	face_left: [mlb, mlt, nt, nb],
+																	face_right: [nt, mrt, mrb, nb],
+																	face_top: [ft, mrt, nt, mlt],
+																	outline: [ft, mrt, mrb, nb, mlb, mlt],
+																	fb: fb,
+																	mlb: mlb,
+																	nb: nb,
+																	mrb: mrb,
+																	ft: ft,
+																	mlt: mlt,
+																	nt: nt,
+																	mrt: mrt
+																};
+																return d;
+															};
+
+															ordering = function (a, b) {
+																return b.i - a.i;
+															};
+
+															iso_layout = function (data, shape, scale) {
+																if (!(scale != null)) {
+																	scale = 1;
+																}
+																data.forEach(function (d) {
+																	return shape(d, scale);
+																});
+																return data.sort(ordering);
+															};
+
+															path_generator = function (d) {
+																return 'M' + d.map(function (p) {
+																	return p.join(' ');
+																}).join('L') + 'z';
+															};
+
+															DH = 5;
+															PAD = 4;
+
+															treemap = d3.treemap().size([400, 400]).value(function (d) {
+																return d.size;
+															}).sort(function (a, b) {
+																return ordering(b, a);
+															}).padding(PAD).round(false);
+
+															color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+															correct_x = d3.scaleLinear().domain([0, width]).range([0, width * 1.05]);
+
+															correct_y = d3.scaleLinear().domain([0, height]).range([0, height * 3 / 4]);
+
+															d3.json('/demo/flare.json', function (tree) {
+																var data, enter_labels, enter_labels_g, enter_pipedons, i, pipedons, walk, walk_i;
+																walk = function (n, depth) {
+																	var child, _i, _len, _ref;
+																	n.depth = depth;
+																	n.dh = DH;
+																	n.h = DH * depth;
+																	if (n.children != null) {
+																		_ref = n.children;
+																		for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+																			child = _ref[_i];
+																			walk(child, depth + 1);
+																		}
+																		n.children.sort(function (a, b) {
+																			return a.size - b.size;
+																		});
+																		return n.size = d3.sum(n.children, function (d) {
+																			return d.size;
+																		});
+																	}
+																};
+																walk(tree, 0);
+																i = 0;
+																walk_i = function (n) {
+																	var child, _i, _len, _ref;
+																	if (n.children != null) {
+																		_ref = n.children;
+																		for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+																			child = _ref[_i];
+																			walk_i(child);
+																		}
+																	}
+																	n.i = i;
+																	return i += 1;
+																};
+																walk_i(tree);
+																data = treemap.nodes(tree);
+																iso_layout(data, parallelepipedon);
+																data.forEach(function (d, i) {
+																	return d.template_color = d3.hcl(color(d.i));
+																});
+																pipedons = vis.selectAll('.pipedon').data(data);
+																enter_pipedons = pipedons.enter().append('g').attr({
+																	"class": 'pipedon'
+																});
+																enter_pipedons.append('path').attr({
+																	"class": 'iso face bottom',
+																	d: function (d) {
+																		return path_generator(d.iso.face_bottom);
+																	}
+																});
+																enter_pipedons.append('path').attr({
+																	"class": 'iso face left',
+																	d: function (d) {
+																		return path_generator(d.iso.face_left);
+																	},
+																	fill: function (d) {
+																		return d.template_color;
+																	}
+																});
+																enter_pipedons.append('path').attr({
+																	"class": 'iso face right',
+																	d: function (d) {
+																		return path_generator(d.iso.face_right);
+																	},
+																	fill: function (d) {
+																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+																	}
+																});
+																enter_pipedons.append('path').attr({
+																	"class": 'iso face top',
+																	d: function (d) {
+																		return path_generator(d.iso.face_top);
+																	},
+																	fill: function (d) {
+																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l + 12);
+																	}
+																});
+																enter_labels_g = enter_pipedons.append('g').classed('hidden', function (d) {
+																	return d.children != null;
+																});
+																enter_labels = enter_labels_g.append('svg').attr({
+																	"class": 'label'
+																});
+																enter_labels.append('text').text(function (d) {
+																	return d.name.toUpperCase();
+																}).attr({
+																	dy: '.35em'
+																}).each(function (node) {
+																	var bbox, bbox_aspect, node_bbox, node_bbox_aspect, rotate;
+																	bbox = this.getBBox();
+																	bbox_aspect = bbox.width / bbox.height;
+																	node_bbox = {
+																		width: node.dx,
+																		height: node.dy
+																	};
+																	node_bbox_aspect = node_bbox.width / node_bbox.height;
+																	rotate = bbox_aspect >= 1 && node_bbox_aspect < 1 || bbox_aspect < 1 && node_bbox_aspect >= 1;
+																	node.label_bbox = {
+																		x: bbox.x + (bbox.width - correct_x(bbox.width)) / 2,
+																		y: bbox.y + (bbox.height - correct_y(bbox.height)) / 2,
+																		width: correct_x(bbox.width),
+																		height: correct_y(bbox.height)
+																	};
+																	if (rotate) {
+																		node.label_bbox = {
+																			x: node.label_bbox.y,
+																			y: node.label_bbox.x,
+																			width: node.label_bbox.height,
+																			height: node.label_bbox.width
+																		};
+																		return d3.select(this).attr('transform', 'rotate(90) translate(0,1)');
+																	}
+																});
+																enter_labels.each(function (d) {
+																	d.iso_x = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[0] - d.dx / 2;
+																	return d.iso_y = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[1] - d.dy / 2;
+																});
+																enter_labels.attr({
+																	x: function (d) {
+																		return d.iso_x;
+																	},
+																	y: function (d) {
+																		return d.iso_y;
+																	},
+																	width: function (node) {
+																		return node.dx;
+																	},
+																	height: function (node) {
+																		return node.dy;
+																	},
+																	viewBox: function (node) {
+																		return "" + node.label_bbox.x + " " + node.label_bbox.y + " " + node.label_bbox.width + " " + node.label_bbox.height;
+																	},
+																	preserveAspectRatio: 'none',
+																	fill: function (d) {
+																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+																	}
+																});
+																enter_labels_g.attr({
+																	transform: function (d) {
+																		return "translate(" + (d.iso_x + d.dx / 2) + "," + (d.iso_y + d.dy / 2) + ") scale(1, " + (1 / Math.sqrt(3)) + ") rotate(-45) translate(" + (-(d.iso_x + d.dx / 2)) + "," + (-(d.iso_y + d.dy / 2)) + ")";
+																	}
+																});
+																enter_pipedons.append('path').attr({
+																	"class": 'iso outline',
+																	d: function (d) {
+																		return path_generator(d.iso.outline);
+																	}
+																});
+																return enter_pipedons.append('title').text(function (d) {
+																	return d.name;
+																});
+															});
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* url */}}
+															<h3 class="card-title">Spline chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper8" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['c3', 'jquery'], function (c3, $) {
+															c3.generate({
+																bindto: "#chart-wrapper8",
+																data: {
+																	json: [
+																		{
+																			"metricDate": "2016-02-08",
+																			"vlp": 9046,
+																			"other": 904,
+																			"vdp": 10000,
+																			"home": 3543
+																		}, {
+																			"metricDate": "2016-02-09",
+																			"vdp": 7000,
+																			"other": 1103,
+																			"home": 3667,
+																			"vlp": 9542
+																		}, {
+																			"metricDate": "2016-02-10",
+																			"other": 1043,
+																			"vlp": 9751,
+																			"home": 3681,
+																			"vdp": 5000
+																		}, {
+																			"metricDate": "2016-02-11",
+																			"other": 1433,
+																			"home": 4059,
+																			"vdp": 4000,
+																			"vlp": 9924
+																		}
+																	],
+																	type: 'area-spline',
+																	groups: [['other', 'home', 'vdp', 'vlp']],
+																	keys: {
+																		x: 'metricDate',
+																		value: ["vlp", "home", "vdp", "other"]
+																	}
+																},
+																axis: {
+																	x: {
+																		type: 'timeseries',
+																	}
+																}
+															});
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* url */}}
+															<h3 class="card-title">Extended stacked area chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper9" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['c3', 'jquery'], function (c3, $) {
+															// function stackedAreaChart() {
+															// 	var _chart = {};
+															// 	var _width = 900, _height = 450,
+															// 		_margins = { top: 30, left: 30, right: 30, bottom: 30 },
+															// 		_x, _y,
+															// 		_data = [],
+															// 		_colors = d3.scale.ordinal(d3.schemeCategory10),
+															// 		_svg,
+															// 		_bodyG,
+															// 		_line;
+															// 	_chart.render = function () {
+															// 		if (!_svg) {
+															// 			_svg = d3.select("#chart-wrapper9").append("svg")
+															// 				.attr("height", _height)
+															// 				.attr("width", _width);
+															// 			renderAxes(_svg);
+															// 			defineBodyClip(_svg);
+															// 		}
+															// 		renderBody(_svg);
+															// 	};
+															// 	function renderAxes(svg) {
+															// 		var axesG = svg.append("g")
+															// 			.attr("class", "axes");
+															// 		renderXAxis(axesG);
+															// 		renderYAxis(axesG);
+															// 	}
+															// 	function renderXAxis(axesG) {
+															// 		var xAxis = d3.svg.axis()
+															// 			.orient("bottom")
+															// 			.scale(_x.range([0, quadrantWidth()]));
+															// 		axesG.append("g")
+															// 			.attr("class", "x axis")
+															// 			.attr("transform", function () {
+															// 				return "translate(" + xStart() + "," + yStart() + ")";
+															// 			})
+															// 			.call(xAxis);
+															// 		d3.selectAll("g.x g.tick")
+															// 			.append("line")
+															// 			.classed("grid-line", true)
+															// 			.attr("x1", 0)
+															// 			.attr("y1", 0)
+															// 			.attr("x2", 0)
+															// 			.attr("y2", -quadrantHeight());
+															// 	}
+															// 	function renderYAxis(axesG) {
+															// 		var yAxis = d3.svg.axis()
+															// 			.orient("left")
+															// 			.scale(_y.range([quadrantHeight(), 0]));
+															// 		axesG.append("g")
+															// 			.attr("class", "y axis")
+															// 			.attr("transform", function () {
+															// 				return "translate(" + xStart() + "," + yEnd() + ")";
+															// 			})
+															// 			.call(yAxis);
+															// 		d3.selectAll("g.y g.tick")
+															// 			.append("line")
+															// 			.classed("grid-line", true)
+															// 			.attr("x1", 0)
+															// 			.attr("y1", 0)
+															// 			.attr("x2", quadrantWidth())
+															// 			.attr("y2", 0);
+															// 	}
+															// 	function defineBodyClip(svg) {
+															// 		var padding = 5;
+															// 		svg.append("defs")
+															// 			.append("clipPath")
+															// 			.attr("id", "body-clip")
+															// 			.append("rect")
+															// 			.attr("x", 0 - padding)
+															// 			.attr("y", 0)
+															// 			.attr("width", quadrantWidth() + 2 * padding)
+															// 			.attr("height", quadrantHeight());
+															// 	}
+															// 	function renderBody(svg) {
+															// 		if (!_bodyG)
+															// 			_bodyG = svg.append("g")
+															// 				.attr("class", "body")
+															// 				.attr("transform", "translate("
+															// 					+ xStart() + ","
+															// 					+ yEnd() + ")")
+															// 				.attr("clip-path", "url(#body-clip)");
+															// 		var stack = d3.layout.stack() // <-A
+															// 			.offset(d3.stackOffsetExpand);
+															// 			//.keys(['value1', 'value2', 'value3'])
+															// 		var series = stack(_data); //<-B
+															// 		renderLines(series);
+															// 		renderAreas(series);
+															// 	}
+															// 	function renderLines(series) {
+															// 		_line = d3.line()
+															// 			.x(function (d, i) {
+															// 				return _x(i); //<-C
+															// 			})
+															// 			.y(function (d) {
+															// 				return _y(d[1]); //<-D
+															// 			});
+															// 		var linePaths = _bodyG.selectAll("path.line")
+															// 			.data(series);
+															// 		linePaths.enter()
+															// 			.append("path")
+															// 			.merge(linePaths)
+															// 			.style("stroke", function (d, i) {
+															// 				return _colors(i);
+															// 			})
+															// 			.attr("class", "line")
+															// 			.transition()
+															// 			.attr("d", function (d) {
+															// 				return _line(d);
+															// 			});
+															// 	}
+															// 	function renderAreas(series) {
+															// 		var area = d3.area()
+															// 			.x(function (d, i) {
+															// 				return _x(i); //<-E
+															// 			})
+															// 			.y0(function (d) { return _y(d[0]); }) //<-F
+															// 			.y1(function (d) {
+															// 				return _y(d[1]); //<-G
+															// 			});
+															// 		var areaPaths = _bodyG.selectAll("path.area")
+															// 			.data(series);
+															// 		areaPaths.enter()
+															// 			.append("path")
+															// 			.merge(areaPaths)
+															// 			.style("fill", function (d, i) {
+															// 				return _colors(i);
+															// 			})
+															// 			.attr("class", "area")
+															// 			.transition()
+															// 			.attr("d", function (d) {
+															// 				return area(d);
+															// 			});
+															// 	}
+															// 	function xStart() {
+															// 		return _margins.left;
+															// 	}
+															// 	function yStart() {
+															// 		return _height - _margins.bottom;
+															// 	}
+															// 	function xEnd() {
+															// 		return _width - _margins.right;
+															// 	}
+															// 	function yEnd() {
+															// 		return _margins.top;
+															// 	}
+															// 	function quadrantWidth() {
+															// 		return _width - _margins.left - _margins.right;
+															// 	}
+															// 	function quadrantHeight() {
+															// 		return _height - _margins.top - _margins.bottom;
+															// 	}
+															// 	_chart.width = function (w) {
+															// 		if (!arguments.length) return _width;
+															// 		_width = w;
+															// 		return _chart;
+															// 	};
+															// 	_chart.height = function (h) {
+															// 		if (!arguments.length) return _height;
+															// 		_height = h;
+															// 		return _chart;
+															// 	};
+															// 	_chart.margins = function (m) {
+															// 		if (!arguments.length) return _margins;
+															// 		_margins = m;
+															// 		return _chart;
+															// 	};
+															// 	_chart.colors = function (c) {
+															// 		if (!arguments.length) return _colors;
+															// 		_colors = c;
+															// 		return _chart;
+															// 	};
+															// 	_chart.x = function (x) {
+															// 		if (!arguments.length) return _x;
+															// 		_x = x;
+															// 		return _chart;
+															// 	};
+															// 	_chart.y = function (y) {
+															// 		if (!arguments.length) return _y;
+															// 		_y = y;
+															// 		return _chart;
+															// 	};
+															// 	_chart.data = function (data) {
+															// 		if (!arguments.length) return _data;
+															// 		_data = data;
+															// 		return _chart;
+															// 	};
+															// 	return _chart;
+															// }
+															// function randomData() {
+															// 	return Math.random() * 9;
+															// }
+															// function update() {
+															// 	data = d3.range(numberOfDataPoint).map(function (i) {
+															// 		return { value1: randomData(), value2: randomData(), value3: randomData() };
+															// 	});
+															// 	chart.data(data).render();
+															// }
+															// var numberOfDataPoint = 51,
+															// 	data = [];
+															// var chart = stackedAreaChart()
+															// 	.x(d3.scaleLinear().domain([0, numberOfDataPoint - 1]))
+															// 	.y(d3.scaleLinear().domain([0, 1]));
+															// update();
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
+															<h3 class="card-title">Multiple spline chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper10" style="height: auto">
+															</div>
+														</div>
+													</div>
+													<script>
+														require(['c3', 'd3'], function (c3, d3) {
+															var margin = { top: 8, right: 10, bottom: 2, left: 10 },
+																width = 960 - margin.left - margin.right,
+																height = 69 - margin.top - margin.bottom;
+															var parseDate = d3.timeParse("%b %Y");
+															var x = d3.scaleTime()
+																.range([0, width]);
+															var y = d3.local();
+															var area = d3.local();
+															var line = d3.local();
+															d3.tsv("/demo/stocks.csv", type, function (error, data) {
+																if (error) throw error;
+																var symbols = d3.nest()
+																	.key(function (d) { return d.symbol; })
+																	.entries(data);
+																x.domain([
+																	d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
+																	d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
+																]);
+																var svg = d3.select("#chart-wrapper10")
+																	.data(symbols)
+																	.enter().append("svg")
+																	.attr("width", width + margin.left + margin.right)
+																	.attr("height", height + margin.top + margin.bottom)
+																	.append("g")
+																	.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+																	.each(function (d) {
+																		var ty = y.set(this, d3.scaleLinear()
+																			.domain([0, d3.max(d.values, function (d) { return d.price; })])
+																			.range([height, 0]));
+
+																		area.set(this, d3.area()
+																			.x(function (d) { return x(d.date); })
+																			.y0(height)
+																			.y1(function (d) { return ty(d.price); }));
+
+																		line.set(this, d3.line()
+																			.x(function (d) { return x(d.date); })
+																			.y(function (d) { return ty(d.price); }));
+																	});
+
+																svg.append("path")
+																	.attr("class", "area")
+																	.attr("d", function (d) { return area.get(this)(d.values); });
+
+																svg.append("path")
+																	.attr("class", "line")
+																	.attr("d", function (d) { return line.get(this)(d.values); });
+
+																svg.append("text")
+																	.attr("x", width - 6)
+																	.attr("y", height - 6)
+																	.text(function (d) { return d.key; });
+															});
+
+															function type(d) {
+																d.price = +d.price;
+																d.date = parseDate(d.date);
+																return d;
+															}
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/*
+																https://cal-heatmap.com/v2/
+																https://github.com/DKirwan/calendar-heatmap
+															*/}}
+															<h3 class="card-title">Calendar chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper11" style="height: 16rem"></div>
+														</div>
+													</div>
+													<script>
+														require(['d3'], function (d3) {
+															// var margin = { top: 50, right: 0, bottom: 100, left: 30 },
+															// 	width = 546 - margin.left - margin.right,
+															// 	height = 330 - margin.top - margin.bottom,
+															// 	gridSize = Math.floor(width / 32),
+															// 	legendElementWidth = gridSize * 2,
+															// 	buckets = 9,
+															// 	colors = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"], // alternatively colorbrewer.YlGnBu[9]
+															// 	days = ["日", "一", "二", "三", "四", "五", "六"],
+															// 	times = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"];
+
+															// var svg = d3.select("#chart-wrapper11").append("svg")
+															// 	.attr("width", width + margin.left + margin.right)
+															// 	.attr("height", height + margin.top + margin.bottom)
+															// 	.append("g")
+															// 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+															// var dayLabels = svg.selectAll(".dayLabel")
+															// 	.data(days)
+															// 	.enter().append("text")
+															// 	.text(function (d) { return d; })
+															// 	.attr("x", 0)
+															// 	.attr("y", function (d, i) { return i * gridSize; })
+															// 	.style("text-anchor", "end")
+															// 	.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+															// 	.attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+															// var timeLabels = svg.selectAll(".timeLabel")
+															// 	.data(times)
+															// 	.enter().append("text")
+															// 	.text(function (d) { return d; })
+															// 	.attr("x", function (d, i) { return i * gridSize; })
+															// 	.attr("y", 0)
+															// 	.style("text-anchor", "middle")
+															// 	.attr("transform", "translate(" + gridSize / 2 + ", -6)")
+															// 	.attr("class", function (d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+															// var heatmapChart = function (tsvFile) {
+															// 	d3.tsv(tsvFile,
+															// 		function (d) {
+															// 			return {
+															// 				day: +d.day,
+															// 				hour: +d.hour,
+															// 				value: +d.value
+															// 			};
+															// 		},
+															// 		function (error, data) {
+															// 			var colorScale = d3.scaleQuantile()
+															// 				.domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+															// 				.range(colors);
+
+															// 			var cards = svg.selectAll(".hour")
+															// 				.data(data, function (d) { return d.day + ':' + d.hour; });
+															// 			// TODO:
+															// 			console.log(svg)
+															// 			console.log(cards)
+															// 			cards.append("title");
+															// 			cards.enter().append("rect")
+															// 				.attr("x", function (d) { return (d.hour - 1) * gridSize; })
+															// 				.attr("y", function (d) { return (d.day - 1) * gridSize; })
+															// 				.attr("rx", 4)
+															// 				.attr("ry", 4)
+															// 				.attr("class", "hour bordered")
+															// 				.attr("width", gridSize - 2)
+															// 				.attr("height", gridSize - 2)
+															// 				.style("fill", colors[0]);
+
+															// 			cards.transition().duration(1000)
+															// 				.style("fill", function (d) { return colorScale(d.value); });
+
+															// 			cards.select("title").text(function (d) { return d.value; });
+
+															// 			cards.exit().remove();
+
+															// 			var legend = svg.selectAll(".legend")
+															// 				.data([0].concat(colorScale.quantiles()), function (d) { return d; });
+
+															// 			legend.enter().append("g")
+															// 				.attr("class", "legend");
+
+															// 			legend.append("rect")
+															// 				.attr("x", function (d, i) { return legendElementWidth * i; })
+															// 				.attr("y", height)
+															// 				.attr("width", legendElementWidth)
+															// 				.attr("height", gridSize / 2)
+															// 				.style("fill", function (d, i) { return colors[i]; });
+
+															// 			legend.append("text")
+															// 				.attr("class", "mono")
+															// 				.text(function (d) { return "≥ " + Math.round(d); })
+															// 				.attr("x", function (d, i) { return legendElementWidth * i; })
+															// 				.attr("y", height + gridSize);
+
+															// 			legend.exit().remove();
+
+															// 		});
+															// };
+
+															// heatmapChart("/demo/calendar.tsv");
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* http://h4rrydog.github.io/placeMe/ */}}
+															<h3 class="card-title">Network traffic chart</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper10" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['d3', 'jquery'], function (d3, $) {
+															var relationshipJSON = {
+																"partner": {
+																	"MF": 37000,
+																	"FF": 20000,
+																	"MM": 13000
+																},
+																"single": {
+																	"M": 27000,
+																	"F": 13000
+																}
+															};
+															var WIDTH = 600,
+																HEIGHT = 250,
+																RADIUS = Math.min(WIDTH, HEIGHT) / 2,
+																MARGIN = 20,
+																SPACING = 10;
+
+															// Generate statistics
+															var relationshipPartners,   // total numbers of partners
+																relationshipSingles,    // total number of singles
+																relationshipTotal,      // total number of people
+																relationshipStatusData, // data array for donut graph (single v partner)
+																genderStatusData,       // data array for gender ring (male v female)
+																singleData,             // data array for singles pictogram
+																partnerData;            // data array for partners pictogram
+
+															relationshipPartners = relationshipJSON["partner"]["MF"] +
+																relationshipJSON["partner"]["FF"] +
+																relationshipJSON["partner"]["MM"];
+
+															relationshipSingles = relationshipJSON["single"]["M"] +
+																relationshipJSON["single"]["F"];
+
+															relationshipTotal = relationshipPartners + relationshipSingles;
+
+															relationshipStatusData = [relationshipSingles, relationshipPartners];
+
+															genderStatusData = [
+																relationshipJSON["single"]["M"],
+																relationshipJSON["single"]["F"],
+																relationshipPartners
+															];
+
+															singleData = genderStatusData.slice(0, 2);
+															partnerData = [
+																relationshipJSON["partner"]["MF"],
+																relationshipJSON["partner"]["FF"],
+																relationshipJSON["partner"]["MM"]
+															];
+
+															// Massage the data for pictogram, e.g.
+															// 37,000 -> 3.7 -> [1, 1, 1, 0.7]
+															// 20,000 -> 2.0 -> [1, 1]
+															// 13,000 -> 1.3 -> [1, 0.3]
+															var makePictoData = function (d, i, array) {
+																var number = d / 10000,
+																	remainder,
+																	myArray = [];
+
+																if (d <= 0) {
+																	myArray.push(0);
+																}
+																else {
+																	remainder = number - Math.floor(number);
+																	number = Math.floor(number);
+
+																	while (number) {
+																		myArray.push(1);
+																		--number;
+																	}
+
+																	if (remainder >  1e-6) myArray.push(remainder);
+																}
+																array[i] = myArray;
+															};
+
+															singleData.forEach(makePictoData);
+															partnerData.forEach(makePictoData);
+
+															// Generate ordinal colormap functions
+															var relationshipPalette = ["#ba9bc9", "#9933cc"];
+															var relationshipColors = d3.scaleOrdinal()
+																.range(relationshipPalette);
+
+															var genderPalette = ["#a9a9a9", "#777777", "#ffffff"];
+															var genderColors = d3.scaleOrdinal()
+																.range(genderPalette);
+
+															// Generate donut graphs
+															var relationshipArc = d3.arc()
+																.outerRadius(RADIUS - 10)
+																.innerRadius(RADIUS - 70);
+
+															var relationshipPie = d3.pie()
+																.sort(null)
+																.value(function (d) { return d; });
+
+															var relationshipSVG = d3.select("#chart-wrapper10").append("svg")
+																.attr("class", "relationshipSVG")
+																.attr("width", 300)
+																.attr("height", HEIGHT);
+
+															var relationshipPieChart = relationshipSVG.append("g")
+																.attr("transform", "translate(" + (RADIUS + MARGIN) + "," + HEIGHT / 1.7 + ")")
+																.selectAll("relationshipArc")
+																.data(relationshipPie(relationshipStatusData));
+
+															relationshipPieChart.enter()
+																.append("g")
+																.attr("class", "relationshipArc")
+																.append("path")
+																.style("fill", function (d, i) { return relationshipColors(i); })
+																.style("stroke", "#ffffff")
+																.style("stroke-width", 5)
+																.attr("d", relationshipArc);
+
+															var genderArc = d3.arc()
+																.outerRadius(RADIUS - 5)
+																.innerRadius(RADIUS - 20);
+
+															var genderPie = d3.pie()
+																.sort(null)
+																.value(function (d) { return d; });
+
+															var genderPieChart = relationshipPieChart.selectAll("genderArc")
+																.data(genderPie(genderStatusData));
+
+															genderPieChart.enter()
+																.append("g")
+																.attr("class", "genderArc")
+																.append("path")
+																.style("fill", function (d, i) { return genderColors(i); })
+																.style("stroke", "#ffffff")
+																.style("stroke-width", 5)
+																.attr("d", genderArc);
+
+															relationshipSVG.append("text")
+																.attr("class", "peopleSVG")
+																.attr("x", (RADIUS +  MARGIN))
+																.attr("y", HEIGHT / 1.7)
+																.attr("dy", "0.3em")
+																.text(relationshipTotal / 1000 + "k");
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
 										</div>
 									</div>
 								</div>

@@ -10,12 +10,15 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/mia0x75/dashboard-go/utils"
+	"github.com/radovskyb/watcher"
 )
 
 var (
+	path      string
 	templates map[string]*template.Template
 	renderer  *Renderer
 	lock      = new(sync.Mutex)
@@ -23,25 +26,35 @@ var (
 
 type Renderer struct{}
 
-func NewRenderer() *Renderer {
-	lock.Lock()
-	defer lock.Unlock()
-	if renderer != nil {
-		return renderer
-	}
-	renderer = &Renderer{}
-	path, err := utils.GetCurrentPath()
+func init() {
+	var err error
+	path, err = utils.GetCurrentPath()
 	if err != nil {
 		fmt.Printf("cannot startup project, error: %s\r\n", err.Error())
 		os.Exit(1)
 	}
-	if templates == nil {
-		templates = make(map[string]*template.Template)
+}
+
+func NewRenderer() *Renderer {
+	lock.Lock()
+	if renderer != nil {
+		return renderer
 	}
+	renderer = &Renderer{}
+	lock.Unlock()
+	flush()
+	go watch()
+	return renderer
+}
+
+func flush() {
+	lock.Lock()
+	defer lock.Unlock()
+	templates = make(map[string]*template.Template)
 
 	templatesDir := path + "/templates/"
 	pages := []string{}
-	err = filepath.Walk(templatesDir+"views/", func(page string, f os.FileInfo, err error) error {
+	if err := filepath.Walk(templatesDir+"views/", func(page string, f os.FileInfo, err error) error {
 		if !f.IsDir() && strings.HasSuffix(page, ".html") {
 			if err != nil {
 				return err
@@ -52,9 +65,7 @@ func NewRenderer() *Renderer {
 			pages = append(pages, page)
 		}
 		return nil
-	})
-
-	if err != nil {
+	}); err != nil {
 		log.Fatal(err)
 	}
 
@@ -74,12 +85,51 @@ func NewRenderer() *Renderer {
 		name := page[len(templatesDir+"views/"):len(page)]
 		templates[name] = template.Must(parse(path, name, files...))
 	}
-	return renderer
+}
+
+func watch() {
+	w := watcher.New()
+
+	// SetMaxEvents to 1 to allow at most 1 event's to be received
+	// on the Event channel per watching cycle.
+	//
+	// If SetMaxEvents is not set, the default is to send all events.
+	w.SetMaxEvents(1)
+	w.IgnoreHiddenFiles(true)
+
+	// Only notify rename and move events.
+	w.FilterOps(watcher.Rename, watcher.Move, watcher.Create, watcher.Write, watcher.Remove)
+
+	go func() {
+		for {
+			select {
+			case event := <-w.Event:
+				fmt.Println(event) // Print the event's info.
+				flush()
+			case err := <-w.Error:
+				log.Fatalln(err)
+			case <-w.Closed:
+				return
+			}
+		}
+	}()
+
+	// Watch test_folder recursively for changes.
+	if err := w.AddRecursive(path + "/templates"); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Start the watching process - it'll check for changes every 100ms.
+	if err := w.Start(time.Millisecond * 100); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	// Ensure the template exists in the map.
+	lock.Lock()
 	tmpl, ok := templates[name]
+	lock.Unlock()
 	if !ok {
 		return fmt.Errorf("The template %s does not exist.", name)
 	}

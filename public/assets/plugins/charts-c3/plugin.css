@@ -1,22 +1,18 @@
 /*-- Chart --*/
 .c3 svg {
   font: 10px sans-serif;
-  -webkit-tap-highlight-color: transparent;
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-.c3 path,
-.c3 line {
+.c3 path, .c3 line {
   fill: none;
-  stroke: rgba(0, 40, 100, 0.12);
+  stroke: #000;
 }
 
 .c3 text {
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  font-size: px2rem(12px);
 }
 
 .c3-legend-item-tile,
@@ -31,6 +27,11 @@
   stroke: #fff;
 }
 
+.c3-chart-arc rect {
+  stroke: white;
+  stroke-width: 1;
+}
+
 .c3-chart-arc text {
   fill: #fff;
   font-size: 13px;
@@ -39,24 +40,18 @@
 /*-- Axis --*/
 /*-- Grid --*/
 .c3-grid line {
-  stroke: #f0f0f0;
+  stroke: #aaa;
 }
 
 .c3-grid text {
   fill: #aaa;
 }
 
-.c3-xgrid,
-.c3-ygrid {
-  stroke: #e6e6e6;
-  stroke-dasharray: 2 4;
+.c3-xgrid, .c3-ygrid {
+  stroke-dasharray: 3 3;
 }
 
 /*-- Text on Chart --*/
-.c3-text {
-  font-size: 12px;
-}
-
 .c3-text.c3-empty {
   fill: #808080;
   font-size: 2em;
@@ -64,18 +59,18 @@
 
 /*-- Line --*/
 .c3-line {
-  stroke-width: 2px;
+  stroke-width: 1px;
 }
 
 /*-- Point --*/
 .c3-circle._expanded_ {
-  stroke-width: 2px;
+  stroke-width: 1px;
   stroke: white;
 }
 
 .c3-selected-circle {
   fill: white;
-  stroke-width: 1.5px;
+  stroke-width: 2px;
 }
 
 /*-- Bar --*/
@@ -104,19 +99,18 @@
 /*-- Region --*/
 .c3-region {
   fill: steelblue;
-  fill-opacity: .1;
+  fill-opacity: 0.1;
 }
 
 /*-- Brush --*/
 .c3-brush .extent {
-  fill-opacity: .1;
+  fill-opacity: 0.1;
 }
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.c3-legend-item text {
-  fill: #545454;
-  font-size: 14px;
+.c3-legend-item {
+  font-size: 12px;
 }
 
 .c3-legend-item-hidden {
@@ -124,9 +118,10 @@
 }
 
 .c3-legend-background {
-  fill: transparent;
+  opacity: 0.75;
+  fill: white;
   stroke: lightgray;
-  stroke-width: 0;
+  stroke-width: 1;
 }
 
 /*-- Title --*/
@@ -142,33 +137,38 @@
 .c3-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
+  background-color: #fff;
   empty-cells: show;
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 700;
-  color: #fff;
-  border-radius: 3px;
-  background: #212529;
-  white-space: nowrap;
+  -webkit-box-shadow: 7px 7px 12px -9px #777777;
+  -moz-box-shadow: 7px 7px 12px -9px #777777;
+  box-shadow: 7px 7px 12px -9px #777777;
+  opacity: 0.9;
+}
+
+.c3-tooltip tr {
+  border: 1px solid #CCC;
 }
 
 .c3-tooltip th {
-  padding: 6px 6px;
+  background-color: #aaa;
+  font-size: 14px;
+  padding: 2px 5px;
   text-align: left;
+  color: #FFF;
 }
 
 .c3-tooltip td {
-  padding: 4px 6px;
-  font-weight: 400;
+  font-size: 13px;
+  padding: 3px 6px;
+  background-color: #fff;
+  border-left: 1px dotted #999;
 }
 
 .c3-tooltip td > span {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 8px;
-  border-radius: 50%;
-  vertical-align: baseline;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
 }
 
 .c3-tooltip td.value {
@@ -178,11 +178,7 @@
 /*-- Area --*/
 .c3-area {
   stroke-width: 0;
-  opacity: 0.1;
-}
-
-.c3-target-filled .c3-area {
-  opacity: 1 !important;
+  opacity: 0.2;
 }
 
 /*-- Arc --*/
@@ -193,7 +189,7 @@
 
 .c3-chart-arcs .c3-chart-arcs-background {
   fill: #e0e0e0;
-  stroke: none;
+  stroke: #FFF;
 }
 
 .c3-chart-arcs .c3-chart-arcs-gauge-unit {
@@ -222,6 +218,17 @@
   opacity: 1;
 }
 
-.c3-axis {
-  fill: #9aa0ac;
+/*-- Zoom --*/
+.c3-drag-zoom.enabled {
+  pointer-events: all !important;
+  visibility: visible;
+}
+
+.c3-drag-zoom.disabled {
+  pointer-events: none !important;
+  visibility: hidden;
+}
+
+.c3-drag-zoom .extent {
+  fill-opacity: 0.1;
 }
