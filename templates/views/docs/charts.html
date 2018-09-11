@@ -25,6 +25,7 @@
 						</div>
 {{ end }}
 {{ define "content" }}
+						{{/* http://demo.interface.club/limitless/bs4/Template/layout_1/LTR/default/full/d3_lines_basic.html */}}
 						<div class="row">
 							<div class="col-lg-3 order-lg-1 mb-4">
 								<!-- Getting started -->
@@ -741,261 +742,261 @@
 													</style>
 													<script>
 														require(['d3', 'c3'], function (d3, c3) {
-															var DH, PAD, color, correct_x, correct_y, height, iso_layout, isometric, ordering, parallelepipedon, path_generator, svg, treemap, vis, width, zoom, zoomable_layer;
+															// var DH, PAD, color, correct_x, correct_y, height, iso_layout, isometric, ordering, parallelepipedon, path_generator, svg, treemap, vis, width, zoom, zoomable_layer;
 
-															svg = d3.select("#chart-wrapper6").append("svg");
+															// svg = d3.select("#chart-wrapper6").append("svg");
 
-															width = svg.node().getBoundingClientRect().width;
+															// width = svg.node().getBoundingClientRect().width;
 
-															height = svg.node().getBoundingClientRect().height;
+															// height = svg.node().getBoundingClientRect().height;
 
-															zoomable_layer = svg.append('g');
+															// zoomable_layer = svg.append('g');
 
-															zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', function () {
-																return zoomable_layer.attr({
-																	transform: "translate(" + (zoom.translate()) + ")scale(" + (zoom.scale()) + ")"
-																});
-															});
+															// zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', function () {
+															// 	return zoomable_layer.attr({
+															// 		transform: "translate(" + (zoom.translate()) + ")scale(" + (zoom.scale()) + ")"
+															// 	});
+															// });
 
-															svg.call(zoom);
+															// svg.call(zoom);
 
-															vis = zoomable_layer.append('g').attr({
-																"class": 'vis',
-																transform: "translate(" + (width / 2) + "," + (height / 3 - 112) + ")"
-															});
+															// vis = zoomable_layer.append('g').attr({
+															// 	"class": 'vis',
+															// 	transform: "translate(" + (width / 2) + "," + (height / 3 - 112) + ")"
+															// });
 
-															isometric = function (_3d_p) {
-																return [-Math.sqrt(3) / 2 * _3d_p[0] + Math.sqrt(3) / 2 * _3d_p[1], +0.5 * _3d_p[0] + 0.5 * _3d_p[1] - _3d_p[2]];
-															};
+															// isometric = function (_3d_p) {
+															// 	return [-Math.sqrt(3) / 2 * _3d_p[0] + Math.sqrt(3) / 2 * _3d_p[1], +0.5 * _3d_p[0] + 0.5 * _3d_p[1] - _3d_p[2]];
+															// };
 
-															parallelepipedon = function (d) {
-																var fb, ft, mlb, mlt, mrb, mrt, nb, nt;
-																if (!(d.x != null)) {
-																	d.x = 0;
-																}
-																if (!(d.y != null)) {
-																	d.y = 0;
-																}
-																if (!(d.h != null)) {
-																	d.h = 0;
-																}
-																if (!(d.dx != null)) {
-																	d.dx = 10;
-																}
-																if (!(d.dy != null)) {
-																	d.dy = 10;
-																}
-																if (!(d.dh != null)) {
-																	d.dh = 10;
-																}
-																fb = isometric([d.x, d.y, d.h], mlb = isometric([d.x + d.dx, d.y, d.h], nb = isometric([d.x + d.dx, d.y + d.dy, d.h], mrb = isometric([d.x, d.y + d.dy, d.h], ft = isometric([d.x, d.y, d.h + d.dh], mlt = isometric([d.x + d.dx, d.y, d.h + d.dh], nt = isometric([d.x + d.dx, d.y + d.dy, d.h + d.dh], mrt = isometric([d.x, d.y + d.dy, d.h + d.dh]))))))));
-																d.iso = {
-																	face_bottom: [fb, mrb, nb, mlb],
-																	face_left: [mlb, mlt, nt, nb],
-																	face_right: [nt, mrt, mrb, nb],
-																	face_top: [ft, mrt, nt, mlt],
-																	outline: [ft, mrt, mrb, nb, mlb, mlt],
-																	fb: fb,
-																	mlb: mlb,
-																	nb: nb,
-																	mrb: mrb,
-																	ft: ft,
-																	mlt: mlt,
-																	nt: nt,
-																	mrt: mrt
-																};
-																return d;
-															};
+															// parallelepipedon = function (d) {
+															// 	var fb, ft, mlb, mlt, mrb, mrt, nb, nt;
+															// 	if (!(d.x != null)) {
+															// 		d.x = 0;
+															// 	}
+															// 	if (!(d.y != null)) {
+															// 		d.y = 0;
+															// 	}
+															// 	if (!(d.h != null)) {
+															// 		d.h = 0;
+															// 	}
+															// 	if (!(d.dx != null)) {
+															// 		d.dx = 10;
+															// 	}
+															// 	if (!(d.dy != null)) {
+															// 		d.dy = 10;
+															// 	}
+															// 	if (!(d.dh != null)) {
+															// 		d.dh = 10;
+															// 	}
+															// 	fb = isometric([d.x, d.y, d.h], mlb = isometric([d.x + d.dx, d.y, d.h], nb = isometric([d.x + d.dx, d.y + d.dy, d.h], mrb = isometric([d.x, d.y + d.dy, d.h], ft = isometric([d.x, d.y, d.h + d.dh], mlt = isometric([d.x + d.dx, d.y, d.h + d.dh], nt = isometric([d.x + d.dx, d.y + d.dy, d.h + d.dh], mrt = isometric([d.x, d.y + d.dy, d.h + d.dh]))))))));
+															// 	d.iso = {
+															// 		face_bottom: [fb, mrb, nb, mlb],
+															// 		face_left: [mlb, mlt, nt, nb],
+															// 		face_right: [nt, mrt, mrb, nb],
+															// 		face_top: [ft, mrt, nt, mlt],
+															// 		outline: [ft, mrt, mrb, nb, mlb, mlt],
+															// 		fb: fb,
+															// 		mlb: mlb,
+															// 		nb: nb,
+															// 		mrb: mrb,
+															// 		ft: ft,
+															// 		mlt: mlt,
+															// 		nt: nt,
+															// 		mrt: mrt
+															// 	};
+															// 	return d;
+															// };
 
-															ordering = function (a, b) {
-																return b.i - a.i;
-															};
+															// ordering = function (a, b) {
+															// 	return b.i - a.i;
+															// };
 
-															iso_layout = function (data, shape, scale) {
-																if (!(scale != null)) {
-																	scale = 1;
-																}
-																data.forEach(function (d) {
-																	return shape(d, scale);
-																});
-																return data.sort(ordering);
-															};
+															// iso_layout = function (data, shape, scale) {
+															// 	if (!(scale != null)) {
+															// 		scale = 1;
+															// 	}
+															// 	data.forEach(function (d) {
+															// 		return shape(d, scale);
+															// 	});
+															// 	return data.sort(ordering);
+															// };
 
-															path_generator = function (d) {
-																return 'M' + d.map(function (p) {
-																	return p.join(' ');
-																}).join('L') + 'z';
-															};
+															// path_generator = function (d) {
+															// 	return 'M' + d.map(function (p) {
+															// 		return p.join(' ');
+															// 	}).join('L') + 'z';
+															// };
 
-															DH = 5;
-															PAD = 4;
+															// DH = 5;
+															// PAD = 4;
 
-															treemap = d3.treemap().size([400, 400]).value(function (d) {
-																return d.size;
-															}).sort(function (a, b) {
-																return ordering(b, a);
-															}).padding(PAD).round(false);
+															// treemap = d3.treemap().size([400, 400]).value(function (d) {
+															// 	return d.size;
+															// }).sort(function (a, b) {
+															// 	return ordering(b, a);
+															// }).padding(PAD).round(false);
 
-															color = d3.scaleOrdinal(d3.schemeCategory20c);
+															// color = d3.scaleOrdinal(d3.schemeCategory20c);
 
-															correct_x = d3.scaleLinear().domain([0, width]).range([0, width * 1.05]);
+															// correct_x = d3.scaleLinear().domain([0, width]).range([0, width * 1.05]);
 
-															correct_y = d3.scaleLinear().domain([0, height]).range([0, height * 3 / 4]);
+															// correct_y = d3.scaleLinear().domain([0, height]).range([0, height * 3 / 4]);
 
-															d3.json('/demo/flare.json', function (tree) {
-																var data, enter_labels, enter_labels_g, enter_pipedons, i, pipedons, walk, walk_i;
-																walk = function (n, depth) {
-																	var child, _i, _len, _ref;
-																	n.depth = depth;
-																	n.dh = DH;
-																	n.h = DH * depth;
-																	if (n.children != null) {
-																		_ref = n.children;
-																		for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-																			child = _ref[_i];
-																			walk(child, depth + 1);
-																		}
-																		n.children.sort(function (a, b) {
-																			return a.size - b.size;
-																		});
-																		return n.size = d3.sum(n.children, function (d) {
-																			return d.size;
-																		});
-																	}
-																};
-																walk(tree, 0);
-																i = 0;
-																walk_i = function (n) {
-																	var child, _i, _len, _ref;
-																	if (n.children != null) {
-																		_ref = n.children;
-																		for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-																			child = _ref[_i];
-																			walk_i(child);
-																		}
-																	}
-																	n.i = i;
-																	return i += 1;
-																};
-																walk_i(tree);
-																data = treemap.nodes(tree);
-																iso_layout(data, parallelepipedon);
-																data.forEach(function (d, i) {
-																	return d.template_color = d3.hcl(color(d.i));
-																});
-																pipedons = vis.selectAll('.pipedon').data(data);
-																enter_pipedons = pipedons.enter().append('g').attr({
-																	"class": 'pipedon'
-																});
-																enter_pipedons.append('path').attr({
-																	"class": 'iso face bottom',
-																	d: function (d) {
-																		return path_generator(d.iso.face_bottom);
-																	}
-																});
-																enter_pipedons.append('path').attr({
-																	"class": 'iso face left',
-																	d: function (d) {
-																		return path_generator(d.iso.face_left);
-																	},
-																	fill: function (d) {
-																		return d.template_color;
-																	}
-																});
-																enter_pipedons.append('path').attr({
-																	"class": 'iso face right',
-																	d: function (d) {
-																		return path_generator(d.iso.face_right);
-																	},
-																	fill: function (d) {
-																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
-																	}
-																});
-																enter_pipedons.append('path').attr({
-																	"class": 'iso face top',
-																	d: function (d) {
-																		return path_generator(d.iso.face_top);
-																	},
-																	fill: function (d) {
-																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l + 12);
-																	}
-																});
-																enter_labels_g = enter_pipedons.append('g').classed('hidden', function (d) {
-																	return d.children != null;
-																});
-																enter_labels = enter_labels_g.append('svg').attr({
-																	"class": 'label'
-																});
-																enter_labels.append('text').text(function (d) {
-																	return d.name.toUpperCase();
-																}).attr({
-																	dy: '.35em'
-																}).each(function (node) {
-																	var bbox, bbox_aspect, node_bbox, node_bbox_aspect, rotate;
-																	bbox = this.getBBox();
-																	bbox_aspect = bbox.width / bbox.height;
-																	node_bbox = {
-																		width: node.dx,
-																		height: node.dy
-																	};
-																	node_bbox_aspect = node_bbox.width / node_bbox.height;
-																	rotate = bbox_aspect >= 1 && node_bbox_aspect < 1 || bbox_aspect < 1 && node_bbox_aspect >= 1;
-																	node.label_bbox = {
-																		x: bbox.x + (bbox.width - correct_x(bbox.width)) / 2,
-																		y: bbox.y + (bbox.height - correct_y(bbox.height)) / 2,
-																		width: correct_x(bbox.width),
-																		height: correct_y(bbox.height)
-																	};
-																	if (rotate) {
-																		node.label_bbox = {
-																			x: node.label_bbox.y,
-																			y: node.label_bbox.x,
-																			width: node.label_bbox.height,
-																			height: node.label_bbox.width
-																		};
-																		return d3.select(this).attr('transform', 'rotate(90) translate(0,1)');
-																	}
-																});
-																enter_labels.each(function (d) {
-																	d.iso_x = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[0] - d.dx / 2;
-																	return d.iso_y = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[1] - d.dy / 2;
-																});
-																enter_labels.attr({
-																	x: function (d) {
-																		return d.iso_x;
-																	},
-																	y: function (d) {
-																		return d.iso_y;
-																	},
-																	width: function (node) {
-																		return node.dx;
-																	},
-																	height: function (node) {
-																		return node.dy;
-																	},
-																	viewBox: function (node) {
-																		return "" + node.label_bbox.x + " " + node.label_bbox.y + " " + node.label_bbox.width + " " + node.label_bbox.height;
-																	},
-																	preserveAspectRatio: 'none',
-																	fill: function (d) {
-																		return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
-																	}
-																});
-																enter_labels_g.attr({
-																	transform: function (d) {
-																		return "translate(" + (d.iso_x + d.dx / 2) + "," + (d.iso_y + d.dy / 2) + ") scale(1, " + (1 / Math.sqrt(3)) + ") rotate(-45) translate(" + (-(d.iso_x + d.dx / 2)) + "," + (-(d.iso_y + d.dy / 2)) + ")";
-																	}
-																});
-																enter_pipedons.append('path').attr({
-																	"class": 'iso outline',
-																	d: function (d) {
-																		return path_generator(d.iso.outline);
-																	}
-																});
-																return enter_pipedons.append('title').text(function (d) {
-																	return d.name;
-																});
-															});
+															// d3.json('/demo/flare.json', function (tree) {
+															// 	var data, enter_labels, enter_labels_g, enter_pipedons, i, pipedons, walk, walk_i;
+															// 	walk = function (n, depth) {
+															// 		var child, _i, _len, _ref;
+															// 		n.depth = depth;
+															// 		n.dh = DH;
+															// 		n.h = DH * depth;
+															// 		if (n.children != null) {
+															// 			_ref = n.children;
+															// 			for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+															// 				child = _ref[_i];
+															// 				walk(child, depth + 1);
+															// 			}
+															// 			n.children.sort(function (a, b) {
+															// 				return a.size - b.size;
+															// 			});
+															// 			return n.size = d3.sum(n.children, function (d) {
+															// 				return d.size;
+															// 			});
+															// 		}
+															// 	};
+															// 	walk(tree, 0);
+															// 	i = 0;
+															// 	walk_i = function (n) {
+															// 		var child, _i, _len, _ref;
+															// 		if (n.children != null) {
+															// 			_ref = n.children;
+															// 			for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+															// 				child = _ref[_i];
+															// 				walk_i(child);
+															// 			}
+															// 		}
+															// 		n.i = i;
+															// 		return i += 1;
+															// 	};
+															// 	walk_i(tree);
+															// 	data = treemap.nodes(tree);
+															// 	iso_layout(data, parallelepipedon);
+															// 	data.forEach(function (d, i) {
+															// 		return d.template_color = d3.hcl(color(d.i));
+															// 	});
+															// 	pipedons = vis.selectAll('.pipedon').data(data);
+															// 	enter_pipedons = pipedons.enter().append('g').attr({
+															// 		"class": 'pipedon'
+															// 	});
+															// 	enter_pipedons.append('path').attr({
+															// 		"class": 'iso face bottom',
+															// 		d: function (d) {
+															// 			return path_generator(d.iso.face_bottom);
+															// 		}
+															// 	});
+															// 	enter_pipedons.append('path').attr({
+															// 		"class": 'iso face left',
+															// 		d: function (d) {
+															// 			return path_generator(d.iso.face_left);
+															// 		},
+															// 		fill: function (d) {
+															// 			return d.template_color;
+															// 		}
+															// 	});
+															// 	enter_pipedons.append('path').attr({
+															// 		"class": 'iso face right',
+															// 		d: function (d) {
+															// 			return path_generator(d.iso.face_right);
+															// 		},
+															// 		fill: function (d) {
+															// 			return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+															// 		}
+															// 	});
+															// 	enter_pipedons.append('path').attr({
+															// 		"class": 'iso face top',
+															// 		d: function (d) {
+															// 			return path_generator(d.iso.face_top);
+															// 		},
+															// 		fill: function (d) {
+															// 			return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l + 12);
+															// 		}
+															// 	});
+															// 	enter_labels_g = enter_pipedons.append('g').classed('hidden', function (d) {
+															// 		return d.children != null;
+															// 	});
+															// 	enter_labels = enter_labels_g.append('svg').attr({
+															// 		"class": 'label'
+															// 	});
+															// 	enter_labels.append('text').text(function (d) {
+															// 		return d.name.toUpperCase();
+															// 	}).attr({
+															// 		dy: '.35em'
+															// 	}).each(function (node) {
+															// 		var bbox, bbox_aspect, node_bbox, node_bbox_aspect, rotate;
+															// 		bbox = this.getBBox();
+															// 		bbox_aspect = bbox.width / bbox.height;
+															// 		node_bbox = {
+															// 			width: node.dx,
+															// 			height: node.dy
+															// 		};
+															// 		node_bbox_aspect = node_bbox.width / node_bbox.height;
+															// 		rotate = bbox_aspect >= 1 && node_bbox_aspect < 1 || bbox_aspect < 1 && node_bbox_aspect >= 1;
+															// 		node.label_bbox = {
+															// 			x: bbox.x + (bbox.width - correct_x(bbox.width)) / 2,
+															// 			y: bbox.y + (bbox.height - correct_y(bbox.height)) / 2,
+															// 			width: correct_x(bbox.width),
+															// 			height: correct_y(bbox.height)
+															// 		};
+															// 		if (rotate) {
+															// 			node.label_bbox = {
+															// 				x: node.label_bbox.y,
+															// 				y: node.label_bbox.x,
+															// 				width: node.label_bbox.height,
+															// 				height: node.label_bbox.width
+															// 			};
+															// 			return d3.select(this).attr('transform', 'rotate(90) translate(0,1)');
+															// 		}
+															// 	});
+															// 	enter_labels.each(function (d) {
+															// 		d.iso_x = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[0] - d.dx / 2;
+															// 		return d.iso_y = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[1] - d.dy / 2;
+															// 	});
+															// 	enter_labels.attr({
+															// 		x: function (d) {
+															// 			return d.iso_x;
+															// 		},
+															// 		y: function (d) {
+															// 			return d.iso_y;
+															// 		},
+															// 		width: function (node) {
+															// 			return node.dx;
+															// 		},
+															// 		height: function (node) {
+															// 			return node.dy;
+															// 		},
+															// 		viewBox: function (node) {
+															// 			return "" + node.label_bbox.x + " " + node.label_bbox.y + " " + node.label_bbox.width + " " + node.label_bbox.height;
+															// 		},
+															// 		preserveAspectRatio: 'none',
+															// 		fill: function (d) {
+															// 			return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+															// 		}
+															// 	});
+															// 	enter_labels_g.attr({
+															// 		transform: function (d) {
+															// 			return "translate(" + (d.iso_x + d.dx / 2) + "," + (d.iso_y + d.dy / 2) + ") scale(1, " + (1 / Math.sqrt(3)) + ") rotate(-45) translate(" + (-(d.iso_x + d.dx / 2)) + "," + (-(d.iso_y + d.dy / 2)) + ")";
+															// 		}
+															// 	});
+															// 	enter_pipedons.append('path').attr({
+															// 		"class": 'iso outline',
+															// 		d: function (d) {
+															// 			return path_generator(d.iso.outline);
+															// 		}
+															// 	});
+															// 	return enter_pipedons.append('title').text(function (d) {
+															// 		return d.name;
+															// 	});
+															// });
 														});
 													</script>
 												</div>
@@ -1300,65 +1301,6 @@
 													</div>
 													<script>
 														require(['c3', 'd3'], function (c3, d3) {
-															var margin = { top: 8, right: 10, bottom: 2, left: 10 },
-																width = 960 - margin.left - margin.right,
-																height = 69 - margin.top - margin.bottom;
-															var parseDate = d3.timeParse("%b %Y");
-															var x = d3.scaleTime()
-																.range([0, width]);
-															var y = d3.local();
-															var area = d3.local();
-															var line = d3.local();
-															d3.tsv("/demo/stocks.csv", type, function (error, data) {
-																if (error) throw error;
-																var symbols = d3.nest()
-																	.key(function (d) { return d.symbol; })
-																	.entries(data);
-																x.domain([
-																	d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
-																	d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
-																]);
-																var svg = d3.select("#chart-wrapper10")
-																	.data(symbols)
-																	.enter().append("svg")
-																	.attr("width", width + margin.left + margin.right)
-																	.attr("height", height + margin.top + margin.bottom)
-																	.append("g")
-																	.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-																	.each(function (d) {
-																		var ty = y.set(this, d3.scaleLinear()
-																			.domain([0, d3.max(d.values, function (d) { return d.price; })])
-																			.range([height, 0]));
-
-																		area.set(this, d3.area()
-																			.x(function (d) { return x(d.date); })
-																			.y0(height)
-																			.y1(function (d) { return ty(d.price); }));
-
-																		line.set(this, d3.line()
-																			.x(function (d) { return x(d.date); })
-																			.y(function (d) { return ty(d.price); }));
-																	});
-
-																svg.append("path")
-																	.attr("class", "area")
-																	.attr("d", function (d) { return area.get(this)(d.values); });
-
-																svg.append("path")
-																	.attr("class", "line")
-																	.attr("d", function (d) { return line.get(this)(d.values); });
-
-																svg.append("text")
-																	.attr("x", width - 6)
-																	.attr("y", height - 6)
-																	.text(function (d) { return d.key; });
-															});
-
-															function type(d) {
-																d.price = +d.price;
-																d.date = parseDate(d.date);
-																return d;
-															}
 														});
 													</script>
 												</div>
@@ -1493,7 +1435,7 @@
 															<h3 class="card-title">Network traffic chart</h3>
 														</div>
 														<div class="card-body">
-															<div id="chart-wrapper10" style="height: auto"></div>
+															<div id="chart-wrapper12" style="height: auto"></div>
 														</div>
 													</div>
 													<script>
@@ -1595,7 +1537,7 @@
 																.sort(null)
 																.value(function (d) { return d; });
 
-															var relationshipSVG = d3.select("#chart-wrapper10").append("svg")
+															var relationshipSVG = d3.select("#chart-wrapper12").append("svg")
 																.attr("class", "relationshipSVG")
 																.attr("width", 300)
 																.attr("height", HEIGHT);
@@ -1640,6 +1582,101 @@
 																.attr("y", HEIGHT / 1.7)
 																.attr("dy", "0.3em")
 																.text(relationshipTotal / 1000 + "k");
+														});
+													</script>
+												</div>
+											</div>
+											{{/* chart-end */}}
+											{{/* chart-start */}}
+											<div class="example example-bg">
+												<div class="example-column example-column-2">
+													<div class="card">
+														<div class="card-header">
+															{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
+															<h3 class="card-title">Local Variables</h3>
+														</div>
+														<div class="card-body">
+															<div id="chart-wrapper13" style="height: auto"></div>
+														</div>
+													</div>
+													<script>
+														require(['d3'], function (d3) {
+															var margin = {top: 8, right: 10, bottom: 2, left: 10},
+															width = 590 - margin.left - margin.right,
+																height = 69 - margin.top - margin.bottom;
+
+															var parseDate = d3.timeParse("%b %Y");
+
+															var x = d3.scaleTime()
+																.range([0, width]);
+
+															var y = d3.local();
+															var area = d3.local();
+															var line = d3.local();
+
+															// first promise returns the dataset 
+															var dataset = d3.tsv("/demo/stocks.csv").then(function (data) {
+																return data;
+															});
+															dataset.then(function (ds) {
+																return d3.nest()
+																	.key(function (d) {
+																		return d.symbol;
+																	})
+																	.entries(ds);
+															}).then(function (symbols) {
+																x.domain([
+																	d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
+																	d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
+																]);
+																var svg = d3.select("#chart-wrapper13").selectAll("svg")
+																	.data(symbols)
+																	.enter().append("svg")
+																	.attr("width", width + margin.left + margin.right)
+																	.attr("height", height + margin.top + margin.bottom)
+																	.append("g")
+																	.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+																	.each(function (d) {
+																		var ty = y.set(this, d3.scaleLinear()
+																			.domain([0, d3.max(d.values, function (d) { return d.price; })])
+																			.range([height, 0]));
+																		area.set(this, d3.area()
+																			.x(function (d) { return x(d.date); })
+																			.y0(height)
+																			.y1(function (d) { return ty(d.price); }));
+																		line.set(this, d3.line()
+																			.x(function (d) { return x(d.date); })
+																			.y(function (d) { return ty(d.price); }));
+																	});
+
+																svg.append("path")
+																	.attr("class", "area")
+																	.attr("d", function (d) {
+																		console.log(d.key);
+																		console.log(d.values);
+																		return area.get(this)(d.values);
+																	});
+																svg.append("path")
+																	.attr("class", "line")
+																	.attr("d", function (d) {
+																		return line.get(this)(d.values);
+																	});
+																svg.append("text")
+																	.attr("x", width - 64)
+																	.attr("y", height - 16)
+																	.style("font-size", "13px")
+																	.style("width", "64px")
+																	.style("text-align", "right")
+																	.text(function (d) {
+																		return d.key;
+																	});
+															});
+
+															function type(d) {
+																d.price = +d.price;
+																d.date = parseDate(d.date);
+																return d;
+															}
 														});
 													</script>
 												</div>
