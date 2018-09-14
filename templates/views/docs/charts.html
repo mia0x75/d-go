@@ -1095,6 +1095,140 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
+													{{/* http://blockbuilder.org/geoffreyammons/6626f6f3aceee575bc4b55a838e3fa59 */}}
+													<h3 class="card-title">Donut chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="dc1" style="height: 300px;">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/abdel-rahmen/c5364d0374d46d8b816e71ff48841eaa */}}
+													<h3 class="card-title">Line and area chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="lac1" style="height: 300px;"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var margin = { top: 20, right: 30, bottom: 20, left: 100 },
+														width = 712 - margin.left - margin.right,
+														height = 300 - margin.top - margin.bottom;
+
+													var svg = d3.select("#lac1").append("svg")
+														.attr("width", width + margin.left + margin.right)
+														.attr("height", height + margin.top + margin.bottom)
+														.append("g")
+														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var parseDate = d3.timeParse("%b %Y");
+
+													var x = d3.scaleTime().range([0, width]),
+														y = d3.scaleLinear().range([height, 0]),
+														c = d3.scaleOrdinal(d3.schemeCategory10);
+
+													var dataset = d3.csv('/demo/stocks.csv', function (data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														// Nest stock values by symbol.
+														var symbols = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
+
+														// Parse and caculate some values for each symbols
+														symbols.forEach(function (s) {
+															s.values.forEach(function (d) {
+																d.date = parseDate(d.date);
+																d.price = +d.price;
+															});
+
+															s.maxPrice = d3.max(s.values, function (d) { return d.price; });
+															s.sumPrice = d3.sum(s.values, function (d) { return d.price; });
+														});
+
+														symbols.sort(function (a, b) { return b.maxPrice - a.maxPrice; });
+														x.domain(d3.extent(data, function (d) { return parseDate(d.date); }));
+														svg.selectAll(".area").data(symbols, function (d) {
+																return d.key;
+															})
+															.enter()
+															.append("path")
+															.attr("class", "area");
+
+														var duration = 1000;
+
+														// Pour jouer les différents graphiques de manière séquentielle
+														function play(delay = 0) {
+
+															setTimeout(empty_area_chart, delay += duration);
+															setTimeout(area_chart, delay += duration);
+															// Repeat
+															setTimeout(play, delay += duration);
+														}
+
+														play();
+
+														function area_chart(empty = false) {
+															x.domain(d3.extent(data, function (d) { return parseDate(d.date); }));
+															y.domain([0, d3.max(data, function (d) { return d.price; })]);
+															y.range([height, 0]);
+
+															var area = d3.area()
+																.x(function (d) { return x(parseDate(d.date)); })
+																.y1(function (d) { return y(d.price); })
+																.y0(y(0));
+																;
+															svg.selectAll(".area").data(symbols)
+																.transition().duration(duration)
+																.attr("fill-opacity", function (d) {
+																	return empty ? 0 : .5;
+																})
+																.style("fill", function (d) {
+																	return c(d.key);
+																})
+																.style("stroke", function (d) {
+																	return c(d.key);
+																})
+																.style("stroke-width", function (d) {
+																	return "2px";
+																})
+																.attr("d", function (d) { return area(d.values); })
+																//  .style("opacity", .5)
+																.attr("transform", function (d, i) { return "translate(0, 0)"; });
+														}
+
+														function empty_area_chart() {
+															area_chart(true);
+														}
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
 													{{/* http://blockbuilder.org/mbostock/8d2112a115ad95f4a6848001389182fb */}}
 													<h3 class="card-title">Radial normalized stacked bar chart - 1</h3>
 												</div>
@@ -1258,28 +1392,6 @@
 													// 		.attr("dy", "0.35em")
 													// 		.text(function (d) { return d; });
 													// });
-												});
-											</script>
-										</div>
-									</div>
-								</div>
-								{{/* chart-end */}}
-								{{/* chart-start */}}
-								<div class="card">
-									<div class="card-body">
-										<div class="text-wrap p-lg-6">
-											<div class="card">
-												<div class="card-header">
-													{{/* http://blockbuilder.org/geoffreyammons/6626f6f3aceee575bc4b55a838e3fa59 */}}
-													<h3 class="card-title">Donut chart - 1</h3>
-												</div>
-												<div class="card-body">
-													<div id="dc1" style="height: 300px;">
-													</div>
-												</div>
-											</div>
-											<script>
-												require(['d3'], function (d3) {
 												});
 											</script>
 										</div>
@@ -1800,10 +1912,7 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
-													{{/*
-														https://cal-heatmap.com/v2/
-														https://github.com/DKirwan/calendar-heatmap
-													*/}}
+													{{/* url */}}
 													<h3 class="card-title">Calendar chart - 1</h3>
 												</div>
 												<div class="card-body">
@@ -2151,207 +2260,438 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
-													{{/* url */}}
-													<h3 class="card-title">Multiple line with brush and zoom chart - 1</h3>
+													{{/* http://blockbuilder.org/curran/02163a13a40112e0ab6f14bbacc986f8 */}}
+													<h3 class="card-title">Small multiple line chart</h3>
 												</div>
 												<div class="card-body">
-													<div id="mlwbz1" style="height: auto"></div>
+													<div id="smlc1" style="height: auto"></div>
 												</div>
 											</div>
 											<script>
 												require(['d3'], function (d3) {
-
-													const xValue = d => d.dteday;
-													const xLabel = 'Date';
-													const yValue1 = d => d.registered;
-													const yValue2 = d => d.casual;
-													const yValue3 = d => d.cnt;
-													const yValue4 = d => d.temp;
-													const yLabel = 'Users';
-
-													var svg = d3.select("#mlwbz1").append("svg").attr("width", 712).attr("height", 300),
-														margin = { top: 20, right: 80, bottom: 110, left: 80 },
-														margin2 = { top: 430, right: 80, bottom: 30, left: 80 },
-														width = +svg.attr("width") - margin.left - margin.right,
-														height = +svg.attr("height") - margin.top - margin.bottom,
-														height2 = +svg.attr("height") - margin2.top - margin2.bottom;
-
 													var parseDate = d3.timeParse("%b %Y");
 
-													var x = d3.scaleTime().range([0, width]),
-														x2 = d3.scaleTime().range([0, width]),
-														y = d3.scaleLinear().range([height, 0]),
-														yRight = d3.scaleLinear().range([height, 0]),
-														y2 = d3.scaleLinear().range([height2, 0]);
+													function timeSeriesChart() {
+														var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+															width = 712,
+															height = 64,
+															xValue = function (d) { return d[0]; },
+															yValue = function (d) { return d[1]; },
+															xScale = d3.scaleTime(),
+															yScale = d3.scaleLinear(),
+															xAxis = d3.axisBottom().scale(xScale).tickSize(6, 0),
+															area = d3.area().x(X).y1(Y),
+															line = d3.line().x(X).y(Y),
+															values = function (d) { return d; },
+															title = null,
+															titleX = -30,
+															titleY = 25,
+															xExtent = null;
 
-													var xAxis = d3.axisBottom(x),
-														xAxis2 = d3.axisBottom(x2),
-														yAxis = d3.axisLeft(y),
-														yAxisRight = d3.axisRight(yRight);
+														function chart(selection) {
+															selection.each(function (d) {
+																// Convert data to standard representation greedily;
+																// this is needed for nondeterministic accessors.
+																var data = values(d).map(function (d, i) {
+																	return [xValue.call(data, d, i), yValue.call(data, d, i)];
+																});
 
-													var brush = d3.brushX()
-														.extent([[0, 0], [width, height2]])
-														.on("brush end", brushed);
+																// Update the x-scale.
+																xScale
+																	.domain(xExtent || d3.extent(data, function (d) { return d[0]; }))
+																	.range([0, width - margin.left - margin.right]);
 
-													var zoom = d3.zoom()
-														.scaleExtent([1, Infinity])
-														.translateExtent([[0, 0], [width, height]])
-														.extent([[0, 0], [width, height]])
-														.on("zoom", zoomed);
+																// Update the y-scale.
+																yScale
+																	.domain([0, d3.max(data, function (d) { return d[1]; })])
+																	.range([height - margin.top - margin.bottom, 0]);
 
-													var line = d3.line()
-														.curve(d3.curveCatmullRom)
-														.x(function (d) { return x(d.dteday); })
-														.y(function (d) { return y(d.cnt); });
+																// Select the svg element, if it exists.
+																var svg = d3.select(this).selectAll("svg").data([data]);
+																var svgEnter = svg.enter().append("svg");
 
-													var lineCasual = d3.line()
-														.curve(d3.curveCatmullRom)
-														.x(function (d) { return x(d.dteday); })
-														.y(function (d) { return y(d.casual); });
+																// Otherwise, create the skeletal chart.
+																var gEnter = svgEnter.append("g");
+																gEnter.append("text").attr("class", "title");
+																gEnter.append("path").attr("class", "area");
+																gEnter.append("path").attr("class", "line");
+																gEnter.append("g").attr("class", "x axis");
 
-													var lineTemp = d3.line()
-														.curve(d3.curveCatmullRom)
-														.x(function (d) { return x(d.dteday); })
-														.y(function (d) { return yRight(d.temp); });
+																// Update the outer dimensions.
+																svg = svg.merge(svgEnter);
+																svg.attr("width", width)
+																	.attr("height", height);
 
-													var lineRegistered = d3.line()
-														.curve(d3.curveCatmullRom)
-														.x(function (d) { return x(d.dteday); })
-														.y(function (d) { return y(d.registered); });
+																// Update the inner dimensions.
+																var g = svg.select("g")
+																	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-													var lineTotal = d3.line()
-														.curve(d3.curveCatmullRom)
-														.x(function (d) { return x2(d.dteday); })
-														.y(function (d) { return y2(d.cnt); });
+																// Update the area path.
+																
+																g.select(".area")
+																	.attr("d", function (d) {
+																		console.log(yScale.range());
+																		return area.y0(yScale.range()[0])
+																		});
 
+																// Update the line path.
+																g.select(".line")
+																	.attr("d", line);
 
-													svg.append("defs").append("clipPath")
-														.attr("id", "clip")
-														.append("rect")
-														.attr("width", width)
-														.attr("height", height);
+																// Update the x-axis.
+																g.select(".x.axis")
+																	.attr("transform", "translate(0," + yScale.range()[0] + ")")
+																	.call(xAxis);
 
-													var focus = svg.append("g")
-														.attr("class", "focus")
-														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+																// Update the title.
+																if (title) {
+																	g.select(".title")
+																		.attr("x", titleX)
+																		.attr("y", titleY)
+																		.attr("text-anchor", "end")
+																		.text(title(d));
+																}
+															});
+														}
 
-													var context = svg.append("g")
-														.attr("class", "context")
-														.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+														// The x-accessor for the path generator; xScale ∘ xValue.
+														function X(d) {
+															return xScale(d[0]);
+														}
 
+														// The x-accessor for the path generator; yScale ∘ yValue.
+														function Y(d) {
+															return yScale(d[1]);
+														}
 
-													const row = d => {
-														d.dteday = new Date(d.dteday);
-														d.season = +d.season;
-														d.yr = +d.yr;
-														d.mnth = +d.mnth;
-														d.holiday = +d.holiday;
-														d.weekday = +d.weekday;
-														d.workingday = +d.workingday;
-														d.weathersit = +d.weathersit;
-														d.temp = +d.temp;
-														d.atemp = +d.atemp;
-														d.hum = +d.hum;
-														d.windspeed = +d.windspeed;
-														d.casual = +d.casual;
-														d.registered = +d.registered;
-														d.cnt = +d.cnt;
-														return d;
-													};
+														chart.margin = function (_) {
+															if (!arguments.length) return margin;
+															margin = _;
+															return chart;
+														};
 
+														chart.width = function (_) {
+															if (!arguments.length) return width;
+															width = _;
+															return chart;
+														};
+
+														chart.height = function (_) {
+															if (!arguments.length) return height;
+															height = _;
+															return chart;
+														};
+
+														chart.x = function (_) {
+															if (!arguments.length) return xValue;
+															xValue = _;
+															return chart;
+														};
+
+														chart.y = function (_) {
+															if (!arguments.length) return yValue;
+															yValue = _;
+															return chart;
+														};
+
+														chart.values = function (_) {
+															if (!arguments.length) return values;
+															values = _;
+															return chart;
+														};
+
+														chart.title = function (_) {
+															if (!arguments.length) return title;
+															title = _;
+															return chart;
+														};
+
+														chart.titleX = function (_) {
+															if (!arguments.length) return titleX;
+															titleX = _;
+															return chart;
+														};
+
+														chart.titleY = function (_) {
+															if (!arguments.length) return titleY;
+															titleY = _;
+															return chart;
+														};
+
+														chart.xExtent = function (_) {
+															if (!arguments.length) return xExtent;
+															xExtent = _;
+															return chart;
+														};
+
+														return chart;
+													}
+													var chart = timeSeriesChart()
+														.x(function (d) { return parseDate(d.date); })
+														.y(function (d) { return +d.price; })
+														.width(950)
+														.height(60)
+														.values(function (d) { return d.values; })
+														.title(function (d) { return d.key; })
+														.margin({ top: 20, right: 20, bottom: 20, left: 134 });
+													// Get the data
 													var dataset = d3.tsv("/demo/stocks.csv", function (data) {
 														return data;
 													});
 													dataset.then(function (data) {
-													}).then(function (data) {
-														x.domain(d3.extent(data, function (d) { return d.dteday; }));
-														y.domain([0, d3.max(data, function (d) { return d.cnt; })]);
-														x2.domain(x.domain());
-														y2.domain(y.domain());
+														// Scale the range of the data
+														// x.domain(d3.extent(data, function (d) { return d.date; }));
+														// y.domain([0, d3.max(data, function (d) { return d.price; })]);
 
-														focus.append("path")
-															.datum(data)
-															.attr("class", "line line_casual")
-															.attr("d", lineCasual);
+														// Nest the entries by symbol
+														var symbols = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
+														// Use a global extent (so GOOG's axis is aligned with the others).
+														chart.xExtent(d3.extent(data, chart.x()));
 
-														focus.append("path")
-															.datum(data)
-															.attr("class", "line line_registered")
-															.attr("d", lineRegistered);
+														d3.select("#smlc1")
+															.selectAll(".chart")
+															.data(symbols)
+															.enter()
+															.append("div")
+															.attr("class", "chart")
+															.call(chart);
 
-														focus.append("path")
-															.datum(data)
-															.attr("class", "line line_temp")
-															.attr("d", lineTemp);
-
-														focus.append("g")
-															.attr("class", "axis axis--x")
-															.attr("transform", "translate(0," + height + ")")
-															.call(xAxis);
-
-														yAxisG = focus.append("g")
-															.attr("class", "axis axis--y")
-															.call(yAxis);
-
-														yAxisG.append('text')
-															.attr('class', 'axis-label')
-															.attr('x', -height / 2)
-															.attr('y', -50)
-															.attr('transform', `rotate(-90)`)
-															.style('text-anchor', 'middle')
-															.text(yLabel);
-
-														yAxisRightG = focus.append("g")
-															.attr("class", "axis axis--y")
-															.attr("transform", "translate(" + width + ",0)")
-															.call(yAxisRight);
-
-														context.append("path")
-															.datum(data)
-															.attr("class", "line_total")
-															.attr("d", lineTotal);
-
-														context.append("g")
-															.attr("class", "axis axis--x")
-															.attr("transform", "translate(0," + height2 + ")")
-															.call(xAxis2);
-
-														context.append("g")
-															.attr("class", "brush")
-															.call(brush)
-															.call(brush.move, x.range());
-
-														svg.append("rect")
-															.attr("class", "zoom")
-															.attr("width", width)
-															.attr("height", height)
-															.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-															.call(zoom);
 													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/ColinEberhardt/000b1721b69868f1ce5d */}}
+													<h3 class="card-title">Multiple line with brush and zoom chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="mlwbzc1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/sajudson/a0713fb9826aea45f15b207dfec9bcb4 */}}
+													<h3 class="card-title">Multiple line with brush and zoom chart - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="mlwbzc2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													// const xValue = d => d.dteday;
+													// const xLabel = 'Date';
+													// const yValue1 = d => d.registered;
+													// const yValue2 = d => d.casual;
+													// const yValue3 = d => d.cnt;
+													// const yValue4 = d => d.temp;
+													// const yLabel = 'Users';
 
-													function brushed() {
-														if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-														var s = d3.event.selection || x2.range();
-														x.domain(s.map(x2.invert, x2));
-														focus.selectAll(".line_casual").attr("d", lineCasual);
-														focus.select(".line_registered").attr("d", lineRegistered);
-														focus.select(".line_temp").attr("d", lineTemp);
-														focus.select(".axis--x").call(xAxis);
-														svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-															.scale(width / (s[1] - s[0]))
-															.translate(-s[0], 0));
-													}
+													// var svg = d3.select("#mlwbzc2").append("svg").attr("width", 712).attr("height", 300),
+													// 	margin = { top: 20, right: 80, bottom: 110, left: 80 },
+													// 	margin2 = { top: 430, right: 80, bottom: 30, left: 80 },
+													// 	width = +svg.attr("width") - margin.left - margin.right,
+													// 	height = +svg.attr("height") - margin.top - margin.bottom,
+													// 	height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
-													function zoomed() {
-														if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-														var t = d3.event.transform;
-														x.domain(t.rescaleX(x2).domain());
-														focus.select(".line_casual").attr("d", lineCasual);
-														focus.select(".line_registered").attr("d", lineRegistered);
-														focus.select(".line_temp").attr("d", lineTemp);
-														focus.select(".axis--x").call(xAxis);
-														context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-													}
+													// var parseDate = d3.timeParse("%b %Y");
+
+													// var x = d3.scaleTime().range([0, width]),
+													// 	x2 = d3.scaleTime().range([0, width]),
+													// 	y = d3.scaleLinear().range([height, 0]),
+													// 	yRight = d3.scaleLinear().range([height, 0]),
+													// 	y2 = d3.scaleLinear().range([height2, 0]);
+
+													// var xAxis = d3.axisBottom(x),
+													// 	xAxis2 = d3.axisBottom(x2),
+													// 	yAxis = d3.axisLeft(y),
+													// 	yAxisRight = d3.axisRight(yRight);
+
+													// var brush = d3.brushX()
+													// 	.extent([[0, 0], [width, height2]])
+													// 	.on("brush end", brushed);
+
+													// var zoom = d3.zoom()
+													// 	.scaleExtent([1, Infinity])
+													// 	.translateExtent([[0, 0], [width, height]])
+													// 	.extent([[0, 0], [width, height]])
+													// 	.on("zoom", zoomed);
+
+													// var line = d3.line()
+													// 	.curve(d3.curveCatmullRom)
+													// 	.x(function (d) { return x(d.dteday); })
+													// 	.y(function (d) { return y(d.cnt); });
+
+													// var lineCasual = d3.line()
+													// 	.curve(d3.curveCatmullRom)
+													// 	.x(function (d) { return x(d.dteday); })
+													// 	.y(function (d) { return y(d.casual); });
+
+													// var lineTemp = d3.line()
+													// 	.curve(d3.curveCatmullRom)
+													// 	.x(function (d) { return x(d.dteday); })
+													// 	.y(function (d) { return yRight(d.temp); });
+
+													// var lineRegistered = d3.line()
+													// 	.curve(d3.curveCatmullRom)
+													// 	.x(function (d) { return x(d.dteday); })
+													// 	.y(function (d) { return y(d.registered); });
+
+													// var lineTotal = d3.line()
+													// 	.curve(d3.curveCatmullRom)
+													// 	.x(function (d) { return x2(d.dteday); })
+													// 	.y(function (d) { return y2(d.cnt); });
+
+
+													// svg.append("defs").append("clipPath")
+													// 	.attr("id", "clip")
+													// 	.append("rect")
+													// 	.attr("width", width)
+													// 	.attr("height", height);
+
+													// var focus = svg.append("g")
+													// 	.attr("class", "focus")
+													// 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													// var context = svg.append("g")
+													// 	.attr("class", "context")
+													// 	.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+
+													// const row = d => {
+													// 	d.dteday = new Date(d.dteday);
+													// 	d.season = +d.season;
+													// 	d.yr = +d.yr;
+													// 	d.mnth = +d.mnth;
+													// 	d.holiday = +d.holiday;
+													// 	d.weekday = +d.weekday;
+													// 	d.workingday = +d.workingday;
+													// 	d.weathersit = +d.weathersit;
+													// 	d.temp = +d.temp;
+													// 	d.atemp = +d.atemp;
+													// 	d.hum = +d.hum;
+													// 	d.windspeed = +d.windspeed;
+													// 	d.casual = +d.casual;
+													// 	d.registered = +d.registered;
+													// 	d.cnt = +d.cnt;
+													// 	return d;
+													// };
+
+													// var dataset = d3.tsv("/demo/stocks.csv", function (data) {
+													// 	return data;
+													// });
+													// dataset.then(function (data) {
+													// }).then(function (data) {
+													// 	x.domain(d3.extent(data, function (d) { return d.dteday; }));
+													// 	y.domain([0, d3.max(data, function (d) { return d.cnt; })]);
+													// 	x2.domain(x.domain());
+													// 	y2.domain(y.domain());
+
+													// 	focus.append("path")
+													// 		.datum(data)
+													// 		.attr("class", "line line_casual")
+													// 		.attr("d", lineCasual);
+
+													// 	focus.append("path")
+													// 		.datum(data)
+													// 		.attr("class", "line line_registered")
+													// 		.attr("d", lineRegistered);
+
+													// 	focus.append("path")
+													// 		.datum(data)
+													// 		.attr("class", "line line_temp")
+													// 		.attr("d", lineTemp);
+
+													// 	focus.append("g")
+													// 		.attr("class", "axis axis--x")
+													// 		.attr("transform", "translate(0," + height + ")")
+													// 		.call(xAxis);
+
+													// 	yAxisG = focus.append("g")
+													// 		.attr("class", "axis axis--y")
+													// 		.call(yAxis);
+
+													// 	yAxisG.append('text')
+													// 		.attr('class', 'axis-label')
+													// 		.attr('x', -height / 2)
+													// 		.attr('y', -50)
+													// 		.attr('transform', `rotate(-90)`)
+													// 		.style('text-anchor', 'middle')
+													// 		.text(yLabel);
+
+													// 	yAxisRightG = focus.append("g")
+													// 		.attr("class", "axis axis--y")
+													// 		.attr("transform", "translate(" + width + ",0)")
+													// 		.call(yAxisRight);
+
+													// 	context.append("path")
+													// 		.datum(data)
+													// 		.attr("class", "line_total")
+													// 		.attr("d", lineTotal);
+
+													// 	context.append("g")
+													// 		.attr("class", "axis axis--x")
+													// 		.attr("transform", "translate(0," + height2 + ")")
+													// 		.call(xAxis2);
+
+													// 	context.append("g")
+													// 		.attr("class", "brush")
+													// 		.call(brush)
+													// 		.call(brush.move, x.range());
+
+													// 	svg.append("rect")
+													// 		.attr("class", "zoom")
+													// 		.attr("width", width)
+													// 		.attr("height", height)
+													// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+													// 		.call(zoom);
+													// });
+
+													// function brushed() {
+													// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+													// 	var s = d3.event.selection || x2.range();
+													// 	x.domain(s.map(x2.invert, x2));
+													// 	focus.selectAll(".line_casual").attr("d", lineCasual);
+													// 	focus.select(".line_registered").attr("d", lineRegistered);
+													// 	focus.select(".line_temp").attr("d", lineTemp);
+													// 	focus.select(".axis--x").call(xAxis);
+													// 	svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+													// 		.scale(width / (s[1] - s[0]))
+													// 		.translate(-s[0], 0));
+													// }
+
+													// function zoomed() {
+													// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+													// 	var t = d3.event.transform;
+													// 	x.domain(t.rescaleX(x2).domain());
+													// 	focus.select(".line_casual").attr("d", lineCasual);
+													// 	focus.select(".line_registered").attr("d", lineRegistered);
+													// 	focus.select(".line_temp").attr("d", lineTemp);
+													// 	focus.select(".axis--x").call(xAxis);
+													// 	context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+													// }
 												});
 											</script>
 										</div>
