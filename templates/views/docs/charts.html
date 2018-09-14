@@ -1032,15 +1032,16 @@
 													var x = d3.scaleTime().range([0, width]),
 														y = d3.scaleLinear().range([height, 0]),
 														z = d3.scaleOrdinal(d3.schemeCategory10);
+													// var line = d3.line()
+													// 	.curve(d3.curveBasis)
+													// 	.x(function (d) { return x(d.date); })
+													// 	.y(function (d) { return y(d.price); });
 
 													var stack = d3.stack().offset(d3.stackOffsetExpand);;
 
 													var area = d3.area()
-														.x(function (d, i) { return parseDate(d.data.date); })
-														.y0(function (d) {
-															console.log(d[0]);
-															return y(d[0]);
-														})
+														.x(function (d, i) { return x(parseDate(d.data.date)); })
+														.y0(function (d) { return y(d[0]); })
 														.y1(function (d) { return y(d[1]); });
 													var g = svg.append("g")
 														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -1050,7 +1051,7 @@
 													});
 													dataset.then(function (data) {
 														var keys = data.columns.slice(1);
-														x.domain(d3.extent(data, function (d) { return d.date; }));
+														x.domain(d3.extent(data, function (d) {return parseDate(d.date);}));
 														z.domain(keys);
 														stack.keys(keys);
 														var layer = g.selectAll(".layer")
@@ -1067,9 +1068,7 @@
 														layer.filter(function (d) { return d[d.length - 1][1] - d[d.length - 1][0] > 0.01; })
 															.append("text")
 															.attr("x", width - 6)
-															.attr("y", function (d) {
-																return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2);
-															})
+															.attr("y", function (d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); })
 															.attr("dy", ".35em")
 															.style("font", "10px sans-serif")
 															.style("text-anchor", "end")
@@ -1259,6 +1258,28 @@
 													// 		.attr("dy", "0.35em")
 													// 		.text(function (d) { return d; });
 													// });
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/geoffreyammons/6626f6f3aceee575bc4b55a838e3fa59 */}}
+													<h3 class="card-title">Donut chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="dc1" style="height: 300px;">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
 												});
 											</script>
 										</div>
