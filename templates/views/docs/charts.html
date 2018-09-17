@@ -1892,101 +1892,6 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
-													{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
-													<h3 class="card-title">Local Variables</h3>
-												</div>
-												<div class="card-body">
-													<div id="chart-wrapper13" style="height: auto"></div>
-												</div>
-											</div>
-											<script>
-												require(['d3'], function (d3) {
-													// var margin = {top: 8, right: 10, bottom: 2, left: 10},
-													// width = 712 - margin.left - margin.right,
-													// 	height = 69 - margin.top - margin.bottom;
-
-													// var parseDate = d3.timeParse("%b %Y");
-
-													// var x = d3.scaleTime()
-													// 	.range([0, width]);
-
-													// var y = d3.local();
-													// var area = d3.local();
-													// var line = d3.local();
-
-													// // first promise returns the dataset 
-													// var dataset = d3.tsv("/demo/stocks.csv").then(function (data) {
-													// 	return data;
-													// });
-													// dataset.then(function (ds) {
-													// 	return d3.nest()
-													// 		.key(function (d) {
-													// 			return d.symbol;
-													// 		})
-													// 		.entries(ds);
-													// }).then(function (symbols) {
-													// 	x.domain([
-													// 		d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
-													// 		d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
-													// 	]);
-													// 	var svg = d3.select("#chart-wrapper13").selectAll("svg")
-													// 		.data(symbols)
-													// 		.enter().append("svg")
-													// 		.attr("width", width + margin.left + margin.right)
-													// 		.attr("height", height + margin.top + margin.bottom)
-													// 		.append("g")
-													// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-													// 		.each(function (d) {
-													// 			var ty = y.set(this, d3.scaleLinear()
-													// 				.domain([0, d3.max(d.values, function (d) { return d.price; })])
-													// 				.range([height, 0]));
-													// 			area.set(this, d3.area()
-													// 				.x(function (d) { return x(d.date); })
-													// 				.y0(height)
-													// 				.y1(function (d) { return ty(d.price); }));
-													// 			line.set(this, d3.line()
-													// 				.x(function (d) { return x(d.date); })
-													// 				.y(function (d) { return ty(d.price); }));
-													// 		});
-
-													// 	svg.append("path")
-													// 		.attr("class", "area")
-													// 		.attr("d", function (d) {
-													// 			console.log(d.key);
-													// 			console.log(d.values);
-													// 			return area.get(this)(d.values);
-													// 		});
-													// 	svg.append("path")
-													// 		.attr("class", "line")
-													// 		.attr("d", function (d) {
-													// 			return line.get(this)(d.values);
-													// 		});
-													// 	svg.append("text")
-													// 		.attr("x", width - 64)
-													// 		.attr("y", height - 16)
-													// 		.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
-													// 		.text(function (d) {
-													// 			return d.key;
-													// 		});
-													// });
-
-													// function type(d) {
-													// 	d.price = +d.price;
-													// 	d.date = parseDate(d.date);
-													// 	return d;
-													// }
-												});
-											</script>
-										</div>
-									</div>
-								</div>
-								{{/* chart-end */}}
-								{{/* chart-start */}}
-								<div class="card">
-									<div class="card-body">
-										<div class="text-wrap p-lg-6">
-											<div class="card">
-												<div class="card-header">
 													{{/* http://blockbuilder.org/curran/02163a13a40112e0ab6f14bbacc986f8 */}}
 													<h3 class="card-title">Small multiple line chart</h3>
 												</div>
@@ -1999,7 +1904,7 @@
 													var parseDate = d3.timeParse("%b %Y");
 
 													function timeSeriesChart() {
-														var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+														var margin = { top: 10, right: 10, bottom: 10, left: 10 },
 															width = 712,
 															height = 64,
 															xValue = function (d) { return d[0]; },
@@ -2039,9 +1944,9 @@
 
 																// Otherwise, create the skeletal chart.
 																var gEnter = svgEnter.append("g");
-																gEnter.append("text").attr("class", "title");
-																gEnter.append("path").attr("class", "area");
-																gEnter.append("path").attr("class", "line");
+																gEnter.append("text").attr("class", "title").attr("font-size", "12px");
+																gEnter.append("path").attr("class", "area").attr("fill", "#c6c6c6");
+																gEnter.append("path").attr("class", "line").attr("stroke", "#707070");
 																gEnter.append("g").attr("class", "x axis");
 
 																// Update the outer dimensions.
@@ -2054,12 +1959,9 @@
 																	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 																// Update the area path.
-
+																area.y0(yScale(0));
 																g.select(".area")
-																	.attr("d", function (d) {
-																		console.log(yScale.range());
-																		return area.y0(yScale.range()[0])
-																	});
+																	.attr("d", area);
 
 																// Update the line path.
 																g.select(".line")
@@ -2076,7 +1978,8 @@
 																		.attr("x", titleX)
 																		.attr("y", titleY)
 																		.attr("text-anchor", "end")
-																		.text(title(d));
+																		.text(title(d))
+																		.attr("font-size", "12px");
 																}
 															});
 														}
@@ -2156,11 +2059,11 @@
 													var chart = timeSeriesChart()
 														.x(function (d) { return parseDate(d.date); })
 														.y(function (d) { return +d.price; })
-														.width(950)
-														.height(60)
+														.width(712)
+														.height(64)
 														.values(function (d) { return d.values; })
 														.title(function (d) { return d.key; })
-														.margin({ top: 20, right: 20, bottom: 20, left: 134 });
+														.margin({ top: 20, right: 20, bottom: 20, left: 100 });
 													// Get the data
 													var dataset = d3.tsv("/demo/stocks.csv", function (data) {
 														return data;
@@ -2178,13 +2081,107 @@
 														chart.xExtent(d3.extent(data, chart.x()));
 
 														d3.select("#smlc1")
-															.selectAll(".chart")
+															.selectAll(".smlc1")
 															.data(symbols)
 															.enter()
 															.append("div")
-															.attr("class", "chart")
+															.attr("class", "smlc1")
 															.call(chart);
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
+													<h3 class="card-title">Local Variables</h3>
+												</div>
+												<div class="card-body">
+													<div id="lv1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var margin = {top: 8, right: 10, bottom: 2, left: 10},
+														width = 712 - margin.left - margin.right,
+														height = 69 - margin.top - margin.bottom;
 
+													var parseDate = d3.timeParse("%b %Y");
+
+													var x = d3.scaleTime()
+														.range([0, width]);
+
+													var y = d3.local();
+													var area = d3.local();
+													var line = d3.local();
+
+													// first promise returns the dataset 
+													var dataset = d3.tsv("/demo/stocks.csv").then(function (data) {
+														return data;
+													});
+													dataset.then(function (ds) {
+														return d3.nest()
+															.key(function (d) {
+																return d.symbol;
+															})
+															.entries(ds);
+													})
+													.then(function (data) {
+														return data.map(function (d) {
+															d.date = parseDate(d.date);
+															d.price = +d.price;
+															return d;
+														});
+													})
+													.then(function (data) {
+														x.domain([
+															d3.min(data, function (symbol) { return symbol.values[0].date; }),
+															d3.max(data, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
+														]);
+														var svg = d3.select("#lv1").selectAll("svg")
+															.data(data)
+															.enter().append("svg")
+															.attr("width", width + margin.left + margin.right)
+															.attr("height", height + margin.top + margin.bottom)
+															.append("g")
+															.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+															.each(function (d) {
+																var ty = y.set(this, d3.scaleLinear()
+																	.domain([0, d3.max(d.values, function (d) { return d.price; })])
+																	.range([height, 0]));
+																area.set(this, d3.area()
+																	.x(function (d) { return x(parseDate(d.date)); })
+																	.y0(height)
+																	.y1(function (d) { return ty(d.price); }));
+																line.set(this, d3.line()
+																	.x(function (d) { return x(parseDate(d.date)); })
+																	.y(function (d) { return ty(d.price); }));
+															});
+
+														svg.append("path")
+															.attr("class", "area")
+															.attr("d", function (d) {
+																return area.get(this)(d.values);
+															});
+														svg.append("path")
+															.attr("class", "line")
+															.attr("d", function (d) {
+																return line.get(this)(d.values);
+															});
+														svg.append("text")
+															.attr("x", width - 64)
+															.attr("y", height - 16)
+															.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
+															.text(function (d) {
+																return d.key;
+															});
 													});
 												});
 											</script>
@@ -4282,7 +4279,3 @@
 						{{/* http://123.207.84.88:8008/bar-chart3-v4.html */}}
 						{{/* http://123.207.84.88:8008/line-chart6-v4.html */}}
 {{ end }}
-
-
-
-
