@@ -14,12 +14,14 @@ import (
 func MiddlewareAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		isAuthenticated, err := func() (bool, error) {
-			cookie, err := c.Cookie("token")
-			if err != nil {
-				return false, nil
-			}
-			if _, err := GetClaims(cookie.Value); err != nil {
-				return false, err
+			if !viper.GetBool("debug") {
+				cookie, err := c.Cookie("token")
+				if err != nil {
+					return false, nil
+				}
+				if _, err := GetClaims(cookie.Value); err != nil {
+					return false, err
+				}
 			}
 			return true, nil
 		}()
