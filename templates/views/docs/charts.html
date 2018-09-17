@@ -1643,118 +1643,6 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
-													{{/* http://blockbuilder.org/abdel-rahmen/c5364d0374d46d8b816e71ff48841eaa */}}
-													<h3 class="card-title">Line and area chart - 1</h3>
-												</div>
-												<div class="card-body">
-													<div id="lac1" style="height: 300px;"></div>
-												</div>
-											</div>
-											<script>
-												require(['d3'], function (d3) {
-													var margin = { top: 20, right: 30, bottom: 20, left: 100 },
-														width = 712 - margin.left - margin.right,
-														height = 300 - margin.top - margin.bottom;
-
-													var svg = d3.select("#lac1").append("svg")
-														.attr("width", width + margin.left + margin.right)
-														.attr("height", height + margin.top + margin.bottom)
-														.append("g")
-														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-													var parseDate = d3.timeParse("%b %Y");
-
-													var x = d3.scaleTime().range([0, width]),
-														y = d3.scaleLinear().range([height, 0]),
-														c = d3.scaleOrdinal(d3.schemeCategory10);
-
-													var dataset = d3.csv('/demo/stocks.csv', function (data) {
-														return data;
-													});
-													dataset.then(function (data) {
-														// Nest stock values by symbol.
-														var symbols = d3.nest()
-															.key(function (d) { return d.symbol; })
-															.entries(data);
-
-														// Parse and caculate some values for each symbols
-														symbols.forEach(function (s) {
-															s.values.forEach(function (d) {
-																d.date = parseDate(d.date);
-																d.price = +d.price;
-															});
-
-															s.maxPrice = d3.max(s.values, function (d) { return d.price; });
-															s.sumPrice = d3.sum(s.values, function (d) { return d.price; });
-														});
-
-														symbols.sort(function (a, b) { return b.maxPrice - a.maxPrice; });
-														x.domain(d3.extent(data, function (d) { return parseDate(d.date); }));
-														svg.selectAll(".area").data(symbols, function (d) {
-															return d.key;
-														})
-															.enter()
-															.append("path")
-															.attr("class", "area");
-
-														var duration = 1000;
-
-														// Pour jouer les différents graphiques de manière séquentielle
-														function play(delay = 0) {
-
-															setTimeout(empty_area_chart, delay += duration);
-															setTimeout(area_chart, delay += duration);
-															// Repeat
-															setTimeout(play, delay += duration);
-														}
-
-														play();
-
-														function area_chart(empty = false) {
-															x.domain(d3.extent(data, function (d) { return parseDate(d.date); }));
-															y.domain([0, d3.max(data, function (d) { return d.price; })]);
-															y.range([height, 0]);
-
-															var area = d3.area()
-																.x(function (d) { return x(parseDate(d.date)); })
-																.y1(function (d) { return y(d.price); })
-																.y0(y(0));
-															;
-															svg.selectAll(".area").data(symbols)
-																.transition().duration(duration)
-																.attr("fill-opacity", function (d) {
-																	return empty ? 0 : .5;
-																})
-																.style("fill", function (d) {
-																	return c(d.key);
-																})
-																.style("stroke", function (d) {
-																	return c(d.key);
-																})
-																.style("stroke-width", function (d) {
-																	return "2px";
-																})
-																.attr("d", function (d) { return area(d.values); })
-																//  .style("opacity", .5)
-																.attr("transform", function (d, i) { return "translate(0, 0)"; });
-														}
-
-														function empty_area_chart() {
-															area_chart(true);
-														}
-													});
-												});
-											</script>
-										</div>
-									</div>
-								</div>
-								{{/* chart-end */}}
-								{{/* chart-start */}}
-								<div class="card">
-									<div class="card-body">
-										<div class="text-wrap p-lg-6">
-											<div class="card">
-												<div class="card-header">
 													{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
 													<h3 class="card-title">Local Variables</h3>
 												</div>
@@ -2061,32 +1949,11 @@
 										<div class="text-wrap p-lg-6">
 											<div class="card">
 												<div class="card-header">
-													{{/* http://blockbuilder.org/ColinEberhardt/000b1721b69868f1ce5d */}}
+													{{/* http://blockbuilder.org/sajudson/a0713fb9826aea45f15b207dfec9bcb4 */}}
 													<h3 class="card-title">Multiple line with brush and zoom chart - 1</h3>
 												</div>
 												<div class="card-body">
 													<div id="mlwbzc1" style="height: auto"></div>
-												</div>
-											</div>
-											<script>
-												require(['d3'], function (d3) {
-												});
-											</script>
-										</div>
-									</div>
-								</div>
-								{{/* chart-end */}}
-								{{/* chart-start */}}
-								<div class="card">
-									<div class="card-body">
-										<div class="text-wrap p-lg-6">
-											<div class="card">
-												<div class="card-header">
-													{{/* http://blockbuilder.org/sajudson/a0713fb9826aea45f15b207dfec9bcb4 */}}
-													<h3 class="card-title">Multiple line with brush and zoom chart - 2</h3>
-												</div>
-												<div class="card-body">
-													<div id="mlwbzc2" style="height: auto"></div>
 												</div>
 											</div>
 											<script>
