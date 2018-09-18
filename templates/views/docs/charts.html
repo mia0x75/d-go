@@ -1828,7 +1828,7 @@
 														.y(function (d) { return y(d.price); });
 
 													// Get the data
-													var dataset = d3.tsv("/demo/stocks.csv", function (data) {
+													var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
 														return data;
 													});
 													dataset.then(function (data) {
@@ -1903,7 +1903,8 @@
 												require(['d3'], function (d3) {
 													var parseDate = d3.timeParse("%b %Y");
 
-													function timeSeriesChart() {
+													function timeSeriesChart()
+													{
 														var margin = { top: 10, right: 10, bottom: 10, left: 10 },
 															width = 712,
 															height = 64,
@@ -1920,7 +1921,8 @@
 															titleY = 25,
 															xExtent = null;
 
-														function chart(selection) {
+														function chart(selection)
+														{
 															selection.each(function (d) {
 																// Convert data to standard representation greedily;
 																// this is needed for nondeterministic accessors.
@@ -1961,11 +1963,15 @@
 																// Update the area path.
 																area.y0(yScale(0));
 																g.select(".area")
-																	.attr("d", area);
+																	.attr("d", area)
+																	.attr("fill", "#e7e7e7");
 
 																// Update the line path.
 																g.select(".line")
-																	.attr("d", line);
+																	.attr("d", line)
+																	.attr("fill", "none")
+																	.attr("stroke", "#666")
+																	.attr("stroke-width", "1.5px");
 
 																// Update the x-axis.
 																g.select(".x.axis")
@@ -1985,70 +1991,82 @@
 														}
 
 														// The x-accessor for the path generator; xScale ∘ xValue.
-														function X(d) {
+														function X(d)
+														{
 															return xScale(d[0]);
 														}
 
 														// The x-accessor for the path generator; yScale ∘ yValue.
-														function Y(d) {
+														function Y(d)
+														{
 															return yScale(d[1]);
 														}
 
-														chart.margin = function (_) {
+														chart.margin = function (_)
+														{
 															if (!arguments.length) return margin;
 															margin = _;
 															return chart;
 														};
 
-														chart.width = function (_) {
+														chart.width = function (_)
+														{
 															if (!arguments.length) return width;
 															width = _;
 															return chart;
 														};
 
-														chart.height = function (_) {
+														chart.height = function (_)
+														{
 															if (!arguments.length) return height;
 															height = _;
 															return chart;
 														};
 
-														chart.x = function (_) {
+														chart.x = function (_)
+														{
 															if (!arguments.length) return xValue;
 															xValue = _;
 															return chart;
 														};
 
-														chart.y = function (_) {
+														chart.y = function (_)
+														{
 															if (!arguments.length) return yValue;
 															yValue = _;
 															return chart;
 														};
 
-														chart.values = function (_) {
+														chart.values = function (_)
+														{
 															if (!arguments.length) return values;
 															values = _;
 															return chart;
 														};
 
-														chart.title = function (_) {
+														chart.title = function (_)
+														{
 															if (!arguments.length) return title;
 															title = _;
 															return chart;
 														};
 
-														chart.titleX = function (_) {
+														chart.titleX = function (_)
+														{
 															if (!arguments.length) return titleX;
 															titleX = _;
 															return chart;
 														};
 
-														chart.titleY = function (_) {
+														chart.titleY = function (_)
+														{
 															if (!arguments.length) return titleY;
 															titleY = _;
 															return chart;
 														};
 
-														chart.xExtent = function (_) {
+														chart.xExtent = function (_)
+														{
 															if (!arguments.length) return xExtent;
 															xExtent = _;
 															return chart;
@@ -2065,7 +2083,7 @@
 														.title(function (d) { return d.key; })
 														.margin({ top: 20, right: 20, bottom: 20, left: 100 });
 													// Get the data
-													var dataset = d3.tsv("/demo/stocks.csv", function (data) {
+													var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
 														return data;
 													});
 													dataset.then(function (data) {
@@ -2112,27 +2130,13 @@
 													var margin = {top: 8, right: 10, bottom: 2, left: 10},
 														width = 712 - margin.left - margin.right,
 														height = 69 - margin.top - margin.bottom;
-
 													var parseDate = d3.timeParse("%b %Y");
-
-													var x = d3.scaleTime()
-														.range([0, width]);
-
+													var x = d3.scaleTime().range([0, width]);
 													var y = d3.local();
 													var area = d3.local();
 													var line = d3.local();
 
-													// first promise returns the dataset 
-													var dataset = d3.tsv("/demo/stocks.csv").then(function (data) {
-														return data;
-													});
-													dataset.then(function (ds) {
-														return d3.nest()
-															.key(function (d) {
-																return d.symbol;
-															})
-															.entries(ds);
-													})
+													d3.tsv("/demo/stocks.tsv", function (data) { return data; })
 													.then(function (data) {
 														return data.map(function (d) {
 															d.date = parseDate(d.date);
@@ -2141,12 +2145,17 @@
 														});
 													})
 													.then(function (data) {
+														var symbols = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
+
 														x.domain([
-															d3.min(data, function (symbol) { return symbol.values[0].date; }),
-															d3.max(data, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
+															d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
+															d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
 														]);
+
 														var svg = d3.select("#lv1").selectAll("svg")
-															.data(data)
+															.data(symbols)
 															.enter().append("svg")
 															.attr("width", width + margin.left + margin.right)
 															.attr("height", height + margin.top + margin.bottom)
@@ -2156,32 +2165,34 @@
 																var ty = y.set(this, d3.scaleLinear()
 																	.domain([0, d3.max(d.values, function (d) { return d.price; })])
 																	.range([height, 0]));
+
 																area.set(this, d3.area()
-																	.x(function (d) { return x(parseDate(d.date)); })
+																	.x(function (d) { return x(d.date); })
 																	.y0(height)
 																	.y1(function (d) { return ty(d.price); }));
+
 																line.set(this, d3.line()
-																	.x(function (d) { return x(parseDate(d.date)); })
+																	.x(function (d) { return x(d.date); })
 																	.y(function (d) { return ty(d.price); }));
 															});
 
 														svg.append("path")
 															.attr("class", "area")
-															.attr("d", function (d) {
-																return area.get(this)(d.values);
-															});
+															.attr("d", function (d) { return area.get(this)(d.values); })
+															.attr("fill", "#e7e7e7");
+
 														svg.append("path")
 															.attr("class", "line")
-															.attr("d", function (d) {
-																return line.get(this)(d.values);
-															});
+															.attr("d", function (d) { return line.get(this)(d.values); })
+															.attr("fill", "none")
+															.attr("stroke", "#666")
+															.attr("stroke-width", "1.5px");
+
 														svg.append("text")
-															.attr("x", width - 64)
-															.attr("y", height - 16)
-															.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
-															.text(function (d) {
-																return d.key;
-															});
+															.attr("x", width - 6)
+															.attr("y", height - 6)
+															.text(function (d) { return d.key; })
+															.attr("text-anchor", "end");
 													});
 												});
 											</script>
@@ -2302,7 +2313,7 @@
 													// 	return d;
 													// };
 
-													// var dataset = d3.tsv("/demo/stocks.csv", function (data) {
+													// var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
 													// 	return data;
 													// });
 													// dataset.then(function (data) {
@@ -3113,7 +3124,7 @@
 															series = 0;
 
 
-															var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+															var tooltip = d3.select("#rc1").append("div").attr("class", "toolTip");
 															d.forEach(function (y, x) {
 																g.selectAll(".nodes")
 																	.data(y).enter()
@@ -3870,7 +3881,7 @@
 														height = 460 - margin.top - margin.bottom,
 														width = 712 - margin.left - margin.right;
 														
-														var data = {
+													var data = {
 														"assay_types": {
 															"group_1": ["type_1", "type_2", "type_3",],
 															"group_2": ["type_6", "type_7",],
@@ -3937,7 +3948,8 @@
 													};
 													var assay_types = data.assay_types;
 
-													function arrayAwareInvert(obj) {
+													function arrayAwareInvert(obj)
+													{
 														var res = {};
 														for (var p in obj) {
 															var arr = obj[p],
@@ -4016,7 +4028,8 @@
 													y_split.domain([0, ySplitMax]).nice(5);
 
 													// gridlines in y axis function
-													function make_y_gridlines(scale, ticks) {
+													function make_y_gridlines(scale, ticks)
+													{
 														return d3.axisLeft(scale).ticks(ticks);
 													}
 
@@ -4027,6 +4040,7 @@
 															.tickSize(-width)
 															.tickFormat("")
 														);
+													
 
 													var layer = svg.selectAll(".layer")
 														.data(layers, function (d) {
@@ -4049,199 +4063,203 @@
 																.tickFormat("")
 															)
 															.attr('opacity', 0);
-
-															svg.select("." + d)
-																.append('g')
-																.attr('class', 'axis--y')
-																.attr('opacity', 0);
-															svg.select("." + d)
-																.append("g")
-																.attr("class", "axis axes--x")
-																.attr("transform", function () { return translate(0, rowHeight); })
-																.attr('opacity', 0);
-														});
-
-														layer.append('g')
+															
+														svg.select("." + d)
+															.append('g')
 															.attr('class', 'axis--y')
 															.attr('opacity', 0);
-														layer.append("g")
+														svg.select("." + d)
+															.append("g")
 															.attr("class", "axis axes--x")
 															.attr("transform", function () { return translate(0, rowHeight); })
 															.attr('opacity', 0);
+													});
 
-														var bars = layer.selectAll("rect")
-															.data(function (d) { return d; }, function (d) { return d.key; })
-															.enter().append("rect")
-															.style("fill", function (d) { return color_shades(d.assay); })
-															.attr("x", function (d) { return x(d.data.stage); })
-															.attr("y", function () { return height; })
-															.attr("width", x.bandwidth())
-															.attr("height", function () { return 0; })
-															.attr("class", function (d) { return "bar " + d.assay; })
+													layer.append('g')
+														.attr('class', 'axis--y')
+														.attr('opacity', 0);
+													layer.append("g")
+														.attr("class", "axis axes--x")
+														.attr("transform", function () { return translate(0, rowHeight); })
+														.attr('opacity', 0);
 
-														bars.transition()
-															.delay(function (d, i) { return i * 10; })
-															.attr("y", function (d) { return y_stacked(d[1]); })
-															.attr("height", function (d) { return y_stacked(d[0]) - y_stacked(d[1]); });
+													var bars = layer.selectAll("rect")
+														.data(function (d) { return d; }, function (d) { return d.key; })
+														.enter().append("rect")
+														.style("fill", function (d) { return color_shades(d.assay); })
+														.attr("x", function (d) { return x(d.data.stage); })
+														.attr("y", function () { return height; })
+														.attr("width", x.bandwidth())
+														.attr("height", function () { return 0; })
+														.attr("class", function (d) { return "bar " + d.assay; })
 
-														var legend = svg.selectAll(".legend")
-															.data(assays)
-															.enter().append("g")
-															.attr("class", "legend")
-															.attr("transform", function (d, i) {
-																return "translate(30," + i * 20 + ")";
+													bars.transition()
+														.delay(function (d, i) { return i * 10; })
+														.attr("y", function (d) { return y_stacked(d[1]); })
+														.attr("height", function (d) { return y_stacked(d[0]) - y_stacked(d[1]); });
+
+													var legend = svg.selectAll(".legend")
+														.data(assays)
+														.enter().append("g")
+														.attr("class", "legend")
+														.attr("transform", function (d, i) {
+															return "translate(30," + i * 20 + ")";
+														});
+
+													legend.append("rect")
+														.attr("x", width - 14)
+														.attr("width", 14)
+														.attr("height", 14)
+														.style("fill", function (d) {
+															return color_shades(d);
+														})
+														.on("mouseover", function (d) {
+															svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
+																.style('opacity', '0.1');
+														})
+														.on("mouseout", function (d) {
+															svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
+																.style('opacity', '1');
+														});
+
+													legend.append("text")
+														.attr("x", width + 5)
+														.attr("y", 8)
+														.attr("dy", ".35em")
+														.style("text-anchor", "start")
+														.style("font-size", "12px")
+														.text(function (d) {
+															return d;
+														})
+														.on("mouseover", function (d) {
+															svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
+																.transition()
+																.duration(100)
+																.style('opacity', '0.25');
+														})
+														.on("mouseout", function (d) {
+															svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
+																.transition()
+																.duration(500)
+																.style('opacity', '1');
+														});
+
+													svg.append("g")
+														.attr("class", "axis axis--x")
+														.attr("transform", "translate(0," + height + ")")
+														.call(d3.axisBottom(x).tickSizeOuter(0))
+														.selectAll("text")
+														.attr("dx", "-0.35em")
+														.attr("dy", "0.6em")
+														.attr("transform", "rotate(-45)")
+														.style("text-anchor", "end");
+													svg.append("g")
+														.attr("class", "axis axis--y axis--stacked")
+														.call(d3.axisLeft(y_stacked).ticks(10))
+														.append("text")
+														.attr("x", 6)
+														.attr("y", -10)
+														.attr("dy", "0.35em")
+														.attr("text-anchor", "start")
+														.attr("fill", "#000")
+														.text("counts");
+
+													d3.selectAll("input").on("change", change);
+
+													function change()
+													{
+														if (this.value === "split") {
+															transitionSplit();
+														} else if (this.value === "together") {
+															transitionStacked();
+														}
+													}
+
+													function translate(x, y)
+													{
+														return "translate(" + x + ", " + y + ")";
+													}
+
+													function rowPosition(d)
+													{
+														return assay_groups_uniq.indexOf(assay_types_inv[d.key]);
+													}
+
+													function transitionSplit()
+													{
+														var g = svg.selectAll(".layer")
+															.transition().duration(750)
+															.attr("transform", function (d) {
+																return translate(0, rowPosition(d) * (rowHeight + spacing.bottom));
 															});
 
-														legend.append("rect")
-															.attr("x", width - 14)
-															.attr("width", 14)
-															.attr("height", 14)
-															.style("fill", function (d) {
-																return color_shades(d);
+														svg.selectAll('g.grid')
+															.attr('opacity', 0);
+														layer.selectAll('g.grid--split')
+															.attr('opacity', 1)
+															.transition()
+															.duration(750);
+
+														g.selectAll("rect")
+															.attr("y", function (d, i) {
+																return y_split(d.data[d.assay]);
 															})
-															.on("mouseover", function (d) {
-																svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
-																	.style('opacity', '0.1');
-															})
-															.on("mouseout", function (d) {
-																svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
-																	.style('opacity', '1');
+															.attr("height", function (d) {
+																return rowHeight - y_split(d.data[d.assay]);
 															});
 
-														legend.append("text")
-															.attr("x", width + 5)
-															.attr("y", 8)
-															.attr("dy", ".35em")
-															.style("text-anchor", "start")
-															.style("font-size", "12px")
-															.text(function (d) {
-																return d;
-															})
-															.on("mouseover", function (d) {
-																svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
-																	.transition()
-																	.duration(100)
-																	.style('opacity', '0.25');
-															})
-															.on("mouseout", function (d) {
-																svg.selectAll(".bar:not(." + d.replace(" ", "_") + ")")
-																	.transition()
-																	.duration(500)
-																	.style('opacity', '1');
-															});
-
-														svg.append("g")
-															.attr("class", "axis axis--x")
-															.attr("transform", "translate(0," + height + ")")
-															.call(d3.axisBottom(x).tickSizeOuter(0))
+														layer.selectAll('.axes--x')
+															.transition()
+															.duration(750)
+															.attr('opacity', 1)
+															.call(d3.axisBottom(x).tickSize(0))
 															.selectAll("text")
-															.attr("dx", "-0.35em")
-															.attr("dy", "0.6em")
-															.attr("transform", "rotate(-45)")
-															.style("text-anchor", "end");
-														svg.append("g")
-															.attr("class", "axis axis--y axis--stacked")
-															.call(d3.axisLeft(y_stacked).ticks(10))
-															.append("text")
-															.attr("x", 6)
-															.attr("y", -10)
-															.attr("dy", "0.35em")
-															.attr("text-anchor", "start")
-															.attr("fill", "#000")
-															.text("counts");
+															.attr('opacity', 0);
 
-														d3.selectAll("input").on("change", change);
+														layer.selectAll('.axis--y')
+															.transition()
+															.duration(750)
+															.attr('opacity', 1)
+															.call(d3.axisLeft(y_split).ticks(3));
 
-														function change() {
-															if (this.value === "split") {
-																transitionSplit();
-															} else if (this.value === "together") {
-																transitionStacked();
-															}
-														}
+														svg.selectAll('g.axis--stacked')
+															.attr('opacity', 0);
+													}
 
-														function translate(x, y) {
-															return "translate(" + x + ", " + y + ")";
-														}
-
-														function rowPosition(d) {
-															return assay_groups_uniq.indexOf(assay_types_inv[d.key]);
-														}
-
-														function transitionSplit() {
-															var g = svg.selectAll(".layer")
-																.transition().duration(750)
-																.attr("transform", function (d) {
-																	return translate(0, rowPosition(d) * (rowHeight + spacing.bottom));
+													function transitionStacked()
+													{
+														var t = svg.transition().duration(750),
+															g = t.selectAll(".layer")
+																.attr("transform", function () {
+																	return translate(0, 0);
 																});
+														g.selectAll("rect")
+															.attr("y", function (d) {
+																return y_stacked(d[1]);
+															})
+															.attr("height", function (d) {
+																return y_stacked(d[0]) - y_stacked(d[1]);
+															});
+														layer.selectAll('.axes--x')
+															.attr('opacity', 0);
+														layer.selectAll('.axis--y')
+															.transition()
+															.duration(750)
+															.attr('opacity', 0);
+														svg.selectAll('g.grid')
+															.transition()
+															.duration(750)
+															.attr('opacity', 1);
+														layer.selectAll('g.grid--split')
+															.transition()
+															.duration(750)
+															.attr('opacity', 0);
 
-															svg.selectAll('g.grid')
-																.attr('opacity', 0);
-															layer.selectAll('g.grid--split')
-																.attr('opacity', 1)
-																.transition()
-																.duration(750);
-
-															g.selectAll("rect")
-																.attr("y", function (d, i) {
-																	return y_split(d.data[d.assay]);
-																})
-																.attr("height", function (d) {
-																	return rowHeight - y_split(d.data[d.assay]);
-																});
-
-															layer.selectAll('.axes--x')
-																.transition()
-																.duration(750)
-																.attr('opacity', 1)
-																.call(d3.axisBottom(x).tickSize(0))
-																.selectAll("text")
-																.attr('opacity', 0);
-
-															layer.selectAll('.axis--y')
-																.transition()
-																.duration(750)
-																.attr('opacity', 1)
-																.call(d3.axisLeft(y_split).ticks(3));
-
-															svg.selectAll('g.axis--stacked')
-																.attr('opacity', 0);
-														}
-
-														function transitionStacked() {
-															var t = svg.transition().duration(750),
-																g = t.selectAll(".layer")
-																	.attr("transform", function () {
-																		return translate(0, 0);
-																	});
-															g.selectAll("rect")
-																.attr("y", function (d) {
-																	return y_stacked(d[1]);
-																})
-																.attr("height", function (d) {
-																	return y_stacked(d[0]) - y_stacked(d[1]);
-																});
-															layer.selectAll('.axes--x')
-																.attr('opacity', 0);
-															layer.selectAll('.axis--y')
-																.transition()
-																.duration(750)
-																.attr('opacity', 0);
-															svg.selectAll('g.grid')
-																.transition()
-																.duration(750)
-																.attr('opacity', 1);
-															layer.selectAll('g.grid--split')
-																.transition()
-																.duration(750)
-																.attr('opacity', 0);
-
-															svg.selectAll('g.axis--stacked')
-																.transition()
-																.duration(300)
-																.attr('opacity', 1);
-
-														}
+														svg.selectAll('g.axis--stacked')
+															.transition()
+															.duration(300)
+															.attr('opacity', 1);
+													}
 												});
 											</script>
 										</div>
