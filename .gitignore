@@ -1,6 +1,5 @@
-dashboard-go
 .vscode
-templates_orig/
-scripts/
 *.md
+dashboard-go
+scripts/
 session/
