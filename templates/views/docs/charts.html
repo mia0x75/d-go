@@ -1582,7 +1582,7 @@
 													var margin = { top: 9, right: 20, bottom: 30, left: 50 }
 													var width = svg.attr("width") - margin.left - margin.right,
 														height = svg.attr("height") - margin.top - margin.bottom;
-													var parseDate = d3.timeParse("%Y %b %d");
+													var parseDate = d3.timeParse("%Y-%m");
 
 													var x = d3.scaleTime().range([0, width]),
 														y = d3.scaleLinear().range([height, 0]),
@@ -1595,7 +1595,7 @@
 													var stack = d3.stack().offset(d3.stackOffsetExpand);;
 
 													var area = d3.area()
-														.x(function (d, i) { return x(parseDate(d.data.date)); })
+														.x(function (d, i) { return x(parseDate(d.data.Date)); })
 														.y0(function (d) { return y(d[0]); })
 														.y1(function (d) { return y(d[1]); });
 													var g = svg.append("g")
@@ -1606,7 +1606,7 @@
 													});
 													dataset.then(function (data) {
 														var keys = data.columns.slice(1);
-														x.domain(d3.extent(data, function (d) {return parseDate(d.date);}));
+														x.domain(d3.extent(data, function (d) {return parseDate(d.Date);}));
 														z.domain(keys);
 														stack.keys(keys);
 														var layer = g.selectAll(".layer")
