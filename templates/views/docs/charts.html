@@ -3436,31 +3436,27 @@
 													var margin = { top: 50, left: 75, bottom: 50, right: 20 },
 														width = 712 - margin.left - margin.right,
 														height = 300 - margin.top - margin.bottom;
-
 													var svg = d3.select("#jc3").append("svg")
 														.attr("width", width + margin.left + margin.right)
 														.attr("height", height + margin.top + margin.bottom)
 														.append("g")
 														.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
-
-													var y_wrapper = d3.scaleBand()
-														.rangeRound([0, height])
-														.domain(alpha);
-
-													var y = d3.scaleLinear()
-														.range([y_wrapper.bandwidth(), 0])
-														.domain([0, 100]);
-
-													var x = d3.scaleLinear()
-														.range([0, width])
-														.domain([0, 100]);
-
+													var y_wrapper = d3.scaleBand().rangeRound([0, height]).domain(alpha),
+														y = d3.scaleLinear().range([y_wrapper.bandwidth(), 0]).domain([0, 100]),
+														x = d3.scaleLinear().range([0, width]).domain([0, 100]),
+														color = d3.scaleOrdinal(d3.schemeCategory10);
 													var area = d3.area()
 														.x(function (d) { return x(d.day); })
 														.y1(function (d) { return y(d.value * 2); })
 														.y0(y(0))
 														.curve(d3.curveBasis);
+													var line = d3.line()
+														.x(function (d) { return x(d.day); })
+														.y(function (d) { return y(d.value * 2); })
+														.curve(d3.curveBasis);
 
+													color.domain(alpha);
+													
 													svg.append("g")
 														.attr("class", "axis x")
 														.attr("transform", "translate(0, " + (height - 2) + ")")
@@ -3495,18 +3491,28 @@
 													// JOIN
 													var area_path = svg.selectAll(".area")
 														.data(data, function (d) { return d.id; });
+													var line_path = svg.selectAll(".line")
+														.data(data, function (d) { return d.id; });
 
 													// UDATE
-													area_path
-														.transition()
+													area_path.transition()
 														.attr("d", function (d) { return area(d.data); });
 
 													// ENTER
 													area_path.enter().append("path")
-														.attr("class", "area")
+														.attr("class", function (d) { return "area " + d.id; })
 														.attr("transform", function (d) { return "translate(0, " + (y_wrapper(d.id) - 1.5) + ")"; })
-														.attr("d", function (d) { return area(d.data); });
-												});
+														.attr("d", function (d) { return area(d.data); })
+														.attr("fill", function (d) { return color(d.id); })
+														.attr("opacity", "0.5");
+													line_path.enter().append("path")
+														.attr("class", function (d) { return "line " + d.id; })
+														.attr("transform", function (d) { return "translate(0, " + (y_wrapper(d.id) - 1.5) + ")"; })
+														.attr("d", function (d) { return line(d.data); })
+														.attr("stroke", function (d) { return color(d.id); })
+														.attr("stroke-width", "1.5px")
+														.attr("fill", "none");
+													});
 											</script>
 										</div>
 									</div>
