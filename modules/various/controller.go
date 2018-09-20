@@ -23,8 +23,11 @@ var (
 )
 
 func dashboard(c echo.Context) error {
+	updateSystemStatus()
+	name := "Dolly!"
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
-		"name": "Dolly!",
+		"name":  name,
+		"stats": stats,
 	})
 }
 

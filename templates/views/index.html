@@ -439,6 +439,9 @@
 					<div class="row row-cards row-deck">
 						<div class="col-12">
 							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title">最新20条问题列表</h3>
+								</div>
 								<div class="table-responsive">
 									<table class="table table-hover table-outline table-vcenter text-nowrap card-table">
 										<thead>
@@ -877,7 +880,7 @@
 						<div class="col-sm-6 col-lg-4">
 							<div class="card">
 								<div class="card-header">
-									<h4 class="card-title">Browser Stats</h4>
+									<h4 class="card-title">当前服务器信息</h4>
 								</div>
 								<table class="table card-table">
 									<tr>
@@ -913,6 +916,7 @@
 								</table>
 							</div>
 						</div>
+						<!--
 						<div class="col-sm-6 col-lg-4">
 							<div class="card">
 								<div class="card-header">
@@ -958,10 +962,188 @@
 								</table>
 							</div>
 						</div>
+						-->
+						<div class="col-sm-6 col-lg-4">
+							<div class="card">
+								<div class="card-header">
+									<h2 class="card-title">Go运行环境信息</h2>
+								</div>
+								<table class="table card-table">
+									<tr>
+										<td>服务运行时间</td>
+										<td class="text-right">
+											<span>{{ .stats.Uptime }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>当前协程数量</td>
+										<td class="text-right">
+											<span>{{ .stats.NumGoroutine }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>当前内存使用量</td>
+										<td class="text-right">
+											<span>{{ .stats.MemAllocated }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>所有被分配的内存</td>
+										<td class="text-right">
+											<span>{{ .stats.MemTotal }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>内存占用量</td>
+										<td class="text-right">
+											<span>{{ .stats.MemSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>指针查找次数</td>
+										<td class="text-right">
+											<span>{{ .stats.Lookups }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>内存分配次数</td>
+										<td class="text-right">
+											<span>{{ .stats.MemMallocs }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>内存释放次数</td>
+										<td class="text-right">
+											<span>{{ .stats.MemFrees }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>当前 Heap 内存使用量</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapAlloc }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>Heap 内存占用量</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>Heap 内存空闲量</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapIdle }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>正在使用的 Heap 内存</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapInuse }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被释放的 Heap 内存</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapReleased }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>Heap 对象数量</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapObjects }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>启动 Stack 使用量</td>
+										<td class="text-right">
+											<span>{{ .stats.StackInuse }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被分配的 Stack 内存</td>
+										<td class="text-right">
+											<span>{{ .stats.StackSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>MSpan 结构内存使用量</td>
+										<td class="text-right">
+											<span>{{ .stats.MSpanInuse }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被分配的 MSpan 结构内存</td>
+										<td class="text-right">
+											<span>{{ .stats.HeapSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>MCache 结构内存使用量</td>
+										<td class="text-right">
+											<span>{{ .stats.MCacheInuse }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被分配的 MCache 结构内存</td>
+										<td class="text-right">
+											<span>{{ .stats.MCacheSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被分配的剖析哈希表内存</td>
+										<td class="text-right">
+											<span>{{ .stats.BuckHashSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>被分配的 GC 元数据内存</td>
+										<td class="text-right">
+											<span>{{ .stats.GCSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>其它被分配的系统内存</td>
+										<td class="text-right">
+											<span>{{ .stats.OtherSys }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>下次 GC 内存回收量</td>
+										<td class="text-right">
+											<span>{{ .stats.NextGC }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>距离上次 GC 时间</td>
+										<td class="text-right">
+											<span>{{ .stats.LastGC }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>GC 暂停时间总量</td>
+										<td class="text-right">
+											<span>{{ .stats.PauseTotalNs }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>上次 GC 暂停时间</td>
+										<td class="text-right">
+											<span>{{ .stats.PauseNs }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>GC 执行次数</td>
+										<td class="text-right">
+											<span>{{ .stats.NumGC }}</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
 						<div class="col-md-6 col-lg-4">
 							<div class="card">
 								<div class="card-header">
-									<h3 class="card-title">Members</h3>
+									<h3 class="card-title">最新会员登录信息</h3>
 								</div>
 								<div class="card-body o-auto" style="height: 15rem">
 									<ul class="list-unstyled list-separated">

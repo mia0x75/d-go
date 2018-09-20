@@ -65,16 +65,16 @@ func computeTimeDiff(diff int64) (int64, string) {
 		diffStr = "now"
 	case diff < 2:
 		diff = 0
-		diffStr = "1 second"
+		diffStr = "1 sec"
 	case diff < 1*Minute:
-		diffStr = fmt.Sprintf("%d seconds", diff)
+		diffStr = fmt.Sprintf("%d sec", diff)
 		diff = 0
 
 	case diff < 2*Minute:
 		diff -= 1 * Minute
 		diffStr = "1 minute"
 	case diff < 1*Hour:
-		diffStr = fmt.Sprintf("%d minutes", diff/Minute)
+		diffStr = fmt.Sprintf("%d min", diff/Minute)
 		diff -= diff / Minute * Minute
 
 	case diff < 2*Hour:
