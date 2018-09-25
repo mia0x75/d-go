@@ -1,8 +1,10 @@
 package various
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
+	"os/exec"
 	"runtime"
 	"time"
 
@@ -16,18 +18,82 @@ import (
 	"github.com/mia0x75/dashboard-go/g"
 	"github.com/mia0x75/dashboard-go/models/uic"
 	"github.com/mia0x75/dashboard-go/utils"
+	"github.com/toolkits/nux"
 )
 
 var (
 	startTime = time.Now()
 )
 
+type memInfo struct {
+	Buffers   string
+	Cached    string
+	MemTotal  string
+	MemFree   string
+	SwapTotal string
+	SwapUsed  string
+	SwapFree  string
+}
+
+var machineStats struct {
+	Procs   int
+	Uptime  string
+	MemInfo *memInfo
+	Load    *nux.Loadavg
+}
+
+func init() {
+	// TODO：
+	go func() {
+		cmd := exec.Command("inxi", "-S", "-M", "-C", "-D", "-N", "-s", "-I", "--color=0")
+		/*
+			System:    Host: office Kernel: 4.17.19-200.fc28.x86_64 x86_64 bits: 64 Desktop: LXDE 0.9.3
+			           Distro: Fedora release 28 (Twenty Eight)
+			Machine:   Type: Desktop System: LENOVO product: 90G0CTO1WW v: QiTianM410-N000 serial: <root required>
+			           Mobo: LENOVO model: 3102 v: SDK0L77767 WIN 3423500608959 serial: <root required>
+			           UEFI [Legacy]: LENOVO v: M16KT47A date: 02/06/2018
+			CPU:       Topology: Dual Core model: Intel Core i3-7100 bits: 64 type: MT MCP L2 cache: 3072 KiB
+			           Speed: 800 MHz min/max: 800/3900 MHz Core speeds (MHz): 1: 800 2: 800 3: 800 4: 800
+			Network:   Device-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet driver: r8169
+			Drives:    Local Storage: total: 1.05 TiB used: 101.41 GiB (9.4%)
+			           ID-1: /dev/sda vendor: Kingston model: SA400S37120G size: 111.79 GiB
+			           ID-2: /dev/sdb vendor: Toshiba model: DT01ACA100 LENOVO size: 931.51 GiB
+			           ID-3: /dev/sdc type: USB vendor: SanDisk model: Cruzer Fit size: 29.82 GiB
+			Sensors:   System Temperatures: cpu: 29.8 C mobo: 27.8 C
+			           Fan Speeds (RPM): N/A
+			Info:      Processes: 280 Uptime: 20d 23h 26m Memory: 15.57 GiB used: 6.86 GiB (44.0%) Shell: bash inxi: 3.0.21
+		*/
+		var inxi bytes.Buffer
+		cmd.Stdout = &inxi
+		err := cmd.Run()
+		if err == nil {
+		}
+	}()
+}
+
 func dashboard(c echo.Context) error {
-	updateSystemStatus()
+	UpdateServiceStatus()
+	d, h, m, _ := nux.SystemUptime()
+	mem, _ := nux.MemInfo()
+	load, _ := nux.LoadAvg()
+
+	machineStats.Load = load
+	machineStats.MemInfo = &memInfo{
+		Buffers:   utils.FileSize(int64(mem.Buffers)),
+		Cached:    utils.FileSize(int64(mem.Cached)),
+		MemTotal:  utils.FileSize(int64(mem.MemTotal)),
+		MemFree:   utils.FileSize(int64(mem.MemFree)),
+		SwapTotal: utils.FileSize(int64(mem.SwapTotal)),
+		SwapUsed:  utils.FileSize(int64(mem.SwapUsed)),
+		SwapFree:  utils.FileSize(int64(mem.SwapFree)),
+	}
+	machineStats.Uptime = fmt.Sprintf("%d 天, %d 小时, %d 分钟", d, h, m)
+
 	name := "Dolly!"
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
-		"name":  name,
-		"stats": stats,
+		"name":         name,
+		"svcStats":     svcStats,
+		"machineStats": machineStats,
 	})
 }
 
@@ -171,15 +237,13 @@ func error503(c echo.Context) error {
 }
 
 func about(c echo.Context) error {
-	updateSystemStatus()
 	return c.Render(http.StatusOK, "about.html", map[string]interface{}{
 		"name":  "Dolly!",
 		"title": "page_title",
-		"stats": stats,
 	})
 }
 
-var stats struct {
+var svcStats struct {
 	Uptime       string
 	NumGoroutine int
 
@@ -220,40 +284,40 @@ var stats struct {
 	NumGC        uint32
 }
 
-func updateSystemStatus() {
-	stats.Uptime = utils.TimeSincePro(startTime)
+func UpdateServiceStatus() {
+	svcStats.Uptime = utils.TimeSincePro(startTime)
 
 	m := new(runtime.MemStats)
 	runtime.ReadMemStats(m)
-	stats.NumGoroutine = runtime.NumGoroutine()
+	svcStats.NumGoroutine = runtime.NumGoroutine()
 
-	stats.MemAllocated = utils.FileSize(int64(m.Alloc))
-	stats.MemTotal = utils.FileSize(int64(m.TotalAlloc))
-	stats.MemSys = utils.FileSize(int64(m.Sys))
-	stats.Lookups = m.Lookups
-	stats.MemMallocs = m.Mallocs
-	stats.MemFrees = m.Frees
+	svcStats.MemAllocated = utils.FileSize(int64(m.Alloc))
+	svcStats.MemTotal = utils.FileSize(int64(m.TotalAlloc))
+	svcStats.MemSys = utils.FileSize(int64(m.Sys))
+	svcStats.Lookups = m.Lookups
+	svcStats.MemMallocs = m.Mallocs
+	svcStats.MemFrees = m.Frees
 
-	stats.HeapAlloc = utils.FileSize(int64(m.HeapAlloc))
-	stats.HeapSys = utils.FileSize(int64(m.HeapSys))
-	stats.HeapIdle = utils.FileSize(int64(m.HeapIdle))
-	stats.HeapInuse = utils.FileSize(int64(m.HeapInuse))
-	stats.HeapReleased = utils.FileSize(int64(m.HeapReleased))
-	stats.HeapObjects = m.HeapObjects
+	svcStats.HeapAlloc = utils.FileSize(int64(m.HeapAlloc))
+	svcStats.HeapSys = utils.FileSize(int64(m.HeapSys))
+	svcStats.HeapIdle = utils.FileSize(int64(m.HeapIdle))
+	svcStats.HeapInuse = utils.FileSize(int64(m.HeapInuse))
+	svcStats.HeapReleased = utils.FileSize(int64(m.HeapReleased))
+	svcStats.HeapObjects = m.HeapObjects
 
-	stats.StackInuse = utils.FileSize(int64(m.StackInuse))
-	stats.StackSys = utils.FileSize(int64(m.StackSys))
-	stats.MSpanInuse = utils.FileSize(int64(m.MSpanInuse))
-	stats.MSpanSys = utils.FileSize(int64(m.MSpanSys))
-	stats.MCacheInuse = utils.FileSize(int64(m.MCacheInuse))
-	stats.MCacheSys = utils.FileSize(int64(m.MCacheSys))
-	stats.BuckHashSys = utils.FileSize(int64(m.BuckHashSys))
-	stats.GCSys = utils.FileSize(int64(m.GCSys))
-	stats.OtherSys = utils.FileSize(int64(m.OtherSys))
+	svcStats.StackInuse = utils.FileSize(int64(m.StackInuse))
+	svcStats.StackSys = utils.FileSize(int64(m.StackSys))
+	svcStats.MSpanInuse = utils.FileSize(int64(m.MSpanInuse))
+	svcStats.MSpanSys = utils.FileSize(int64(m.MSpanSys))
+	svcStats.MCacheInuse = utils.FileSize(int64(m.MCacheInuse))
+	svcStats.MCacheSys = utils.FileSize(int64(m.MCacheSys))
+	svcStats.BuckHashSys = utils.FileSize(int64(m.BuckHashSys))
+	svcStats.GCSys = utils.FileSize(int64(m.GCSys))
+	svcStats.OtherSys = utils.FileSize(int64(m.OtherSys))
 
-	stats.NextGC = utils.FileSize(int64(m.NextGC))
-	stats.LastGC = fmt.Sprintf("%.3fs", float64(time.Now().UnixNano()-int64(m.LastGC))/1000/1000/1000)
-	stats.PauseTotalNs = fmt.Sprintf("%.3fs", float64(m.PauseTotalNs)/1000/1000/1000)
-	stats.PauseNs = fmt.Sprintf("%.6fs", float64(m.PauseNs[(m.NumGC+255)%256])/1000/1000/1000)
-	stats.NumGC = m.NumGC
+	svcStats.NextGC = utils.FileSize(int64(m.NextGC))
+	svcStats.LastGC = fmt.Sprintf("%.3fs", float64(time.Now().UnixNano()-int64(m.LastGC))/1000/1000/1000)
+	svcStats.PauseTotalNs = fmt.Sprintf("%.3fs", float64(m.PauseTotalNs)/1000/1000/1000)
+	svcStats.PauseNs = fmt.Sprintf("%.6fs", float64(m.PauseNs[(m.NumGC+255)%256])/1000/1000/1000)
+	svcStats.NumGC = m.NumGC
 }

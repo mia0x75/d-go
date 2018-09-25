@@ -884,34 +884,52 @@
 								</div>
 								<table class="table card-table">
 									<tr>
-										<td width="1"><i class="fa fa-chrome text-muted"></i></td>
-										<td>Google Chrome</td>
-										<td class="text-right"><span class="text-muted">23%</span></td>
+										<td>服务器运行时间</td>
+										<td class="text-right">{{ .machineStats.Uptime }}</td>
 									</tr>
 									<tr>
-										<td><i class="fa fa-firefox text-muted"></i></td>
-										<td>Mozila Firefox</td>
-										<td class="text-right"><span class="text-muted">15%</span></td>
+										<td>最近1分钟负载</td>
+										<td class="text-right">{{ .machineStats.Load.Avg1min }}</td>
 									</tr>
 									<tr>
-										<td><i class="fa fa-safari text-muted"></i></td>
-										<td>Apple Safari</td>
-										<td class="text-right"><span class="text-muted">7%</span></td>
+										<td>最近5分钟负载</td>
+										<td class="text-right">{{ .machineStats.Load.Avg5min }}</td>
 									</tr>
 									<tr>
-										<td><i class="fa fa-internet-explorer text-muted"></i></td>
-										<td>Internet Explorer</td>
-										<td class="text-right"><span class="text-muted">9%</span></td>
+										<td>最近15分钟负载</td>
+										<td class="text-right">{{ .machineStats.Load.Avg15min }}</td>
 									</tr>
 									<tr>
-										<td><i class="fa fa-opera text-muted"></i></td>
-										<td>Opera mini</td>
-										<td class="text-right"><span class="text-muted">23%</span></td>
+										<td>进程数</td>
+										<td class="text-right">{{ .machineStats.Procs }}</td>
 									</tr>
 									<tr>
-										<td><i class="fa fa-edge text-muted"></i></td>
-										<td>Microsoft edge</td>
-										<td class="text-right"><span class="text-muted">9%</span></td>
+										<td>内存缓冲</td>
+										<td class="text-right">{{ .machineStats.MemInfo.Buffers }}</td>
+									</tr>
+									<tr>
+										<td>内存缓存</td>
+										<td class="text-right">{{ .machineStats.MemInfo.Cached }}</td>
+									</tr>
+									<tr>
+										<td>内存总量</td>
+										<td class="text-right">{{ .machineStats.MemInfo.MemTotal }}</td>
+									</tr>
+									<tr>
+										<td>可用内存</td>
+										<td class="text-right">{{ .machineStats.MemInfo.MemFree }}</td>
+									</tr>
+									<tr>
+										<td>交换分区</td>
+										<td class="text-right">{{ .machineStats.MemInfo.SwapTotal }}</td>
+									</tr>
+									<tr>
+										<td>已用交换空间</td>
+										<td class="text-right">{{ .machineStats.MemInfo.SwapUsed }}</td>
+									</tr>
+									<tr>
+										<td>可用交换空间</td>
+										<td class="text-right">{{ .machineStats.MemInfo.SwapFree }}</td>
 									</tr>
 								</table>
 							</div>
@@ -972,169 +990,169 @@
 									<tr>
 										<td>服务运行时间</td>
 										<td class="text-right">
-											<span>{{ .stats.Uptime }}</span>
+											<span>{{ .svcStats.Uptime }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>当前协程数量</td>
 										<td class="text-right">
-											<span>{{ .stats.NumGoroutine }}</span>
+											<span>{{ .svcStats.NumGoroutine }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>当前内存使用量</td>
 										<td class="text-right">
-											<span>{{ .stats.MemAllocated }}</span>
+											<span>{{ .svcStats.MemAllocated }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>所有被分配的内存</td>
 										<td class="text-right">
-											<span>{{ .stats.MemTotal }}</span>
+											<span>{{ .svcStats.MemTotal }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>内存占用量</td>
 										<td class="text-right">
-											<span>{{ .stats.MemSys }}</span>
+											<span>{{ .svcStats.MemSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>指针查找次数</td>
 										<td class="text-right">
-											<span>{{ .stats.Lookups }}</span>
+											<span>{{ .svcStats.Lookups }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>内存分配次数</td>
 										<td class="text-right">
-											<span>{{ .stats.MemMallocs }}</span>
+											<span>{{ .svcStats.MemMallocs }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>内存释放次数</td>
 										<td class="text-right">
-											<span>{{ .stats.MemFrees }}</span>
+											<span>{{ .svcStats.MemFrees }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>当前 Heap 内存使用量</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapAlloc }}</span>
+											<span>{{ .svcStats.HeapAlloc }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>Heap 内存占用量</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapSys }}</span>
+											<span>{{ .svcStats.HeapSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>Heap 内存空闲量</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapIdle }}</span>
+											<span>{{ .svcStats.HeapIdle }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>正在使用的 Heap 内存</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapInuse }}</span>
+											<span>{{ .svcStats.HeapInuse }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被释放的 Heap 内存</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapReleased }}</span>
+											<span>{{ .svcStats.HeapReleased }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>Heap 对象数量</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapObjects }}</span>
+											<span>{{ .svcStats.HeapObjects }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>启动 Stack 使用量</td>
 										<td class="text-right">
-											<span>{{ .stats.StackInuse }}</span>
+											<span>{{ .svcStats.StackInuse }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被分配的 Stack 内存</td>
 										<td class="text-right">
-											<span>{{ .stats.StackSys }}</span>
+											<span>{{ .svcStats.StackSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>MSpan 结构内存使用量</td>
 										<td class="text-right">
-											<span>{{ .stats.MSpanInuse }}</span>
+											<span>{{ .svcStats.MSpanInuse }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被分配的 MSpan 结构内存</td>
 										<td class="text-right">
-											<span>{{ .stats.HeapSys }}</span>
+											<span>{{ .svcStats.HeapSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>MCache 结构内存使用量</td>
 										<td class="text-right">
-											<span>{{ .stats.MCacheInuse }}</span>
+											<span>{{ .svcStats.MCacheInuse }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被分配的 MCache 结构内存</td>
 										<td class="text-right">
-											<span>{{ .stats.MCacheSys }}</span>
+											<span>{{ .svcStats.MCacheSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被分配的剖析哈希表内存</td>
 										<td class="text-right">
-											<span>{{ .stats.BuckHashSys }}</span>
+											<span>{{ .svcStats.BuckHashSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>被分配的 GC 元数据内存</td>
 										<td class="text-right">
-											<span>{{ .stats.GCSys }}</span>
+											<span>{{ .svcStats.GCSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>其它被分配的系统内存</td>
 										<td class="text-right">
-											<span>{{ .stats.OtherSys }}</span>
+											<span>{{ .svcStats.OtherSys }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>下次 GC 内存回收量</td>
 										<td class="text-right">
-											<span>{{ .stats.NextGC }}</span>
+											<span>{{ .svcStats.NextGC }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>距离上次 GC 时间</td>
 										<td class="text-right">
-											<span>{{ .stats.LastGC }}</span>
+											<span>{{ .svcStats.LastGC }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>GC 暂停时间总量</td>
 										<td class="text-right">
-											<span>{{ .stats.PauseTotalNs }}</span>
+											<span>{{ .svcStats.PauseTotalNs }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>上次 GC 暂停时间</td>
 										<td class="text-right">
-											<span>{{ .stats.PauseNs }}</span>
+											<span>{{ .svcStats.PauseNs }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td>GC 执行次数</td>
 										<td class="text-right">
-											<span>{{ .stats.NumGC }}</span>
+											<span>{{ .svcStats.NumGC }}</span>
 										</td>
 									</tr>
 								</table>

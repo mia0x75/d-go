@@ -2017,7 +2017,7 @@
 											<div class="card">
 												<div class="card-header">
 													{{/* http://blockbuilder.org/curran/02163a13a40112e0ab6f14bbacc986f8 */}}
-													<h3 class="card-title">Small multiple line chart</h3>
+													<h3 class="card-title">Small multiple line chart - 1</h3>
 												</div>
 												<div class="card-body">
 													<div id="smlc1" style="height: auto"></div>
@@ -2229,6 +2229,125 @@
 															.append("div")
 															.attr("class", "smlc1")
 															.call(chart);
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/curran/02163a13a40112e0ab6f14bbacc986f8 */}}
+													<h3 class="card-title">Small multiple line chart - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="smlc2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var margin = { top: 20, right: 30, bottom: 20, left: 50 },
+														width = 712 - margin.left - margin.right,
+														height = 450 - margin.top - margin.bottom,
+														area = d3.area()
+															.x(function (d) { return x(d.date); })
+															.y0(function (d) { return y(0); })
+															.y1(function (d) { return y(d.price); });;
+
+													var svg = d3.select("#smlc2").append("svg")
+														.attr("width", width + margin.left + margin.right)
+														.attr("height", height + margin.top + margin.bottom)
+														.append("g")
+														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var parseDate = d3.timeParse("%b %Y");
+
+													var x = d3.scaleTime().range([0, width]),
+														y = d3.scaleLinear().range([height, 0]),
+														c = d3.scaleOrdinal(d3.schemeCategory10);
+
+													var line = d3.line()
+														.curve(d3.curveBasis)
+														.x(function (d) { return x(d.date); })
+														.y(function (d) { return y(d.price); });
+
+													var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														// Scale the range of the data
+														// x.domain(d3.extent(data, function (d) { return d.date; }));
+														// y.domain([0, d3.max(data, function (d) { return d.price; })]);
+
+														// Nest the entries by symbol
+														var symbols = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
+
+														// Parse and caculate some values for each symbols
+														symbols.forEach(function (s) {
+															s.values.forEach(function (d) {
+																d.date = parseDate(d.date);
+																d.price = +d.price;
+															});
+
+															s.maxPrice = d3.max(s.values, function (d) { return d.price; });
+															s.sumPrice = d3.sum(s.values, function (d) { return d.price; });
+														});
+														x.domain(d3.extent(data, function (d) { return d.date; }));
+														y.domain([0, d3.max(symbols.map(function (d) { return d.maxPrice; }))])
+
+														for (var i = 0; i < symbols.length; i++) {
+															y.range([(i + 1) * height / symbols.length, i * height / symbols.length])
+																.domain([0, symbols[i].maxPrice]);
+
+															svg.append("path").datum(symbols[i])
+																.attr("class", "line")
+																.attr("d", function (d) { return line(d.values); })
+																.attr("stroke", function (d) { return c(d.key); })
+																.attr("stroke-width", "1.5px")
+																.attr("fill", "none");
+
+															svg.append("path").datum(symbols[i])
+																.attr("class", "area")
+																.attr("d", function (d) { return area(d.values); })
+																.attr("fill", function (d) { return c(d.key); })
+																.attr("opacity", "0.5");
+
+															svg.append("g")
+																.attr("class", "axis axis--y")
+																.call(d3.axisLeft(y).ticks(5));
+														}
+
+														svg.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x));
+
+
+														var legend = svg.selectAll(".legend")
+															.data(c.domain())
+															.enter().append("g")
+															.attr("class", "legend")
+															.attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
+
+														legend.append("rect")
+															.attr("x", 30)
+															.attr("width", 18)
+															.attr("height", 18)
+															.style("fill", c);
+
+														legend.append("text")
+															.attr("x", 50)
+															.attr("y", 9)
+															.attr("dy", ".35em")
+															.style("text-anchor", "start")
+															.text(function (d) { return d; });
 													});
 												});
 											</script>
@@ -3533,44 +3652,39 @@
 											</div>
 											<script>
 												require(['d3'], function (d3) {
-													// const xValue = d => d.dteday;
-													// const xLabel = 'Date';
-													// const yValue1 = d => d.registered;
-													// const yValue2 = d => d.casual;
-													// const yValue3 = d => d.cnt;
-													// const yValue4 = d => d.temp;
-													// const yLabel = 'Users';
+													const xLabel = 'Date';
+													const yLabel = 'Users';
 
-													// var svg = d3.select("#mlwbzc2").append("svg").attr("width", 712).attr("height", 300),
-													// 	margin = { top: 20, right: 80, bottom: 110, left: 80 },
-													// 	margin2 = { top: 430, right: 80, bottom: 30, left: 80 },
-													// 	width = +svg.attr("width") - margin.left - margin.right,
-													// 	height = +svg.attr("height") - margin.top - margin.bottom,
-													// 	height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+													var svg = d3.select("#mlwbzc1").append("svg").attr("width", 712).attr("height", 300),
+														margin = { top: 20, right: 80, bottom: 110, left: 80 },
+														margin2 = { top: 430, right: 80, bottom: 30, left: 80 },
+														width = +svg.attr("width") - margin.left - margin.right,
+														height = +svg.attr("height") - margin.top - margin.bottom,
+														height2 = +svg.attr("height") - margin2.top - margin2.bottom;
 
-													// var parseDate = d3.timeParse("%b %Y");
+													var parseDate = d3.timeParse("%b %Y");
 
-													// var x = d3.scaleTime().range([0, width]),
-													// 	x2 = d3.scaleTime().range([0, width]),
-													// 	y = d3.scaleLinear().range([height, 0]),
-													// 	yRight = d3.scaleLinear().range([height, 0]),
-													// 	y2 = d3.scaleLinear().range([height2, 0]);
+													var x = d3.scaleTime().range([0, width]),
+														x2 = d3.scaleTime().range([0, width]),
+														y = d3.scaleLinear().range([height, 0]),
+														y2 = d3.scaleLinear().range([height2, 0]);
 
-													// var xAxis = d3.axisBottom(x),
-													// 	xAxis2 = d3.axisBottom(x2),
-													// 	yAxis = d3.axisLeft(y),
-													// 	yAxisRight = d3.axisRight(yRight);
+													var xAxis = d3.axisBottom(x),
+														xAxis2 = d3.axisBottom(x2),
+														yAxis = d3.axisLeft(y);
 
-													// var brush = d3.brushX()
-													// 	.extent([[0, 0], [width, height2]])
-													// 	.on("brush end", brushed);
+													var brush = d3.brushX()
+														.extent([[0, 0], [width, height2]])
+														.on("brush end", brushed);
 
-													// var zoom = d3.zoom()
-													// 	.scaleExtent([1, Infinity])
-													// 	.translateExtent([[0, 0], [width, height]])
-													// 	.extent([[0, 0], [width, height]])
-													// 	.on("zoom", zoomed);
-
+													var zoom = d3.zoom()
+														.scaleExtent([1, Infinity])
+														.translateExtent([[0, 0], [width, height]])
+														.extent([[0, 0], [width, height]])
+														.on("zoom", zoomed);
+													var line = d3.line()
+														.x(function (d) { return x(d.date); })
+														.y(function (d) { return y(d.price); });
 													// var line = d3.line()
 													// 	.curve(d3.curveCatmullRom)
 													// 	.x(function (d) { return x(d.dteday); })
@@ -3597,133 +3711,139 @@
 													// 	.y(function (d) { return y2(d.cnt); });
 
 
-													// svg.append("defs").append("clipPath")
-													// 	.attr("id", "clip")
-													// 	.append("rect")
-													// 	.attr("width", width)
-													// 	.attr("height", height);
+													svg.append("defs").append("clipPath")
+														.attr("id", "clip")
+														.append("rect")
+														.attr("width", width)
+														.attr("height", height);
 
-													// var focus = svg.append("g")
-													// 	.attr("class", "focus")
-													// 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+													var focus = svg.append("g")
+														.attr("class", "focus")
+														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-													// var context = svg.append("g")
-													// 	.attr("class", "context")
-													// 	.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+													var context = svg.append("g")
+														.attr("class", "context")
+														.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
+													var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														return data.map(function (d) {
+															d.date = parseDate(d.date);
+															d.price = +d.price;
+															return d;
+														});
+													}).then(function (data) {
+														x.domain(d3.extent(data, function (d) { return d.date; }));
+														y.domain([0, d3.max(data, function (d) { return d.price; })]);
+														x2.domain(x.domain());
+														y2.domain(y.domain());
 
-													// const row = d => {
-													// 	d.dteday = new Date(d.dteday);
-													// 	d.season = +d.season;
-													// 	d.yr = +d.yr;
-													// 	d.mnth = +d.mnth;
-													// 	d.holiday = +d.holiday;
-													// 	d.weekday = +d.weekday;
-													// 	d.workingday = +d.workingday;
-													// 	d.weathersit = +d.weathersit;
-													// 	d.temp = +d.temp;
-													// 	d.atemp = +d.atemp;
-													// 	d.hum = +d.hum;
-													// 	d.windspeed = +d.windspeed;
-													// 	d.casual = +d.casual;
-													// 	d.registered = +d.registered;
-													// 	d.cnt = +d.cnt;
-													// 	return d;
-													// };
+														// focus.append("path")
+														// 	.datum(data)
+														// 	.attr("class", "line line_casual")
+														// 	.attr("d", lineCasual);
 
-													// var dataset = d3.tsv("/demo/stocks.tsv", function (data) {
-													// 	return data;
-													// });
-													// dataset.then(function (data) {
-													// }).then(function (data) {
-													// 	x.domain(d3.extent(data, function (d) { return d.dteday; }));
-													// 	y.domain([0, d3.max(data, function (d) { return d.cnt; })]);
-													// 	x2.domain(x.domain());
-													// 	y2.domain(y.domain());
+														// focus.append("path")
+														// 	.datum(data)
+														// 	.attr("class", "line line_registered")
+														// 	.attr("d", lineRegistered);
 
-													// 	focus.append("path")
-													// 		.datum(data)
-													// 		.attr("class", "line line_casual")
-													// 		.attr("d", lineCasual);
+														// focus.append("path")
+														// 	.datum(data)
+														// 	.attr("class", "line line_temp")
+														// 	.attr("d", lineTemp);
+														// Nest the entries by symbol
+														var nest = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
 
-													// 	focus.append("path")
-													// 		.datum(data)
-													// 		.attr("class", "line line_registered")
-													// 		.attr("d", lineRegistered);
+														// set the colour scale
+														var color = d3.scaleOrdinal(d3.schemeCategory10);
+														// Loop through each symbol / key
+														nest.map(function (d) {
+															focus.append("path")
+																.attr("stroke-width", "1.5px")
+																.attr("fill", "none")
+																.attr("stroke", function () { // Add the colours dynamically
+																	return d.color = color(d.key);
+																})
+																.attr("d", line(d.values));
+														});
 
-													// 	focus.append("path")
-													// 		.datum(data)
-													// 		.attr("class", "line line_temp")
-													// 		.attr("d", lineTemp);
+														// Add the X Axis
+														focus.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height + ")")
+															.call(xAxis)
+															.style("fill", "none")
+															.style("stoke", "grey")
+															.style("stoke-width", "1")
+															.style("shape-rendering", "crispEdges");
 
-													// 	focus.append("g")
-													// 		.attr("class", "axis axis--x")
-													// 		.attr("transform", "translate(0," + height + ")")
-													// 		.call(xAxis);
+														// Add the Y Axis
+														focus.append("g")
+															.attr("class", "axis axis--y")
+															.call(yAxis)
+															.style("fill", "none")
+															.style("stoke", "grey")
+															.style("stoke-width", "1")
+															.style("shape-rendering", "crispEdges")
+															.append('text')
+															.attr('class', 'axis-label')
+															.attr('x', -height / 2)
+															.attr('y', -50)
+															.attr('transform', `rotate(-90)`)
+															.style('text-anchor', 'middle')
+															.text(yLabel);
 
-													// 	yAxisG = focus.append("g")
-													// 		.attr("class", "axis axis--y")
-													// 		.call(yAxis);
+														// context.append("path")
+														// 	.datum(data)
+														// 	.attr("class", "line_total")
+														// 	.attr("d", lineTotal);
 
-													// 	yAxisG.append('text')
-													// 		.attr('class', 'axis-label')
-													// 		.attr('x', -height / 2)
-													// 		.attr('y', -50)
-													// 		.attr('transform', `rotate(-90)`)
-													// 		.style('text-anchor', 'middle')
-													// 		.text(yLabel);
+														context.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height2 + ")")
+															.call(xAxis2);
 
-													// 	yAxisRightG = focus.append("g")
-													// 		.attr("class", "axis axis--y")
-													// 		.attr("transform", "translate(" + width + ",0)")
-													// 		.call(yAxisRight);
+														context.append("g")
+															.attr("class", "brush")
+															.call(brush)
+															.call(brush.move, x.range());
 
-													// 	context.append("path")
-													// 		.datum(data)
-													// 		.attr("class", "line_total")
-													// 		.attr("d", lineTotal);
+														svg.append("rect")
+															.attr("class", "zoom")
+															.attr("width", width)
+															.attr("height", height)
+															.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+															.call(zoom);
+													});
 
-													// 	context.append("g")
-													// 		.attr("class", "axis axis--x")
-													// 		.attr("transform", "translate(0," + height2 + ")")
-													// 		.call(xAxis2);
+													function brushed() {
+														if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+														var s = d3.event.selection || x2.range();
+														x.domain(s.map(x2.invert, x2));
+														// focus.selectAll(".line_casual").attr("d", lineCasual);
+														// focus.select(".line_registered").attr("d", lineRegistered);
+														// focus.select(".line_temp").attr("d", lineTemp);
+														focus.select(".axis--x").call(xAxis);
+														svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+															.scale(width / (s[1] - s[0]))
+															.translate(-s[0], 0));
+													}
 
-													// 	context.append("g")
-													// 		.attr("class", "brush")
-													// 		.call(brush)
-													// 		.call(brush.move, x.range());
-
-													// 	svg.append("rect")
-													// 		.attr("class", "zoom")
-													// 		.attr("width", width)
-													// 		.attr("height", height)
-													// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-													// 		.call(zoom);
-													// });
-
-													// function brushed() {
-													// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-													// 	var s = d3.event.selection || x2.range();
-													// 	x.domain(s.map(x2.invert, x2));
-													// 	focus.selectAll(".line_casual").attr("d", lineCasual);
-													// 	focus.select(".line_registered").attr("d", lineRegistered);
-													// 	focus.select(".line_temp").attr("d", lineTemp);
-													// 	focus.select(".axis--x").call(xAxis);
-													// 	svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-													// 		.scale(width / (s[1] - s[0]))
-													// 		.translate(-s[0], 0));
-													// }
-
-													// function zoomed() {
-													// 	if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-													// 	var t = d3.event.transform;
-													// 	x.domain(t.rescaleX(x2).domain());
-													// 	focus.select(".line_casual").attr("d", lineCasual);
-													// 	focus.select(".line_registered").attr("d", lineRegistered);
-													// 	focus.select(".line_temp").attr("d", lineTemp);
-													// 	focus.select(".axis--x").call(xAxis);
-													// 	context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-													// }
+													function zoomed() {
+														if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+														var t = d3.event.transform;
+														x.domain(t.rescaleX(x2).domain());
+														// focus.select(".line_casual").attr("d", lineCasual);
+														// focus.select(".line_registered").attr("d", lineRegistered);
+														// focus.select(".line_temp").attr("d", lineTemp);
+														focus.select(".axis--x").call(xAxis);
+														context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+													}
 												});
 											</script>
 										</div>

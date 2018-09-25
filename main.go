@@ -28,6 +28,19 @@ import (
 	"github.com/mia0x75/dashboard-go/utils"
 )
 
+// var site struct {
+// 	DefaultTitle string
+// }
+
+// var author struct {
+// 	Name  string
+// 	Email string
+// }
+
+// var page struct {
+// 	Title string
+// }
+
 func main() {
 	var err error
 	cfgTmp := flag.String("c", "cfg.json", "configuration file")

@@ -60,56 +60,21 @@ func UintPtrTo64(ptr interface{}) (value uint64) {
 func computeTimeDiff(diff int64) (int64, string) {
 	diffStr := ""
 	switch {
-	case diff <= 0:
-		diff = 0
-		diffStr = "now"
-	case diff < 2:
-		diff = 0
-		diffStr = "1 sec"
 	case diff < 1*Minute:
-		diffStr = fmt.Sprintf("%d sec", diff)
+		diffStr = "不足 1 分钟"
 		diff = 0
 
-	case diff < 2*Minute:
-		diff -= 1 * Minute
-		diffStr = "1 minute"
 	case diff < 1*Hour:
-		diffStr = fmt.Sprintf("%d min", diff/Minute)
+		diffStr = fmt.Sprintf("%d 分钟", diff/Minute)
 		diff -= diff / Minute * Minute
 
-	case diff < 2*Hour:
-		diff -= 1 * Hour
-		diffStr = "1 hour"
 	case diff < 1*Day:
-		diffStr = fmt.Sprintf("%d hours", diff/Hour)
+		diffStr = fmt.Sprintf("%d 小时", diff/Hour)
 		diff -= diff / Hour * Hour
 
-	case diff < 2*Day:
-		diff -= 1 * Day
-		diffStr = "1 day"
-	case diff < 1*Week:
-		diffStr = fmt.Sprintf("%d days", diff/Day)
-		diff -= diff / Day * Day
-
-	case diff < 2*Week:
-		diff -= 1 * Week
-		diffStr = "1 week"
-	case diff < 1*Month:
-		diffStr = fmt.Sprintf("%d weeks", diff/Week)
-		diff -= diff / Week * Week
-
-	case diff < 2*Month:
-		diff -= 1 * Month
-		diffStr = "1 month"
-	case diff < 1*Year:
-		diffStr = fmt.Sprintf("%d months", diff/Month)
-		diff -= diff / Month * Month
-
-	case diff < 2*Year:
-		diff -= 1 * Year
-		diffStr = "1 year"
 	default:
-		diffStr = fmt.Sprintf("%d years", diff/Year)
+		diffStr = fmt.Sprintf("%d 天", diff/Day)
+		diff -= diff / Day * Day
 		diff = 0
 	}
 	return diff, diffStr
@@ -126,7 +91,7 @@ func TimeSincePro(then time.Time) string {
 
 	var timeStr, diffStr string
 	for {
-		if diff == 0 {
+		if diff < 1*Minute && diffStr != "" {
 			break
 		}
 
