@@ -151,6 +151,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	defer func() {
+		g.CloseDB()
 	}()
 
 	if err := e.Shutdown(ctx); err != nil {

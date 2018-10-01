@@ -931,6 +931,51 @@
 										<td>可用交换空间</td>
 										<td class="text-right">{{ .machineStats.MemInfo.SwapFree }}</td>
 									</tr>
+
+									<tr>
+										<td>主机名称</td>
+										<td class="text-right">{{ .sysInfo.Node.Hostname }}</td>
+									</tr>
+									<tr>
+										<td>系统时区</td>
+										<td class="text-right">{{ .sysInfo.Node.Timezone }}</td>
+									</tr>
+									<tr>
+										<td>操作系统</td>
+										<td class="text-right">{{ .sysInfo.OS.Name }}</td>
+									</tr>
+									<tr>
+										<td>系统版本</td>
+										<td class="text-right">{{ .sysInfo.OS.Version }}</td>
+									</tr>
+									<tr>
+										<td>系统内核</td>
+										<td class="text-right">{{ .sysInfo.Kernel.Release }}</td>
+									</tr>
+									<tr>
+										<td>服务器型号</td>
+										<td class="text-right">{{ .sysInfo.Product.Name }}</td>
+									</tr>
+									<tr>
+										<td>服务器厂商</td>
+										<td class="text-right">{{ .sysInfo.Product.Vendor }}</td>
+									</tr>
+									<tr>
+										<td>主板型号</td>
+										<td class="text-right">{{ .sysInfo.Board.Name }}</td>
+									</tr>
+									<tr>
+										<td>主板厂商</td>
+										<td class="text-right">{{ .sysInfo.Board.Vendor }}</td>
+									</tr>
+									<tr>
+										<td>CPU型号</td>
+										<td class="text-right">{{ .sysInfo.CPU.Model }}</td>
+									</tr>
+									<tr>
+										<td>CPU厂商</td>
+										<td class="text-right">{{ .sysInfo.CPU.Vendor }}</td>
+									</tr>
 								</table>
 							</div>
 						</div>

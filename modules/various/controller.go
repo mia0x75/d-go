@@ -1,10 +1,8 @@
 package various
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
-	"os/exec"
 	"runtime"
 	"time"
 
@@ -18,6 +16,7 @@ import (
 	"github.com/mia0x75/dashboard-go/g"
 	"github.com/mia0x75/dashboard-go/models/uic"
 	"github.com/mia0x75/dashboard-go/utils"
+	"github.com/mia0x75/sysinfo"
 	"github.com/toolkits/nux"
 )
 
@@ -42,35 +41,6 @@ var machineStats struct {
 	Load    *nux.Loadavg
 }
 
-func init() {
-	// TODO：
-	go func() {
-		cmd := exec.Command("inxi", "-S", "-M", "-C", "-D", "-N", "-s", "-I", "--color=0")
-		/*
-			System:    Host: office Kernel: 4.17.19-200.fc28.x86_64 x86_64 bits: 64 Desktop: LXDE 0.9.3
-			           Distro: Fedora release 28 (Twenty Eight)
-			Machine:   Type: Desktop System: LENOVO product: 90G0CTO1WW v: QiTianM410-N000 serial: <root required>
-			           Mobo: LENOVO model: 3102 v: SDK0L77767 WIN 3423500608959 serial: <root required>
-			           UEFI [Legacy]: LENOVO v: M16KT47A date: 02/06/2018
-			CPU:       Topology: Dual Core model: Intel Core i3-7100 bits: 64 type: MT MCP L2 cache: 3072 KiB
-			           Speed: 800 MHz min/max: 800/3900 MHz Core speeds (MHz): 1: 800 2: 800 3: 800 4: 800
-			Network:   Device-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet driver: r8169
-			Drives:    Local Storage: total: 1.05 TiB used: 101.41 GiB (9.4%)
-			           ID-1: /dev/sda vendor: Kingston model: SA400S37120G size: 111.79 GiB
-			           ID-2: /dev/sdb vendor: Toshiba model: DT01ACA100 LENOVO size: 931.51 GiB
-			           ID-3: /dev/sdc type: USB vendor: SanDisk model: Cruzer Fit size: 29.82 GiB
-			Sensors:   System Temperatures: cpu: 29.8 C mobo: 27.8 C
-			           Fan Speeds (RPM): N/A
-			Info:      Processes: 280 Uptime: 20d 23h 26m Memory: 15.57 GiB used: 6.86 GiB (44.0%) Shell: bash inxi: 3.0.21
-		*/
-		var inxi bytes.Buffer
-		cmd.Stdout = &inxi
-		err := cmd.Run()
-		if err == nil {
-		}
-	}()
-}
-
 func dashboard(c echo.Context) error {
 	UpdateServiceStatus()
 	d, h, m, _ := nux.SystemUptime()
@@ -88,12 +58,16 @@ func dashboard(c echo.Context) error {
 		SwapFree:  utils.FileSize(int64(mem.SwapFree)),
 	}
 	machineStats.Uptime = fmt.Sprintf("%d 天, %d 小时, %d 分钟", d, h, m)
+	var si sysinfo.SysInfo
+
+	si.GetSysInfo()
 
 	name := "Dolly!"
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
 		"name":         name,
 		"svcStats":     svcStats,
 		"machineStats": machineStats,
+		"sysInfo":      si,
 	})
 }
 
